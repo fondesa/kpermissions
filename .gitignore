@@ -1,0 +1,64 @@
+
+#ignore thumbnails created by windows
+Thumbs.db
+#Ignore files build by Visual Studio
+*.obj
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.dll
+*.lib
+*.sbr
+
+# OSX files
+.DS_Store
+
+# Gradle Files
+.gradle
+.m2
+.gradletasknamecache
+
+# Build output directories and files
+target/
+build/
+Version.java
+logcat.txt
+
+# Eclipse specific files/directories
+.classpath
+.project
+.settings
+.metadata
+bin/
+
+# IntelliJ specific files/directories
+out
+.idea
+*.ipr
+*.iws
+*.iml
+local.properties
+
+# crashlytics files
+com_crashlytics_export_strings.xml
+crashlytics_local_developer_strings.xml
+manifest.txt
+crashlytics.keystore.properties
+crashlytics-build.properties
+
+.log
+projectFilesBackup
+/captures

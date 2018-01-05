@@ -1,0 +1,21 @@
+KAndroidPlugin.attachApplication(project)
+
+android {
+    defaultConfig.applicationId "com.fondesa.kpermissions.sample"
+
+    flavorDimensions "app"
+
+    productFlavors {
+        local.dimension "app"
+        remote.dimension "app"
+    }
+}
+
+def libRemoteVersion = "0.0.1"
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    implementation "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
+    localImplementation project(':kpermissions')
+//    remoteImplementation "com.github.fondesa:kpermissions:$libRemoteVersion"
+}

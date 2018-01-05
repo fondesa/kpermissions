@@ -30,10 +30,20 @@ class PermissionFragment : Fragment() {
 
     private var listener: PermissionRequestImpl.Listener? = null
 
+    private var isProcessingPermissions = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Retain the instance of the Fragment.
         retainInstance = true
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        // Avoid to retain the reference to the listener that can create a memory leak.
+        // A leak can happen if the listener's instance can't be garbage collected due to
+        // this Fragment's lifecycle (retainInstance = true).
+        listener = null
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -43,6 +53,9 @@ class PermissionFragment : Fragment() {
             // avoid the computation if there aren't processed permissions.
             return
         }
+
+        // Now the Fragment is not processing the permissions anymore.
+        isProcessingPermissions = false
 
         // Get the denied permissions.
         val deniedPermissions = permissions.filterIndexed { index, _ ->
@@ -70,14 +83,22 @@ class PermissionFragment : Fragment() {
 
     fun requestPermissions(permissions: Array<out String>, listener: PermissionRequestImpl.Listener) {
         val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
+
         // Assign the listener.
         this.listener = listener
+
+        if (isProcessingPermissions) {
+            // The Fragment can process only one request at the same time.
+            return
+        }
+
         if (!activity.arePermissionsGranted(*permissions)) {
             val permissionsWithRationale = permissionsThatShouldShowRationale(permissions)
             if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions.
                 dispatchPermissionsShouldShowRationale(permissionsWithRationale)
             } else {
+                // Request the permissions.
                 requestPermissionsAvoidingChecks(permissions)
             }
         } else {
@@ -87,6 +108,8 @@ class PermissionFragment : Fragment() {
     }
 
     fun requestPermissionsAvoidingChecks(permissions: Array<out String>) {
+        // The Fragment is now processing some permissions.
+        isProcessingPermissions = true
         Log.d(TAG, "requesting permissions: ${permissions.flatString()}")
         requestPermissions(permissions, REQ_CODE_PERMISSIONS)
     }

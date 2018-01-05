@@ -1,10 +1,14 @@
 language: android
-
 jdk: oraclejdk8
+# Use the Travis container-based infrastructure.
+sudo: false
 
 env:
   global:
-    - MALLOC_ARENA_MAX=2
+    # The same build tools version in the project.
+    - BUILD_TOOLS_VERSION=27.0.3
+    # Android API level used in this project.
+    - API=27
 
 before_install:
 - yes | sdkmanager "platforms;android-27"
@@ -13,20 +17,25 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-27.0.2
-    - android-27
+    - build-tools-${BUILD_TOOLS_VERSION}
+    - android-${API}
+    # Support libraries.
     - extra-android-support
     - extra-android-m2repository
+    - extra-google-m2repository
+
+notifications:
+  email: false
 
 branches:
   only:
     - master
 
 script:
-    - ./gradlew :kpermissions:build --continue --stacktrace
-    - ./gradlew :sample:sample:assembleLocal --continue -s
-
-sudo: required
+    # Build the library project.
+    - ./gradlew :kpermissions:build --continue -s
+    # Assemble the sample with the local libs.
+    - ./gradlew :sample:assembleLocal --continue -s
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

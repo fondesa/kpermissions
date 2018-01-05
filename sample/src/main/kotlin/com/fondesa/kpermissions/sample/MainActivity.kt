@@ -16,10 +16,48 @@
 
 package com.fondesa.kpermissions.sample
 
+import android.Manifest
+import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.widget.Toast
+import com.fondesa.kpermissions.extensions.flatString
+import com.fondesa.kpermissions.extensions.permissionsBuilder
+import com.fondesa.kpermissions.nonce.PermissionNonce
+import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
  * The main screen of this application that requires some permissions.
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),
+        PermissionRequest.AcceptedListener,
+        PermissionRequest.DeniedListener,
+        PermissionRequest.RationaleListener {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION)
+                .acceptedListener(this)
+                .deniedListener(DialogDeniedListener(this))
+                .rationaleListener(DialogRationaleListener(this))
+                .send()
+    }
+
+    override fun onPermissionsAccepted(permissions: Array<out String>) {
+        Log.d(TAG, "accepted: ${permissions.flatString()}")
+        Toast.makeText(this, "ACCEPTED", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
+        Log.d(TAG, "denied: ${permissions.flatString()}")
+    }
+
+    override fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce) {
+        Log.d(TAG, "rationale: ${permissions.flatString()}")
+    }
+
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
+    }
 }

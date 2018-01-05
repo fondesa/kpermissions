@@ -14,36 +14,48 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions
+package com.fondesa.kpermissions.request
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
 import android.support.v4.app.FragmentManager
-import android.support.v4.content.ContextCompat
+import com.fondesa.kpermissions.extensions.arePermissionsGranted
+import com.fondesa.kpermissions.nonce.RationalePermissionNonce
 
 /**
  * Created by antoniolig on 05/01/18.
  */
 class PermissionRequestImpl(private val context: Context,
                             private val fragmentManager: FragmentManager,
-                            private val permissions: Array<out String>) :
+                            private val permissions: Array<out String>,
+                            private val acceptedListener: PermissionRequest.AcceptedListener?,
+                            private val deniedListener: PermissionRequest.DeniedListener?,
+                            private val rationaleListener: PermissionRequest.RationaleListener?) :
         PermissionRequest {
 
     override fun send() {
-        if (arePermissionGranted()) {
-
+        if (context.arePermissionsGranted(*permissions)) {
+            acceptedListener?.onPermissionsAccepted(permissions)
         } else {
+            val fragment = getPermissionFragment()
+            val nonce = RationalePermissionNonce(fragment)
+            val listener = object : Listener {
 
-        }
-    }
+                override fun permissionsAccepted(permissions: Array<out String>) {
+                    acceptedListener?.onPermissionsAccepted(permissions)
+                }
 
-    private fun arePermissionGranted(): Boolean {
-        permissions.forEach {
-            if (ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED)
-                return false
+                override fun permissionsPermanentlyDenied(permissions: Array<out String>) {
+                    deniedListener?.onPermissionsPermanentlyDenied(permissions)
+                }
+
+                override fun permissionsShouldShowRationale(permissions: Array<out String>) {
+                    rationaleListener?.onPermissionsShouldShowRationale(permissions, nonce)
+                }
+            }
+
+            fragment.requestPermissions(permissions, listener)
         }
-        return true
     }
 
     private fun getPermissionFragment(): PermissionFragment {
@@ -66,5 +78,14 @@ class PermissionRequestImpl(private val context: Context,
 
     companion object {
         private const val FRAGMENT_TAG = "KPermissionsFragment"
+    }
+
+    interface Listener {
+
+        fun permissionsAccepted(permissions: Array<out String>)
+
+        fun permissionsPermanentlyDenied(permissions: Array<out String>)
+
+        fun permissionsShouldShowRationale(permissions: Array<out String>)
     }
 }

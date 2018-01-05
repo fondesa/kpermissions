@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions
-
-import android.os.Bundle
-import android.support.v4.app.Fragment
+package com.fondesa.kpermissions.request
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-internal class PermissionFragment: Fragment() {
+interface PermissionRequestBuilder {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Retain the instance of the Fragment.
-        retainInstance = true
-    }
+    fun permissions(vararg permissions: String): PermissionRequestBuilder
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+    fun acceptedListener(acceptedListener: PermissionRequest.AcceptedListener): PermissionRequestBuilder
 
-    fun requestPermissions(permissions: Array<out String>) {
+    fun deniedListener(deniedListener: PermissionRequest.DeniedListener): PermissionRequestBuilder
 
-    }
+    fun rationaleListener(rationaleListener: PermissionRequest.RationaleListener): PermissionRequestBuilder
+
+    fun build(): PermissionRequest
+
+    fun send(): PermissionRequest
 }

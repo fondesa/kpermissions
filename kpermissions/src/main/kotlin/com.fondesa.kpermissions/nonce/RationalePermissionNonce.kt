@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions
+package com.fondesa.kpermissions.nonce
+
+import com.fondesa.kpermissions.request.PermissionFragment
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-interface PermissionRequest {
+class RationalePermissionNonce(private val fragment: PermissionFragment) : PermissionNonce {
 
-    fun send()
+    override fun use(permissions: Array<out String>) {
+        // The checks must be avoided to not show the rationale explanation again.
+        fragment.requestPermissionsAvoidingChecks(permissions)
+    }
 }

@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions
+package com.fondesa.kpermissions.extensions
+
+import android.support.v4.app.Fragment
+import com.fondesa.kpermissions.request.PermissionRequestBuilderFactory
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-interface PermissionRequestBuilder {
-
-    fun permissions(vararg permissions: String): PermissionRequestBuilder
-
-    fun build(): PermissionRequest
-
-    fun send(): PermissionRequest
-}
+fun Fragment.permissionsBuilder(vararg permissions: String) =
+        PermissionRequestBuilderFactory.provideBuilder(this)
+                .permissions(*permissions)

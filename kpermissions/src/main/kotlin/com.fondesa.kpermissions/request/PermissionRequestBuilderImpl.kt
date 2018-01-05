@@ -14,34 +14,37 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions
+package com.fondesa.kpermissions.request
 
 import android.content.Context
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-class PermissionRequestBuilderImpl : PermissionRequestBuilder {
+class PermissionRequestBuilderImpl internal constructor(private val context: Context,
+                                                        private val fragmentManager: FragmentManager) :
+        PermissionRequestBuilder {
 
-    private val context: Context
-    private val fragmentManager: FragmentManager
     private var permissions: Array<out String>? = null
-
-    constructor(fragment: Fragment) : this(fragment.activity?.applicationContext
-            ?: throw NullPointerException("The activity mustn't be null."), fragment.childFragmentManager)
-
-    constructor(activity: FragmentActivity) : this(activity.applicationContext, activity.supportFragmentManager)
-
-    private constructor(context: Context, fragmentManager: FragmentManager) {
-        this.context = context
-        this.fragmentManager = fragmentManager
-    }
+    private var acceptedListener: PermissionRequest.AcceptedListener? = null
+    private var deniedListener: PermissionRequest.DeniedListener? = null
+    private var rationaleListener: PermissionRequest.RationaleListener? = null
 
     override fun permissions(vararg permissions: String): PermissionRequestBuilder = apply {
         this.permissions = permissions
+    }
+
+    override fun acceptedListener(acceptedListener: PermissionRequest.AcceptedListener) = apply {
+        this.acceptedListener = acceptedListener
+    }
+
+    override fun deniedListener(deniedListener: PermissionRequest.DeniedListener) = apply {
+        this.deniedListener = deniedListener
+    }
+
+    override fun rationaleListener(rationaleListener: PermissionRequest.RationaleListener) = apply {
+        this.rationaleListener = rationaleListener
     }
 
     override fun build(): PermissionRequest {
@@ -51,7 +54,12 @@ class PermissionRequestBuilderImpl : PermissionRequestBuilder {
             throw IllegalArgumentException("You have to specify at least one permission.")
         }
 
-        return PermissionRequestImpl(context, fragmentManager, permissions)
+        return PermissionRequestImpl(context,
+                fragmentManager,
+                permissions,
+                acceptedListener,
+                deniedListener,
+                rationaleListener)
     }
 
     override fun send(): PermissionRequest {

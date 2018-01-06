@@ -22,7 +22,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.util.Log
-import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.extensions.arePermissionsGranted
 import com.fondesa.kpermissions.extensions.flatString
 
@@ -33,7 +32,6 @@ import com.fondesa.kpermissions.extensions.flatString
 class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
 
     private val listeners = mutableMapOf<String, RuntimePermissionHandler.Listener>()
-    private val controllers = mutableMapOf<String, PermissionLifecycleController>()
 
     private var isProcessingPermissions = false
 
@@ -86,11 +84,6 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
         listeners[key] = listener
     }
 
-    override fun attachLifecycleController(permissions: Array<out String>, controller: PermissionLifecycleController) {
-        val key = keyOf(permissions)
-        controllers[key] = controller
-    }
-
     override fun handleRuntimePermissions(permissions: Array<out String>) {
         val context = activity ?: throw NullPointerException("The activity mustn't be null.")
 
@@ -129,13 +122,6 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
             permissions.filter {
                 shouldShowRequestPermissionRationale(it)
             }.toTypedArray()
-
-    private fun controllerOf(permissions: Array<out String>): PermissionLifecycleController {
-        val key = keyOf(permissions)
-        return controllers.getOrElse(key) {
-            throw IllegalArgumentException("You need a controller for the key $key.")
-        }
-    }
 
     private fun listenerOf(permissions: Array<out String>): RuntimePermissionHandler.Listener {
         val key = keyOf(permissions)

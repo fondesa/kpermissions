@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.builder
 
-import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
@@ -27,8 +26,6 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 interface PermissionRequestBuilder {
 
     fun permissions(vararg permissions: String): PermissionRequestBuilder
-
-    fun lifecycleController(lifecycleController: PermissionLifecycleController): PermissionRequestBuilder
 
     fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder
 

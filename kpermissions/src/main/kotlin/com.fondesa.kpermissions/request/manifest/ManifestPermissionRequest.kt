@@ -19,55 +19,23 @@ package com.fondesa.kpermissions.request.manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
-import com.fondesa.kpermissions.controller.Delivering
-import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.request.BasePermissionRequest
-import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
  * Created by antoniolig on 05/01/18.
  */
 class ManifestPermissionRequest(private val context: Context,
-                                private val permissions: Array<out String>,
-                                private val lifecycleController: PermissionLifecycleController) :
+                                private val permissions: Array<out String>) :
         BasePermissionRequest() {
 
     override fun send() {
-        val acceptedList = mutableListOf<String>()
-        val deniedList = mutableListOf<String>()
-
-        permissions.forEach {
-            if (ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED) {
-                acceptedList.add(it)
-            } else {
-                deniedList.add(it)
-            }
+        val deniedPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
         }
-
-        val acceptedPermissions = acceptedList.toTypedArray()
-        val deniedPermissions = deniedList.toTypedArray()
-
-        val acceptedDelivering = lifecycleController.acceptedDelivering()
-        val deniedDelivering = lifecycleController.permanentlyDeniedDelivering()
-
-        if (deniedDelivering == Delivering.ALL) {
-            if (acceptedPermissions.isEmpty()) {
-                deniedListener?.onPermissionsPermanentlyDenied(deniedPermissions)
-            }
-        } else if (deniedDelivering == Delivering.AT_LEAST_ONE) {
-            if (deniedPermissions.isNotEmpty()) {
-                deniedListener?.onPermissionsPermanentlyDenied(deniedPermissions)
-            }
-        }
-
-        if (acceptedDelivering == Delivering.ALL) {
-            if (deniedPermissions.isEmpty()) {
-                acceptedListener?.onPermissionsAccepted(acceptedPermissions)
-            }
-        } else if (acceptedDelivering == Delivering.AT_LEAST_ONE) {
-            if (acceptedPermissions.isNotEmpty()) {
-                acceptedListener?.onPermissionsAccepted(acceptedPermissions)
-            }
+        if (deniedPermissions.isNotEmpty()) {
+            deniedListener?.onPermissionsPermanentlyDenied(permissions)
+        } else {
+            acceptedListener?.onPermissionsAccepted(permissions)
         }
     }
 }

@@ -132,7 +132,7 @@ class DummyFragment : Fragment(),
     }
 
     private val request by lazy {
-        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION)
+        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
                 .build()
     }
 

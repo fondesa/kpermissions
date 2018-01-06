@@ -16,8 +16,6 @@
 
 package com.fondesa.kpermissions.builder
 
-import com.fondesa.kpermissions.controller.DefaultPermissionLifecycleController
-import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
@@ -29,16 +27,11 @@ import com.fondesa.kpermissions.request.runtime.nonce.RationalePermissionNonceGe
 abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
 
     private var permissions: Array<out String>? = null
-    private var lifecycleController: PermissionLifecycleController? = null
     private var nonceGenerator: PermissionNonceGenerator? = null
     private var runtimeHandlerProvider: RuntimePermissionHandlerProvider? = null
 
     override fun permissions(vararg permissions: String): PermissionRequestBuilder = apply {
         this.permissions = permissions
-    }
-
-    override fun lifecycleController(lifecycleController: PermissionLifecycleController): PermissionRequestBuilder = apply {
-        this.lifecycleController = lifecycleController
     }
 
     override fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder = apply {
@@ -56,9 +49,6 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
             throw IllegalArgumentException("You have to specify at least one permission.")
         }
 
-        // Instantiate the default controller if a custom one isn't set.
-        val controller = lifecycleController ?: DefaultPermissionLifecycleController()
-
         // Instantiate the default NonceGenerator if a custom one isn't set.
         val nonceGenerator = nonceGenerator ?: RationalePermissionNonceGenerator()
 
@@ -67,7 +57,6 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
                 ?: throw IllegalArgumentException("A runtime handler is necessary to request the permissions.")
 
         return createRequest(permissions,
-                controller,
                 nonceGenerator,
                 runtimeHandlerProvider)
     }
@@ -81,7 +70,6 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
     }
 
     abstract fun createRequest(permissions: Array<out String>,
-                               lifecycleController: PermissionLifecycleController,
                                nonceGenerator: PermissionNonceGenerator,
                                runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest
 }

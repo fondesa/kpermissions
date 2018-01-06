@@ -17,6 +17,7 @@
 package com.fondesa.kpermissions.extensions
 
 import android.app.Activity
+import com.fondesa.kpermissions.nonce.RationalePermissionNonceGenerator
 import com.fondesa.kpermissions.request.CompatPermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider
@@ -27,7 +28,8 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
 fun Activity.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
     val context = applicationContext
     val handler = FragmentRuntimePermissionHandlerProvider(fragmentManager)
+    val nonceGenerator = RationalePermissionNonceGenerator()
 
-    return CompatPermissionRequestBuilder(context, handler)
+    return CompatPermissionRequestBuilder(context, handler, nonceGenerator)
             .permissions(*permissions)
 }

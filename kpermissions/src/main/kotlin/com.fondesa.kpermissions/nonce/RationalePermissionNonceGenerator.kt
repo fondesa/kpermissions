@@ -19,20 +19,10 @@ package com.fondesa.kpermissions.nonce
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Created by antoniolig on 06/01/18.
  */
-class RationalePermissionNonce(private val handler: RuntimePermissionHandler,
-                               private val permissions: Array<out String>) : PermissionNonce {
+class RationalePermissionNonceGenerator : PermissionNonceGenerator {
 
-    private var used: Boolean = false
-
-    override fun use() {
-        if (used)
-            throw PermissionNonceUsedException("This nonce was used before.")
-
-        // The nonce is now considered as "used"
-        used = true
-        // The checks must be avoided to not show the rationale explanation again.
-        handler.requestRuntimePermissions(permissions)
-    }
+    override fun provideNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce =
+            RationalePermissionNonce(handler, permissions)
 }

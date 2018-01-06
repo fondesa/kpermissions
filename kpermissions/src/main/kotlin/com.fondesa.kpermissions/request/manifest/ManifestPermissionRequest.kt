@@ -35,9 +35,9 @@ class ManifestPermissionRequest(private val context: Context,
             ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
         }
         if (deniedPermissions.isNotEmpty()) {
-            acceptedListener?.onPermissionsAccepted(permissions)
-        } else {
             deniedListener?.onPermissionsPermanentlyDenied(permissions)
+        } else {
+            acceptedListener?.onPermissionsAccepted(permissions)
         }
     }
 }

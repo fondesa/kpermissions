@@ -23,10 +23,5 @@ import android.support.v4.content.ContextCompat
 /**
  * Created by antoniolig on 05/01/18.
  */
-fun Context.arePermissionsGranted(vararg permissions: String): Boolean {
-    permissions.forEach {
-        if (ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED)
-            return false
-    }
-    return true
-}
+fun Context.isPermissionGranted(permission: String): Boolean =
+        ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED

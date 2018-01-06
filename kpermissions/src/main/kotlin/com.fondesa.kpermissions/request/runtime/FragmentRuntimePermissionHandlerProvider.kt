@@ -23,14 +23,15 @@ import android.support.annotation.RequiresApi
 /**
  * Created by antoniolig on 06/01/18.
  */
-class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
+open class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
         RuntimePermissionHandlerProvider {
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun provideHandler(): RuntimePermissionHandler {
-        var fragment = manager.findFragmentByTag(FRAGMENT_TAG) as? FragmentRuntimePermissionHandler
+    final override fun provideHandler(): RuntimePermissionHandler {
+        var fragment = manager.findFragmentByTag(FRAGMENT_TAG) as? RuntimePermissionHandler
         if (fragment == null) {
-            fragment = FragmentRuntimePermissionHandler()
+            // Create the Fragment delegated to handle permissions.
+            fragment = createPermissionHandlerFragment()
             val transaction = manager.beginTransaction()
                     .add(fragment, FRAGMENT_TAG)
 
@@ -44,6 +45,10 @@ class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentMana
         }
         return fragment
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    protected open fun createPermissionHandlerFragment(): FragmentRuntimePermissionHandler =
+            DefaultFragmentRuntimePermissionHandler()
 
     companion object {
         private const val FRAGMENT_TAG = "KPermissionsFragment-normal"

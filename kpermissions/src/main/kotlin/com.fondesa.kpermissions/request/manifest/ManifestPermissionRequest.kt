@@ -17,8 +17,7 @@
 package com.fondesa.kpermissions.request.manifest
 
 import android.content.Context
-import android.content.pm.PackageManager
-import android.support.v4.content.ContextCompat
+import com.fondesa.kpermissions.extensions.isPermissionGranted
 import com.fondesa.kpermissions.request.BasePermissionRequest
 
 /**
@@ -30,10 +29,11 @@ class ManifestPermissionRequest(private val context: Context,
 
     override fun send() {
         val deniedPermissions = permissions.filter {
-            ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
-        }
+            !context.isPermissionGranted(it)
+        }.toTypedArray()
+
         if (deniedPermissions.isNotEmpty()) {
-            deniedListener?.onPermissionsPermanentlyDenied(permissions)
+            deniedListener?.onPermissionsPermanentlyDenied(deniedPermissions)
         } else {
             acceptedListener?.onPermissionsAccepted(permissions)
         }

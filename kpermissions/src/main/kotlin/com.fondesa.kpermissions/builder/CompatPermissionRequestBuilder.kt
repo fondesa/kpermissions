@@ -18,7 +18,6 @@ package com.fondesa.kpermissions.builder
 
 import android.content.Context
 import android.os.Build
-import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
@@ -32,7 +31,6 @@ class CompatPermissionRequestBuilder internal constructor(private val context: C
         BasePermissionRequestBuilder() {
 
     override fun createRequest(permissions: Array<out String>,
-                               lifecycleController: PermissionLifecycleController,
                                nonceGenerator: PermissionNonceGenerator,
                                runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest {
 
@@ -41,13 +39,11 @@ class CompatPermissionRequestBuilder internal constructor(private val context: C
             val handler = runtimeHandlerProvider.provideHandler()
             // Create the runtime request.
             RuntimePermissionRequest(permissions,
-                    lifecycleController,
                     nonceGenerator,
                     handler)
         } else {
             ManifestPermissionRequest(context,
-                    permissions,
-                    lifecycleController)
+                    permissions)
         }
     }
 }

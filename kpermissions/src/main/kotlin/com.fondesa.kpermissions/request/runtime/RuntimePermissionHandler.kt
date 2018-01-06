@@ -16,8 +16,6 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import com.fondesa.kpermissions.controller.PermissionLifecycleController
-
 /**
  * Created by antoniolig on 06/01/18.
  */
@@ -25,8 +23,7 @@ interface RuntimePermissionHandler {
 
     fun attachListener(permissions: Array<out String>, listener: Listener)
 
-    fun handleRuntimePermissions(permissions: Array<out String>,
-                                 lifecycleController: PermissionLifecycleController)
+    fun handleRuntimePermissions(permissions: Array<out String>)
 
     fun requestRuntimePermissions(permissions: Array<out String>)
 

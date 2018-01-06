@@ -4,7 +4,7 @@
     package="com.fondesa.kpermissions.sample">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--<uses-permission android:name="android.permission.SEND_SMS" />-->
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:name=".App"

@@ -135,7 +135,7 @@ class DummyFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<View>(R.id.btn_test_permissions).setOnClickListener {
-            permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION)
+            permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
                     .acceptedListener(this)
                     .deniedListener(DialogDeniedListener(activity!!))
                     .rationaleListener(DialogRationaleListener(activity!!))

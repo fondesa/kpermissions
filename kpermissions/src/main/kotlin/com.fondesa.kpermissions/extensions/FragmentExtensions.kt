@@ -17,37 +17,17 @@
 package com.fondesa.kpermissions.extensions
 
 import android.app.Fragment
-import android.os.Build
-import com.fondesa.kpermissions.request.CompatPermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequestBuilder
-import com.fondesa.kpermissions.request.runtime.normal.NormalRuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.request.runtime.support.SupportRuntimePermissionHandlerProvider
 
 /**
  * Created by antoniolig on 05/01/18.
  */
 fun Fragment.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
-    val context = activity?.applicationContext ?:
-            throw NullPointerException("The activity mustn't be null.")
-
-    // The child FragmentManager isn't available below API 17.
-    val manager = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-        fragmentManager
-    } else {
-        childFragmentManager
-    }
-
-    val handler = NormalRuntimePermissionHandlerProvider(manager)
-
-    return CompatPermissionRequestBuilder(context, handler)
-            .permissions(*permissions)
+    val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
+    return activity.permissionsBuilder(*permissions)
 }
 
 fun android.support.v4.app.Fragment.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
-    val context = activity?.applicationContext ?:
-            throw NullPointerException("The activity mustn't be null.")
-    val handler = SupportRuntimePermissionHandlerProvider(fragmentManager!!)
-
-    return CompatPermissionRequestBuilder(context, handler)
-            .permissions(*permissions)
+    val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
+    return activity.permissionsBuilder(*permissions)
 }

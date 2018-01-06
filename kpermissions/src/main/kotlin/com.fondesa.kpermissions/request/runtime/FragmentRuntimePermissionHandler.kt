@@ -16,35 +16,41 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import android.content.Context
+import android.app.Fragment
 import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.util.Log
 import com.fondesa.kpermissions.extensions.arePermissionsGranted
 import com.fondesa.kpermissions.extensions.flatString
-import com.fondesa.kpermissions.request.runtime.support.SupportPermissionFragment
 
 /**
- * Created by antoniolig on 06/01/18.
+ * Created by antoniolig on 05/01/18.
  */
-class PermissionFragmentExecutor(private val callback: Callback) {
+@RequiresApi(Build.VERSION_CODES.M)
+class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
 
     private var listener: RuntimePermissionHandler.Listener? = null
 
     private var isProcessingPermissions = false
 
-    fun onCreate() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         // Retain the instance of the Fragment.
-        callback.setRetainInstance(true)
+        retainInstance = true
     }
 
-    fun onDetach() {
+    override fun onDetach() {
+        super.onDetach()
         // Avoid to retain the reference to the listener that can create a memory leak.
         // A leak can happen if the listener's instance can't be garbage collected due to
         // this Fragment's lifecycle (retainInstance = true).
         listener = null
     }
 
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != REQ_CODE_PERMISSIONS || permissions.isEmpty()) {
             // Ignore the result if the request code doesn't match or
             // avoid the computation if there aren't processed permissions.
@@ -66,6 +72,8 @@ class PermissionFragmentExecutor(private val callback: Callback) {
                 dispatchPermissionsShouldShowRationale(permissionsWithRationale)
             }
 
+            //TODO: add a delivering logic
+
             val permanentlyDeniedPermissions = deniedPermissions.minus(permissionsWithRationale).toTypedArray()
             if (permanentlyDeniedPermissions.isNotEmpty()) {
                 // Some permissions are permanently denied by the user.
@@ -78,9 +86,9 @@ class PermissionFragmentExecutor(private val callback: Callback) {
         }
     }
 
-    fun handleRuntimePermissions(permissions: Array<out String>,
-                                 listener: RuntimePermissionHandler.Listener) {
-        val context = callback.obtainContext() ?: throw NullPointerException("The activity mustn't be null.")
+    override fun handleRuntimePermissions(permissions: Array<out String>,
+                                          listener: RuntimePermissionHandler.Listener) {
+        val context = activity ?: throw NullPointerException("The activity mustn't be null.")
         // Assign the listener.
         this.listener = listener
 
@@ -104,11 +112,11 @@ class PermissionFragmentExecutor(private val callback: Callback) {
         }
     }
 
-    fun requestRuntimePermissions(permissions: Array<out String>) {
+    override fun requestRuntimePermissions(permissions: Array<out String>) {
         // The Fragment is now processing some permissions.
         isProcessingPermissions = true
         Log.d(TAG, "requesting permissions: ${permissions.flatString()}")
-        callback.requestPermissions(permissions, REQ_CODE_PERMISSIONS)
+        requestPermissions(permissions, REQ_CODE_PERMISSIONS)
     }
 
     private fun dispatchPermissionsAccepted(permissions: Array<out String>) {
@@ -126,22 +134,12 @@ class PermissionFragmentExecutor(private val callback: Callback) {
 
     private fun permissionsThatShouldShowRationale(permissions: Array<out String>): Array<out String> =
             permissions.filter {
-                callback.shouldShowRequestPermissionRationale(it)
+                shouldShowRequestPermissionRationale(it)
             }.toTypedArray()
 
     companion object {
-        private val TAG = SupportPermissionFragment::class.java.simpleName
+        private val TAG = FragmentRuntimePermissionHandler::class.java.simpleName
         private const val REQ_CODE_PERMISSIONS = 986
     }
 
-    interface Callback {
-
-        fun setRetainInstance(retain: Boolean)
-
-        fun obtainContext(): Context?
-
-        fun requestPermissions(permissions: Array<out String>, requestCode: Int)
-
-        fun shouldShowRequestPermissionRationale(permission: String): Boolean
-    }
 }

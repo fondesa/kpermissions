@@ -25,8 +25,9 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
 /**
  * Created by antoniolig on 05/01/18.
  */
-class CompatPermissionRequestBuilder internal constructor(private val context: Context,
-                                                          private val handlerProvider: RuntimePermissionHandlerProvider) :
+class CompatPermissionRequestBuilder
+internal constructor(private val context: Context,
+                     private val runtimeHandlerProvider: RuntimePermissionHandlerProvider) :
         BasePermissionRequestBuilder() {
 
     override fun createRequest(permissions: Array<out String>,
@@ -36,7 +37,7 @@ class CompatPermissionRequestBuilder internal constructor(private val context: C
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             RuntimePermissionRequest(context,
-                    handlerProvider,
+                    runtimeHandlerProvider,
                     permissions,
                     acceptedListener,
                     deniedListener,

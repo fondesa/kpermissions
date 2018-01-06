@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.request.runtime.normal
+package com.fondesa.kpermissions.request.runtime
 
 import android.app.FragmentManager
 import android.os.Build
-import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
-import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
+import android.support.annotation.RequiresApi
 
 /**
  * Created by antoniolig on 06/01/18.
  */
-class NormalRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
+class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
         RuntimePermissionHandlerProvider {
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun provideHandler(): RuntimePermissionHandler {
-        var fragment = manager.findFragmentByTag(FRAGMENT_TAG) as? NormalPermissionFragment
+        var fragment = manager.findFragmentByTag(FRAGMENT_TAG) as? FragmentRuntimePermissionHandler
         if (fragment == null) {
-            fragment = NormalPermissionFragment()
+            fragment = FragmentRuntimePermissionHandler()
             val transaction = manager.beginTransaction()
                     .add(fragment, FRAGMENT_TAG)
 

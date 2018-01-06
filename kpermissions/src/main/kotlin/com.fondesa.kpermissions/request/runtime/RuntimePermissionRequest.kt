@@ -18,8 +18,7 @@ package com.fondesa.kpermissions.request.runtime
 
 import android.content.Context
 import com.fondesa.kpermissions.extensions.arePermissionsGranted
-import com.fondesa.kpermissions.nonce.PermissionNonce
-import com.fondesa.kpermissions.nonce.RationalePermissionNonce
+import com.fondesa.kpermissions.nonce.PermissionNonceGenerator
 import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
@@ -27,6 +26,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
  */
 class RuntimePermissionRequest(private val context: Context,
                                private val handlerProvider: RuntimePermissionHandlerProvider,
+                               private val permissionNonceGenerator: PermissionNonceGenerator,
                                private val permissions: Array<out String>,
                                private val acceptedListener: PermissionRequest.AcceptedListener?,
                                private val deniedListener: PermissionRequest.DeniedListener?,
@@ -34,14 +34,13 @@ class RuntimePermissionRequest(private val context: Context,
 
         PermissionRequest, RuntimePermissionHandler.Listener {
 
-    lateinit var nonce: PermissionNonce
+    lateinit var handler: RuntimePermissionHandler
 
     override fun send() {
         if (context.arePermissionsGranted(*permissions)) {
             acceptedListener?.onPermissionsAccepted(permissions)
         } else {
-            val handler = handlerProvider.provideHandler()
-            nonce = RationalePermissionNonce(handler, permissions)
+            handler = handlerProvider.provideHandler()
             handler.handleRuntimePermissions(permissions, this)
         }
     }
@@ -55,6 +54,7 @@ class RuntimePermissionRequest(private val context: Context,
     }
 
     override fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean = invokeOn(rationaleListener) {
+        val nonce = permissionNonceGenerator.provideNonce(handler, permissions)
         onPermissionsShouldShowRationale(permissions, nonce)
     }
 

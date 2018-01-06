@@ -17,9 +17,11 @@
 package com.fondesa.kpermissions.nonce
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Created by antoniolig on 06/01/18.
  */
-interface PermissionNonce {
+class PermissionNonceUsedException: Exception {
 
-    fun use()
+    constructor(): super()
+
+    constructor(msg: String): super(msg)
 }

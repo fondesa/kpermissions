@@ -18,6 +18,7 @@ package com.fondesa.kpermissions.request
 
 import android.content.Context
 import android.os.Build
+import com.fondesa.kpermissions.nonce.PermissionNonceGenerator
 import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
@@ -27,7 +28,8 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
  */
 class CompatPermissionRequestBuilder
 internal constructor(private val context: Context,
-                     private val runtimeHandlerProvider: RuntimePermissionHandlerProvider) :
+                     private val runtimeHandlerProvider: RuntimePermissionHandlerProvider,
+                     private val permissionNonceGenerator: PermissionNonceGenerator) :
         BasePermissionRequestBuilder() {
 
     override fun createRequest(permissions: Array<out String>,
@@ -38,6 +40,7 @@ internal constructor(private val context: Context,
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             RuntimePermissionRequest(context,
                     runtimeHandlerProvider,
+                    permissionNonceGenerator,
                     permissions,
                     acceptedListener,
                     deniedListener,

@@ -27,7 +27,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.fondesa.kpermissions.extensions.flatString
 import com.fondesa.kpermissions.extensions.permissionsBuilder
-import com.fondesa.kpermissions.nonce.PermissionNonce
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 import com.fondesa.kpermissions.request.PermissionRequest
 
 /**

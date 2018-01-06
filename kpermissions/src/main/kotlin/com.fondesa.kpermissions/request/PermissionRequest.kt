@@ -16,7 +16,7 @@
 
 package com.fondesa.kpermissions.request
 
-import com.fondesa.kpermissions.nonce.PermissionNonce
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
 /**
  * Created by antoniolig on 05/01/18.

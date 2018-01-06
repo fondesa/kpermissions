@@ -17,9 +17,9 @@
 package com.fondesa.kpermissions.extensions
 
 import android.app.Activity
-import com.fondesa.kpermissions.nonce.RationalePermissionNonceGenerator
-import com.fondesa.kpermissions.request.CompatPermissionRequestBuilder
-import com.fondesa.kpermissions.request.PermissionRequestBuilder
+import com.fondesa.kpermissions.request.runtime.nonce.RationalePermissionNonceGenerator
+import com.fondesa.kpermissions.builder.CompatPermissionRequestBuilder
+import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider
 
 /**

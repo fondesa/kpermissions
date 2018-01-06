@@ -17,7 +17,7 @@
 package com.fondesa.kpermissions.extensions
 
 import android.app.Fragment
-import com.fondesa.kpermissions.request.PermissionRequestBuilder
+import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 
 /**
  * Created by antoniolig on 05/01/18.

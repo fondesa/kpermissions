@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.request
+package com.fondesa.kpermissions.builder
+
+import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
  * Created by antoniolig on 06/01/18.

@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.nonce
-
-import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
+package com.fondesa.kpermissions.request.runtime.nonce
 
 /**
  * Created by antoniolig on 06/01/18.
  */
-class RationalePermissionNonceGenerator : PermissionNonceGenerator {
+class PermissionNonceUsedException: Exception {
 
-    override fun provideNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce =
-            RationalePermissionNonce(handler, permissions)
+    constructor(): super()
+
+    constructor(msg: String): super(msg)
 }

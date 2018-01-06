@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.request
+package com.fondesa.kpermissions.request.runtime.nonce
+
+import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Created by antoniolig on 06/01/18.
  */
-interface PermissionRequestBuilder {
+class RationalePermissionNonceGenerator : PermissionNonceGenerator {
 
-    fun permissions(vararg permissions: String): PermissionRequestBuilder
-
-    fun acceptedListener(acceptedListener: PermissionRequest.AcceptedListener): PermissionRequestBuilder
-
-    fun deniedListener(deniedListener: PermissionRequest.DeniedListener): PermissionRequestBuilder
-
-    fun rationaleListener(rationaleListener: PermissionRequest.RationaleListener): PermissionRequestBuilder
-
-    fun build(): PermissionRequest
-
-    fun send(): PermissionRequest
+    override fun provideNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce =
+            RationalePermissionNonce(handler, permissions)
 }

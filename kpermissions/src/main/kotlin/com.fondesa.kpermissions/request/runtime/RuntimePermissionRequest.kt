@@ -18,7 +18,7 @@ package com.fondesa.kpermissions.request.runtime
 
 import android.content.Context
 import com.fondesa.kpermissions.extensions.arePermissionsGranted
-import com.fondesa.kpermissions.nonce.PermissionNonceGenerator
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 import com.fondesa.kpermissions.request.PermissionRequest
 
 /**

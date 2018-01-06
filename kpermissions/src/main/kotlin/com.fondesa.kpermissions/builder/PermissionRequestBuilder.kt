@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.nonce
+package com.fondesa.kpermissions.builder
+
+import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-interface PermissionNonce {
+interface PermissionRequestBuilder {
 
-    fun use()
+    fun permissions(vararg permissions: String): PermissionRequestBuilder
+
+    fun acceptedListener(acceptedListener: PermissionRequest.AcceptedListener): PermissionRequestBuilder
+
+    fun deniedListener(deniedListener: PermissionRequest.DeniedListener): PermissionRequestBuilder
+
+    fun rationaleListener(rationaleListener: PermissionRequest.RationaleListener): PermissionRequestBuilder
+
+    fun build(): PermissionRequest
+
+    fun send(): PermissionRequest
 }

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.nonce
+package com.fondesa.kpermissions.request.runtime.nonce
 
 /**
- * Created by antoniolig on 06/01/18.
+ * Created by antoniolig on 05/01/18.
  */
-class PermissionNonceUsedException: Exception {
+interface PermissionNonce {
 
-    constructor(): super()
-
-    constructor(msg: String): super(msg)
+    fun use()
 }

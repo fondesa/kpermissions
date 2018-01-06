@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.request
+package com.fondesa.kpermissions.builder
 
 import android.content.Context
 import android.os.Build
-import com.fondesa.kpermissions.nonce.PermissionNonceGenerator
+import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest

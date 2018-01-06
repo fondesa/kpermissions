@@ -16,15 +16,10 @@
 
 package com.fondesa.kpermissions.request
 
-import android.content.Context
-import android.support.v4.app.FragmentManager
-
 /**
- * Created by antoniolig on 05/01/18.
+ * Created by antoniolig on 06/01/18.
  */
-class PermissionRequestBuilderImpl internal constructor(private val context: Context,
-                                                        private val fragmentManager: FragmentManager) :
-        PermissionRequestBuilder {
+abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
 
     private var permissions: Array<out String>? = null
     private var acceptedListener: PermissionRequest.AcceptedListener? = null
@@ -54,12 +49,7 @@ class PermissionRequestBuilderImpl internal constructor(private val context: Con
             throw IllegalArgumentException("You have to specify at least one permission.")
         }
 
-        return PermissionRequestImpl(context,
-                fragmentManager,
-                permissions,
-                acceptedListener,
-                deniedListener,
-                rationaleListener)
+        return createRequest(permissions, acceptedListener, deniedListener, rationaleListener)
     }
 
     override fun send(): PermissionRequest {
@@ -69,4 +59,9 @@ class PermissionRequestBuilderImpl internal constructor(private val context: Con
         request.send()
         return request
     }
+
+    abstract fun createRequest(permissions: Array<out String>,
+                               acceptedListener: PermissionRequest.AcceptedListener?,
+                               deniedListener: PermissionRequest.DeniedListener?,
+                               rationaleListener: PermissionRequest.RationaleListener?): PermissionRequest
 }

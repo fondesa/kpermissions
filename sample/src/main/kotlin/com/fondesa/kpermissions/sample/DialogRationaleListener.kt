@@ -32,7 +32,7 @@ class DialogRationaleListener(private val context: Context) : PermissionRequest.
                 .setMessage("Rational message")
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     // Send the request again.
-                    nonce.use(permissions)
+                    nonce.use()
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()

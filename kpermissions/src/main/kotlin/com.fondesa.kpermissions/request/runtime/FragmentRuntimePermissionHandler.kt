@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.request
+package com.fondesa.kpermissions.request.runtime
 
+import android.app.Fragment
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.support.annotation.RequiresApi
 import android.util.Log
 import com.fondesa.kpermissions.extensions.arePermissionsGranted
 import com.fondesa.kpermissions.extensions.flatString
@@ -26,9 +28,10 @@ import com.fondesa.kpermissions.extensions.flatString
 /**
  * Created by antoniolig on 05/01/18.
  */
-class PermissionFragment : Fragment() {
+@RequiresApi(Build.VERSION_CODES.M)
+class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
 
-    private var listener: PermissionRequestImpl.Listener? = null
+    private var listener: RuntimePermissionHandler.Listener? = null
 
     private var isProcessingPermissions = false
 
@@ -69,6 +72,8 @@ class PermissionFragment : Fragment() {
                 dispatchPermissionsShouldShowRationale(permissionsWithRationale)
             }
 
+            //TODO: add a delivering logic
+
             val permanentlyDeniedPermissions = deniedPermissions.minus(permissionsWithRationale).toTypedArray()
             if (permanentlyDeniedPermissions.isNotEmpty()) {
                 // Some permissions are permanently denied by the user.
@@ -81,9 +86,9 @@ class PermissionFragment : Fragment() {
         }
     }
 
-    fun requestPermissions(permissions: Array<out String>, listener: PermissionRequestImpl.Listener) {
-        val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
-
+    override fun handleRuntimePermissions(permissions: Array<out String>,
+                                          listener: RuntimePermissionHandler.Listener) {
+        val context = activity ?: throw NullPointerException("The activity mustn't be null.")
         // Assign the listener.
         this.listener = listener
 
@@ -92,14 +97,14 @@ class PermissionFragment : Fragment() {
             return
         }
 
-        if (!activity.arePermissionsGranted(*permissions)) {
+        if (!context.arePermissionsGranted(*permissions)) {
             val permissionsWithRationale = permissionsThatShouldShowRationale(permissions)
             if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions.
                 dispatchPermissionsShouldShowRationale(permissionsWithRationale)
             } else {
                 // Request the permissions.
-                requestPermissionsAvoidingChecks(permissions)
+                requestRuntimePermissions(permissions)
             }
         } else {
             // All permissions are accepted.
@@ -107,7 +112,7 @@ class PermissionFragment : Fragment() {
         }
     }
 
-    fun requestPermissionsAvoidingChecks(permissions: Array<out String>) {
+    override fun requestRuntimePermissions(permissions: Array<out String>) {
         // The Fragment is now processing some permissions.
         isProcessingPermissions = true
         Log.d(TAG, "requesting permissions: ${permissions.flatString()}")
@@ -126,14 +131,15 @@ class PermissionFragment : Fragment() {
         listener?.permissionsShouldShowRationale(permissions)
     }
 
+
     private fun permissionsThatShouldShowRationale(permissions: Array<out String>): Array<out String> =
             permissions.filter {
                 shouldShowRequestPermissionRationale(it)
             }.toTypedArray()
 
-
     companion object {
-        private val TAG = PermissionFragment::class.java.simpleName
+        private val TAG = FragmentRuntimePermissionHandler::class.java.simpleName
         private const val REQ_CODE_PERMISSIONS = 986
     }
+
 }

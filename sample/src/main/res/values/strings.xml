@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">KPermissions</string>
+    <string name="test_permissions">Test permissions</string>
 </resources>

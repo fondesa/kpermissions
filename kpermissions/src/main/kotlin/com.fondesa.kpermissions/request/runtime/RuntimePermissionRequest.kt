@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.request.BasePermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 
@@ -24,7 +23,6 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  * Created by antoniolig on 05/01/18.
  */
 class RuntimePermissionRequest(private val permissions: Array<out String>,
-                               private val lifecycleController: PermissionLifecycleController,
                                private val permissionNonceGenerator: PermissionNonceGenerator,
                                private val handler: RuntimePermissionHandler) :
 
@@ -38,7 +36,7 @@ class RuntimePermissionRequest(private val permissions: Array<out String>,
 
     override fun send() {
         // Send permission request.
-        handler.handleRuntimePermissions(permissions, lifecycleController)
+        handler.handleRuntimePermissions(permissions)
     }
 
     override fun permissionsAccepted(permissions: Array<out String>): Boolean = invokeOn(acceptedListener) {

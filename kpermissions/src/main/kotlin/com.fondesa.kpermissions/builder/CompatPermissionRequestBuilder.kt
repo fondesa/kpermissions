@@ -38,10 +38,12 @@ class CompatPermissionRequestBuilder internal constructor(private val context: C
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Provide the handler.
-            val handler = runtimeHandlerProvider.provideHandler()
+            val handler = runtimeHandlerProvider.provideHandler().apply {
+                // Attach the controller to the RuntimePermissionHandler.
+                attachLifecycleController(permissions, lifecycleController)
+            }
             // Create the runtime request.
             RuntimePermissionRequest(permissions,
-                    lifecycleController,
                     nonceGenerator,
                     handler)
         } else {

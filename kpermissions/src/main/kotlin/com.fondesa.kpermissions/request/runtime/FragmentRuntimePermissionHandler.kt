@@ -32,8 +32,8 @@ import com.fondesa.kpermissions.extensions.flatString
 @RequiresApi(Build.VERSION_CODES.M)
 class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
 
-    private lateinit var controller: PermissionLifecycleController
     private val listeners = mutableMapOf<String, RuntimePermissionHandler.Listener>()
+    private val controllers = mutableMapOf<String, PermissionLifecycleController>()
 
     private var isProcessingPermissions = false
 
@@ -54,8 +54,8 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
         // Now the Fragment is not processing the permissions anymore.
         isProcessingPermissions = false
 
-        // Avoid the computation if the listener is null.
-        val listener = listenerOf(permissions) ?: return
+        // Get the listener for this set of permissions.
+        val listener = listenerOf(permissions)
 
         // Get the denied permissions.
         val deniedPermissions = permissions.filterIndexed { index, _ ->
@@ -66,18 +66,18 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
             val permissionsWithRationale = permissionsThatShouldShowRationale(deniedPermissions.toTypedArray())
             val rationaleHandled = if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions.
-                dispatchPermissionsShouldShowRationale(permissionsWithRationale, listener)
+                listener.permissionsShouldShowRationale(permissionsWithRationale)
             } else false
 
             val permanentlyDeniedPermissions = deniedPermissions.minus(permissionsWithRationale).toTypedArray()
             if (!rationaleHandled && permanentlyDeniedPermissions.isNotEmpty()) {
                 // Some permissions are permanently denied by the user.
                 Log.d(TAG, "permissions permanently denied: ${permanentlyDeniedPermissions.flatString()}")
-                dispatchPermissionsPermanentlyDenied(permanentlyDeniedPermissions, listener)
+                listener.permissionsPermanentlyDenied(permanentlyDeniedPermissions)
             }
         } else {
             // All permissions are accepted.
-            dispatchPermissionsAccepted(permissions, listener)
+            listener.permissionsAccepted(permissions)
         }
     }
 
@@ -86,10 +86,13 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
         listeners[key] = listener
     }
 
-    override fun handleRuntimePermissions(permissions: Array<out String>,
-                                          lifecycleController: PermissionLifecycleController) {
+    override fun attachLifecycleController(permissions: Array<out String>, controller: PermissionLifecycleController) {
+        val key = keyOf(permissions)
+        controllers[key] = controller
+    }
+
+    override fun handleRuntimePermissions(permissions: Array<out String>) {
         val context = activity ?: throw NullPointerException("The activity mustn't be null.")
-        this.controller = lifecycleController
 
         if (!context.arePermissionsGranted(*permissions)) {
             if (isProcessingPermissions) {
@@ -101,7 +104,7 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
             val rationaleHandled = if (permissionsWithRationale.isNotEmpty()) {
                 val listener = listenerOf(permissions)
                 // Show rationale of permissions.
-                dispatchPermissionsShouldShowRationale(permissionsWithRationale, listener)
+                listener.permissionsShouldShowRationale(permissionsWithRationale)
             } else false
 
             if (!rationaleHandled) {
@@ -111,7 +114,7 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
         } else {
             val listener = listenerOf(permissions)
             // All permissions are accepted.
-            dispatchPermissionsAccepted(permissions, listener)
+            listener.permissionsAccepted(permissions)
         }
     }
 
@@ -122,27 +125,24 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
         requestPermissions(permissions, REQ_CODE_PERMISSIONS)
     }
 
-    private fun dispatchPermissionsAccepted(permissions: Array<out String>,
-                                            listener: RuntimePermissionHandler.Listener?): Boolean =
-            listener?.permissionsAccepted(permissions) ?: false
-
-    private fun dispatchPermissionsPermanentlyDenied(permissions: Array<out String>,
-                                                     listener: RuntimePermissionHandler.Listener?): Boolean =
-            listener?.permissionsPermanentlyDenied(permissions) ?: false
-
-    private fun dispatchPermissionsShouldShowRationale(permissions: Array<out String>,
-                                                       listener: RuntimePermissionHandler.Listener?): Boolean =
-            listener?.permissionsShouldShowRationale(permissions) ?: false
-
     private fun permissionsThatShouldShowRationale(permissions: Array<out String>): Array<out String> =
             permissions.filter {
                 shouldShowRequestPermissionRationale(it)
             }.toTypedArray()
 
-    private fun listenerOf(key: String): RuntimePermissionHandler.Listener? =
-            listeners[key]
+    private fun controllerOf(permissions: Array<out String>): PermissionLifecycleController {
+        val key = keyOf(permissions)
+        return controllers.getOrElse(key) {
+            throw IllegalArgumentException("You need a controller for the key $key.")
+        }
+    }
 
-    private fun listenerOf(permissions: Array<out String>) = listenerOf(keyOf(permissions))
+    private fun listenerOf(permissions: Array<out String>): RuntimePermissionHandler.Listener {
+        val key = keyOf(permissions)
+        return listeners.getOrElse(key) {
+            throw IllegalArgumentException("You need a listener for the key $key.")
+        }
+    }
 
     private fun keyOf(permissions: Array<out String>) = permissions.flatString()
 

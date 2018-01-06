@@ -25,8 +25,9 @@ interface RuntimePermissionHandler {
 
     fun attachListener(permissions: Array<out String>, listener: Listener)
 
-    fun handleRuntimePermissions(permissions: Array<out String>,
-                                 lifecycleController: PermissionLifecycleController)
+    fun attachLifecycleController(permissions: Array<out String>, controller: PermissionLifecycleController)
+
+    fun handleRuntimePermissions(permissions: Array<out String>)
 
     fun requestRuntimePermissions(permissions: Array<out String>)
 

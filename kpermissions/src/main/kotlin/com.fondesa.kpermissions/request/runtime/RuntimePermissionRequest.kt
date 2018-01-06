@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.request
+package com.fondesa.kpermissions.request.runtime
 
 import android.content.Context
-import android.os.Build
-import android.support.v4.app.FragmentManager
 import com.fondesa.kpermissions.extensions.arePermissionsGranted
 import com.fondesa.kpermissions.nonce.PermissionNonce
 import com.fondesa.kpermissions.nonce.RationalePermissionNonce
+import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-class PermissionRequestImpl(private val context: Context,
-                            private val fragmentManager: FragmentManager,
-                            private val permissions: Array<out String>,
-                            private val acceptedListener: PermissionRequest.AcceptedListener?,
-                            private val deniedListener: PermissionRequest.DeniedListener?,
-                            private val rationaleListener: PermissionRequest.RationaleListener?) :
+class RuntimePermissionRequest(private val context: Context,
+                               private val handlerProvider: RuntimePermissionHandlerProvider,
+                               private val permissions: Array<out String>,
+                               private val acceptedListener: PermissionRequest.AcceptedListener?,
+                               private val deniedListener: PermissionRequest.DeniedListener?,
+                               private val rationaleListener: PermissionRequest.RationaleListener?) :
+
         PermissionRequest, RuntimePermissionHandler.Listener {
 
     lateinit var nonce: PermissionNonce
@@ -40,7 +40,7 @@ class PermissionRequestImpl(private val context: Context,
         if (context.arePermissionsGranted(*permissions)) {
             acceptedListener?.onPermissionsAccepted(permissions)
         } else {
-            val handler = getRuntimePermissionHandler()
+            val handler = handlerProvider.provideHandler()
             nonce = RationalePermissionNonce(handler, permissions)
             handler.handleRuntimePermissions(permissions, this)
         }
@@ -56,27 +56,5 @@ class PermissionRequestImpl(private val context: Context,
 
     override fun permissionsShouldShowRationale(permissions: Array<out String>) {
         rationaleListener?.onPermissionsShouldShowRationale(permissions, nonce)
-    }
-
-    private fun getRuntimePermissionHandler(): RuntimePermissionHandler {
-        var fragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG) as? PermissionFragment
-        if (fragment == null) {
-            fragment = PermissionFragment()
-            val transaction = fragmentManager.beginTransaction()
-                    .add(fragment, FRAGMENT_TAG)
-
-            // Commit the fragment synchronously.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                transaction.commitNowAllowingStateLoss()
-            } else {
-                transaction.commitAllowingStateLoss()
-                fragmentManager.executePendingTransactions()
-            }
-        }
-        return fragment
-    }
-
-    companion object {
-        private const val FRAGMENT_TAG = "KPermissionsFragment"
     }
 }

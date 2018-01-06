@@ -18,8 +18,12 @@ package com.fondesa.kpermissions.sample
 
 import android.Manifest
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.fondesa.kpermissions.extensions.flatString
 import com.fondesa.kpermissions.extensions.permissionsBuilder
@@ -36,28 +40,140 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        log("onCreate")
 
-        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION)
-                .acceptedListener(this)
-                .deniedListener(DialogDeniedListener(this))
-                .rationaleListener(DialogRationaleListener(this))
-                .send()
+        setContentView(R.layout.activity_main)
+
+        supportFragmentManager.beginTransaction()
+                .add(R.id.first_fragment_container, DummyFragment(), "AAA")
+                .add(R.id.second_fragment_container, DummyFragment(), "ZZZ")
+                .commit()
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        log("onRestoreInstanceState")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        log("onSaveInstanceState")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        log("onStart")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        log("onRestart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        log("onResume")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        log("onStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        log("onDestroy")
     }
 
     override fun onPermissionsAccepted(permissions: Array<out String>) {
-        Log.d(TAG, "accepted: ${permissions.flatString()}")
+        log("onPermissionsAccepted: ${permissions.flatString()}")
         Toast.makeText(this, "ACCEPTED", Toast.LENGTH_SHORT).show()
     }
 
     override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
-        Log.d(TAG, "denied: ${permissions.flatString()}")
+        log("onPermissionsPermanentlyDenied: ${permissions.flatString()}")
     }
 
     override fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce) {
-        Log.d(TAG, "rationale: ${permissions.flatString()}")
+        log("onPermissionsShouldShowRationale: ${permissions.flatString()}")
     }
 
-    companion object {
-        private val TAG = MainActivity::class.java.simpleName
+    private fun log(s: String) {
+        Log.w("LYRA_ACT", s)
+    }
+}
+
+class DummyFragment : Fragment(),
+        PermissionRequest.AcceptedListener,
+        PermissionRequest.DeniedListener,
+        PermissionRequest.RationaleListener {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        log("onCreate")
+    }
+
+    override fun onPermissionsAccepted(permissions: Array<out String>) {
+        log("onPermissionsAccepted: ${permissions.flatString()}")
+        Toast.makeText(activity!!, "ACCEPTED", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
+        log("onPermissionsPermanentlyDenied: ${permissions.flatString()}")
+    }
+
+    override fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce) {
+        log("onPermissionsShouldShowRationale: ${permissions.flatString()}")
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        log("onCreateView")
+        return inflater.inflate(R.layout.fragment_view, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<View>(R.id.btn_test_permissions).setOnClickListener {
+            permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION)
+                    .acceptedListener(this)
+                    .deniedListener(DialogDeniedListener(activity!!))
+                    .rationaleListener(DialogRationaleListener(activity!!))
+                    .send()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        log("onDestroyView")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        log("onSaveInstanceState")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        log("onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        log("onResume")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        log("onStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        log("onDestroy")
+    }
+
+    private fun log(s: String) {
+        Log.w("LYRA_FRAG|$tag", s)
     }
 }

@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.request
+package com.fondesa.kpermissions.request.runtime
 
 /**
  * Created by antoniolig on 06/01/18.
  */
-interface RuntimePermissionHandler {
+interface RuntimePermissionHandlerProvider {
 
-    fun handleRuntimePermissions(permissions: Array<out String>, listener: RuntimePermissionHandler.Listener)
-
-    fun requestRuntimePermissions(permissions: Array<out String>)
-
-    interface Listener {
-
-        fun permissionsAccepted(permissions: Array<out String>)
-
-        fun permissionsPermanentlyDenied(permissions: Array<out String>)
-
-        fun permissionsShouldShowRationale(permissions: Array<out String>)
-    }
+    fun provideHandler(): RuntimePermissionHandler
 }

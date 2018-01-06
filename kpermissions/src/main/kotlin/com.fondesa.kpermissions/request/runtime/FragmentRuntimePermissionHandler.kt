@@ -67,15 +67,13 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
 
         if (deniedPermissions.isNotEmpty()) {
             val permissionsWithRationale = permissionsThatShouldShowRationale(deniedPermissions.toTypedArray())
-            if (permissionsWithRationale.isNotEmpty()) {
+            val rationaleHandled = if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions.
                 dispatchPermissionsShouldShowRationale(permissionsWithRationale)
-            }
-
-            //TODO: add a delivering logic
+            } else false
 
             val permanentlyDeniedPermissions = deniedPermissions.minus(permissionsWithRationale).toTypedArray()
-            if (permanentlyDeniedPermissions.isNotEmpty()) {
+            if (!rationaleHandled && permanentlyDeniedPermissions.isNotEmpty()) {
                 // Some permissions are permanently denied by the user.
                 Log.d(TAG, "permissions permanently denied: ${permanentlyDeniedPermissions.flatString()}")
                 dispatchPermissionsPermanentlyDenied(permanentlyDeniedPermissions)
@@ -99,10 +97,12 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
 
         if (!context.arePermissionsGranted(*permissions)) {
             val permissionsWithRationale = permissionsThatShouldShowRationale(permissions)
-            if (permissionsWithRationale.isNotEmpty()) {
+            val rationaleHandled = if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions.
                 dispatchPermissionsShouldShowRationale(permissionsWithRationale)
-            } else {
+            } else false
+
+            if (!rationaleHandled) {
                 // Request the permissions.
                 requestRuntimePermissions(permissions)
             }
@@ -119,18 +119,14 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
         requestPermissions(permissions, REQ_CODE_PERMISSIONS)
     }
 
-    private fun dispatchPermissionsAccepted(permissions: Array<out String>) {
-        listener?.permissionsAccepted(permissions)
-    }
+    private fun dispatchPermissionsAccepted(permissions: Array<out String>): Boolean =
+            listener?.permissionsAccepted(permissions) ?: false
 
-    private fun dispatchPermissionsPermanentlyDenied(permissions: Array<out String>) {
-        listener?.permissionsPermanentlyDenied(permissions)
-    }
+    private fun dispatchPermissionsPermanentlyDenied(permissions: Array<out String>): Boolean =
+            listener?.permissionsPermanentlyDenied(permissions) ?: false
 
-    private fun dispatchPermissionsShouldShowRationale(permissions: Array<out String>) {
-        listener?.permissionsShouldShowRationale(permissions)
-    }
-
+    private fun dispatchPermissionsShouldShowRationale(permissions: Array<out String>): Boolean =
+            listener?.permissionsShouldShowRationale(permissions) ?: false
 
     private fun permissionsThatShouldShowRationale(permissions: Array<out String>): Array<out String> =
             permissions.filter {
@@ -141,5 +137,4 @@ class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
         private val TAG = FragmentRuntimePermissionHandler::class.java.simpleName
         private const val REQ_CODE_PERMISSIONS = 986
     }
-
 }

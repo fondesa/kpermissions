@@ -46,15 +46,22 @@ class RuntimePermissionRequest(private val context: Context,
         }
     }
 
-    override fun permissionsAccepted(permissions: Array<out String>) {
-        acceptedListener?.onPermissionsAccepted(permissions)
+    override fun permissionsAccepted(permissions: Array<out String>): Boolean = invokeOn(acceptedListener) {
+        onPermissionsAccepted(permissions)
     }
 
-    override fun permissionsPermanentlyDenied(permissions: Array<out String>) {
-        deniedListener?.onPermissionsPermanentlyDenied(permissions)
+    override fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean = invokeOn(deniedListener) {
+        onPermissionsPermanentlyDenied(permissions)
     }
 
-    override fun permissionsShouldShowRationale(permissions: Array<out String>) {
-        rationaleListener?.onPermissionsShouldShowRationale(permissions, nonce)
+    override fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean = invokeOn(rationaleListener) {
+        onPermissionsShouldShowRationale(permissions, nonce)
+    }
+
+    private inline fun <T> invokeOn(instance: T?, block: T.() -> Unit): Boolean {
+        if (instance == null)
+            return false
+        block(instance)
+        return true
     }
 }

@@ -27,10 +27,10 @@ interface RuntimePermissionHandler {
 
     interface Listener {
 
-        fun permissionsAccepted(permissions: Array<out String>)
+        fun permissionsAccepted(permissions: Array<out String>): Boolean
 
-        fun permissionsPermanentlyDenied(permissions: Array<out String>)
+        fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean
 
-        fun permissionsShouldShowRationale(permissions: Array<out String>)
+        fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean
     }
 }

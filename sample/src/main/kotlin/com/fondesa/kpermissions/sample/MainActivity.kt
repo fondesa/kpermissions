@@ -138,7 +138,7 @@ class DummyFragment : Fragment(),
             permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
                     .acceptedListener(this)
                     .deniedListener(DialogDeniedListener(activity!!))
-                    .rationaleListener(DialogRationaleListener(activity!!))
+//                    .rationaleListener(DialogRationaleListener(activity!!))
                     .send()
         }
     }

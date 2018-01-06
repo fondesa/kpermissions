@@ -16,33 +16,29 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import android.content.Context
-import com.fondesa.kpermissions.extensions.arePermissionsGranted
+import com.fondesa.kpermissions.controller.PermissionLifecycleController
+import com.fondesa.kpermissions.request.BasePermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
-import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-class RuntimePermissionRequest(private val context: Context,
-                               private val handlerProvider: RuntimePermissionHandlerProvider,
+class RuntimePermissionRequest(private val permissions: Array<out String>,
+                               private val lifecycleController: PermissionLifecycleController,
                                private val permissionNonceGenerator: PermissionNonceGenerator,
-                               private val permissions: Array<out String>,
-                               private val acceptedListener: PermissionRequest.AcceptedListener?,
-                               private val deniedListener: PermissionRequest.DeniedListener?,
-                               private val rationaleListener: PermissionRequest.RationaleListener?) :
+                               private val handler: RuntimePermissionHandler) :
 
-        PermissionRequest, RuntimePermissionHandler.Listener {
+        BasePermissionRequest(),
+        RuntimePermissionHandler.Listener {
 
-    lateinit var handler: RuntimePermissionHandler
+    init {
+        // Attach this request as listener.
+        handler.attachListener(permissions, this)
+    }
 
     override fun send() {
-        if (context.arePermissionsGranted(*permissions)) {
-            acceptedListener?.onPermissionsAccepted(permissions)
-        } else {
-            handler = handlerProvider.provideHandler()
-            handler.handleRuntimePermissions(permissions, this)
-        }
+        // Send permission request.
+        handler.handleRuntimePermissions(permissions, lifecycleController)
     }
 
     override fun permissionsAccepted(permissions: Array<out String>): Boolean = invokeOn(acceptedListener) {

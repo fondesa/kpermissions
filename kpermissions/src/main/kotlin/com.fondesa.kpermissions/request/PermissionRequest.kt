@@ -25,6 +25,20 @@ interface PermissionRequest {
 
     fun send()
 
+    fun acceptedListener(listener: AcceptedListener)
+
+    fun deniedListener(listener: DeniedListener)
+
+    fun rationaleListener(listener: RationaleListener)
+
+    fun detachAcceptedListener()
+
+    fun detachDeniedListener()
+
+    fun detachRationaleListener()
+
+    fun detachAllListeners()
+
     interface AcceptedListener {
 
         fun onPermissionsAccepted(permissions: Array<out String>)

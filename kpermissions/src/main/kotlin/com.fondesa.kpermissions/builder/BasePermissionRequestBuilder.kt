@@ -16,7 +16,12 @@
 
 package com.fondesa.kpermissions.builder
 
+import com.fondesa.kpermissions.controller.DefaultPermissionLifecycleController
+import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
+import com.fondesa.kpermissions.request.runtime.nonce.RationalePermissionNonceGenerator
 
 /**
  * Created by antoniolig on 06/01/18.
@@ -24,24 +29,24 @@ import com.fondesa.kpermissions.request.PermissionRequest
 abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
 
     private var permissions: Array<out String>? = null
-    private var acceptedListener: PermissionRequest.AcceptedListener? = null
-    private var deniedListener: PermissionRequest.DeniedListener? = null
-    private var rationaleListener: PermissionRequest.RationaleListener? = null
+    private var lifecycleController: PermissionLifecycleController? = null
+    private var nonceGenerator: PermissionNonceGenerator? = null
+    private var runtimeHandlerProvider: RuntimePermissionHandlerProvider? = null
 
     override fun permissions(vararg permissions: String): PermissionRequestBuilder = apply {
         this.permissions = permissions
     }
 
-    override fun acceptedListener(acceptedListener: PermissionRequest.AcceptedListener) = apply {
-        this.acceptedListener = acceptedListener
+    override fun lifecycleController(lifecycleController: PermissionLifecycleController): PermissionRequestBuilder = apply {
+        this.lifecycleController = lifecycleController
     }
 
-    override fun deniedListener(deniedListener: PermissionRequest.DeniedListener) = apply {
-        this.deniedListener = deniedListener
+    override fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder = apply {
+        this.nonceGenerator = nonceGenerator
     }
 
-    override fun rationaleListener(rationaleListener: PermissionRequest.RationaleListener) = apply {
-        this.rationaleListener = rationaleListener
+    override fun runtimeHandlerProvider(runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequestBuilder = apply {
+        this.runtimeHandlerProvider = runtimeHandlerProvider
     }
 
     override fun build(): PermissionRequest {
@@ -51,7 +56,20 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
             throw IllegalArgumentException("You have to specify at least one permission.")
         }
 
-        return createRequest(permissions, acceptedListener, deniedListener, rationaleListener)
+        // Instantiate the default controller if a custom one isn't set.
+        val controller = lifecycleController ?: DefaultPermissionLifecycleController()
+
+        // Instantiate the default NonceGenerator if a custom one isn't set.
+        val nonceGenerator = nonceGenerator ?: RationalePermissionNonceGenerator()
+
+        // Get the runtime handler.
+        val runtimeHandlerProvider = runtimeHandlerProvider
+                ?: throw IllegalArgumentException("A runtime handler is necessary to request the permissions.")
+
+        return createRequest(permissions,
+                controller,
+                nonceGenerator,
+                runtimeHandlerProvider)
     }
 
     override fun send(): PermissionRequest {
@@ -63,7 +81,7 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
     }
 
     abstract fun createRequest(permissions: Array<out String>,
-                               acceptedListener: PermissionRequest.AcceptedListener?,
-                               deniedListener: PermissionRequest.DeniedListener?,
-                               rationaleListener: PermissionRequest.RationaleListener?): PermissionRequest
+                               lifecycleController: PermissionLifecycleController,
+                               nonceGenerator: PermissionNonceGenerator,
+                               runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest
 }

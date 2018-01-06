@@ -18,39 +18,36 @@ package com.fondesa.kpermissions.builder
 
 import android.content.Context
 import android.os.Build
+import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.request.PermissionRequest
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-class CompatPermissionRequestBuilder
-internal constructor(private val context: Context,
-                     private val runtimeHandlerProvider: RuntimePermissionHandlerProvider,
-                     private val permissionNonceGenerator: PermissionNonceGenerator) :
+class CompatPermissionRequestBuilder internal constructor(private val context: Context) :
         BasePermissionRequestBuilder() {
 
     override fun createRequest(permissions: Array<out String>,
-                               acceptedListener: PermissionRequest.AcceptedListener?,
-                               deniedListener: PermissionRequest.DeniedListener?,
-                               rationaleListener: PermissionRequest.RationaleListener?): PermissionRequest {
+                               lifecycleController: PermissionLifecycleController,
+                               nonceGenerator: PermissionNonceGenerator,
+                               runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest {
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RuntimePermissionRequest(context,
-                    runtimeHandlerProvider,
-                    permissionNonceGenerator,
-                    permissions,
-                    acceptedListener,
-                    deniedListener,
-                    rationaleListener)
+            // Provide the handler.
+            val handler = runtimeHandlerProvider.provideHandler()
+            // Create the runtime request.
+            RuntimePermissionRequest(permissions,
+                    lifecycleController,
+                    nonceGenerator,
+                    handler)
         } else {
             ManifestPermissionRequest(context,
                     permissions,
-                    acceptedListener,
-                    deniedListener)
+                    lifecycleController)
         }
     }
 }

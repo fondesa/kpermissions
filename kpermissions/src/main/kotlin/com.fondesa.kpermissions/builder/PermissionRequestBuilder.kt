@@ -16,7 +16,10 @@
 
 package com.fondesa.kpermissions.builder
 
+import com.fondesa.kpermissions.controller.PermissionLifecycleController
 import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 
 /**
  * Created by antoniolig on 05/01/18.
@@ -25,11 +28,11 @@ interface PermissionRequestBuilder {
 
     fun permissions(vararg permissions: String): PermissionRequestBuilder
 
-    fun acceptedListener(acceptedListener: PermissionRequest.AcceptedListener): PermissionRequestBuilder
+    fun lifecycleController(lifecycleController: PermissionLifecycleController): PermissionRequestBuilder
 
-    fun deniedListener(deniedListener: PermissionRequest.DeniedListener): PermissionRequestBuilder
+    fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder
 
-    fun rationaleListener(rationaleListener: PermissionRequest.RationaleListener): PermissionRequestBuilder
+    fun runtimeHandlerProvider(runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequestBuilder
 
     fun build(): PermissionRequest
 

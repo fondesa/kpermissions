@@ -26,9 +26,9 @@ import com.fondesa.kpermissions.extensions.flatString
 /**
  * Created by antoniolig on 05/01/18.
  */
-class PermissionFragment : Fragment() {
+class PermissionFragment : Fragment(), RuntimePermissionHandler {
 
-    private var listener: PermissionRequestImpl.Listener? = null
+    private var listener: RuntimePermissionHandler.Listener? = null
 
     private var isProcessingPermissions = false
 
@@ -81,7 +81,8 @@ class PermissionFragment : Fragment() {
         }
     }
 
-    fun requestPermissions(permissions: Array<out String>, listener: PermissionRequestImpl.Listener) {
+    override fun handleRuntimePermissions(permissions: Array<out String>,
+                                          listener: RuntimePermissionHandler.Listener) {
         val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
 
         // Assign the listener.
@@ -99,7 +100,7 @@ class PermissionFragment : Fragment() {
                 dispatchPermissionsShouldShowRationale(permissionsWithRationale)
             } else {
                 // Request the permissions.
-                requestPermissionsAvoidingChecks(permissions)
+                requestRuntimePermissions(permissions)
             }
         } else {
             // All permissions are accepted.
@@ -107,7 +108,7 @@ class PermissionFragment : Fragment() {
         }
     }
 
-    fun requestPermissionsAvoidingChecks(permissions: Array<out String>) {
+    override fun requestRuntimePermissions(permissions: Array<out String>) {
         // The Fragment is now processing some permissions.
         isProcessingPermissions = true
         Log.d(TAG, "requesting permissions: ${permissions.flatString()}")

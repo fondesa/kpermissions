@@ -19,7 +19,9 @@ package com.fondesa.kpermissions.nonce
 /**
  * Created by antoniolig on 05/01/18.
  */
+//TODO change name
 interface PermissionNonce {
 
-    fun use(permissions: Array<out String>)
+    //TODO change name
+    fun use()
 }

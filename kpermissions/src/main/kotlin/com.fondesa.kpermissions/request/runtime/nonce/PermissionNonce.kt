@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.extensions
-
-import android.app.Fragment
-import com.fondesa.kpermissions.builder.PermissionRequestBuilder
+package com.fondesa.kpermissions.request.runtime.nonce
 
 /**
  * Created by antoniolig on 05/01/18.
  */
-fun Fragment.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
-    val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
-    return activity.permissionsBuilder(*permissions)
-}
+interface PermissionNonce {
 
-fun android.support.v4.app.Fragment.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
-    val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
-    return activity.permissionsBuilder(*permissions)
+    fun use()
 }

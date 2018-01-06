@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.nonce
+package com.fondesa.kpermissions.controller
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Created by antoniolig on 06/01/18.
  */
-interface PermissionNonce {
+class DefaultPermissionLifecycleController : PermissionLifecycleController {
 
-    fun use()
+    override fun acceptedDelivering() = Delivering.ALL
+
+    override fun permanentlyDeniedDelivering() = Delivering.AT_LEAST_ONE
+
+    override fun rationaleDelivering() = Delivering.AT_LEAST_ONE
+
+    override fun rationaleCheck() = RationaleCheck.BOTH
+
+    override fun notAcceptedPriority() = Priority.RATIONALE
+
+    override fun notAcceptedSecondaryExecution(): Execution = Execution.FIRST_NOT_HANDLED
 }

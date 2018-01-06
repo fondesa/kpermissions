@@ -27,8 +27,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.fondesa.kpermissions.extensions.flatString
 import com.fondesa.kpermissions.extensions.permissionsBuilder
-import com.fondesa.kpermissions.nonce.PermissionNonce
 import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
 /**
  * The main screen of this application that requires some permissions.
@@ -131,15 +131,20 @@ class DummyFragment : Fragment(),
         return inflater.inflate(R.layout.fragment_view, container, false)
     }
 
+    private val request by lazy {
+        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION)
+                .build()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        request.acceptedListener(this)
+        request.deniedListener(DialogDeniedListener(activity!!))
+        request.rationaleListener(DialogRationaleListener(activity!!))
+
         view.findViewById<View>(R.id.btn_test_permissions).setOnClickListener {
-            permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
-                    .acceptedListener(this)
-                    .deniedListener(DialogDeniedListener(activity!!))
-                    .rationaleListener(DialogRationaleListener(activity!!))
-                    .send()
+            request.send()
         }
     }
 

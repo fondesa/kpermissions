@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.nonce
+package com.fondesa.kpermissions.controller
 
 /**
  * Created by antoniolig on 06/01/18.
  */
-class PermissionNonceUsedException: Exception {
+interface PermissionLifecycleController {
 
-    constructor(): super()
+    fun acceptedDelivering(): Delivering
 
-    constructor(msg: String): super(msg)
+    fun permanentlyDeniedDelivering(): Delivering
+
+    fun rationaleDelivering(): Delivering
+
+    fun rationaleCheck(): RationaleCheck
+
+    fun notAcceptedPriority(): Priority
+
+    fun notAcceptedSecondaryExecution(): Execution
 }
+

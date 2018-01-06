@@ -16,7 +16,7 @@
 
 package com.fondesa.kpermissions.request
 
-import com.fondesa.kpermissions.nonce.PermissionNonce
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
 /**
  * Created by antoniolig on 05/01/18.
@@ -24,6 +24,20 @@ import com.fondesa.kpermissions.nonce.PermissionNonce
 interface PermissionRequest {
 
     fun send()
+
+    fun acceptedListener(listener: AcceptedListener)
+
+    fun deniedListener(listener: DeniedListener)
+
+    fun rationaleListener(listener: RationaleListener)
+
+    fun detachAcceptedListener()
+
+    fun detachDeniedListener()
+
+    fun detachRationaleListener()
+
+    fun detachAllListeners()
 
     interface AcceptedListener {
 

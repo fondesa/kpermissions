@@ -17,9 +17,16 @@
 package com.fondesa.kpermissions.request.runtime.nonce
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Used to request some permissions again.
+ * A [PermissionNonce] can be used only one time.
  */
 interface PermissionNonce {
 
+    /**
+     * Request the permissions related to this [PermissionNonce] again.
+     *
+     * @throws PermissionNonceUsedException if this method is invoke more than one time
+     * on the same instance of [PermissionNonce].
+     */
     fun use()
 }

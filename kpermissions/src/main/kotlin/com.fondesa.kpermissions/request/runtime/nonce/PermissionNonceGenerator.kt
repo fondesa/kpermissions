@@ -19,9 +19,16 @@ package com.fondesa.kpermissions.request.runtime.nonce
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
 
 /**
- * Created by antoniolig on 06/01/18.
+ * Used to generate a [PermissionNonce] that can request the permissions one time again.
  */
 interface PermissionNonceGenerator {
 
-    fun provideNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce
+    /**
+     * Generates a [PermissionNonce] that can be used one time.
+     *
+     * @param handler the [RuntimePermissionHandler] used to request the permissions again.
+     * @param permissions the permissions that must be requested again.
+     * @return unique instance of [PermissionNonce].
+     */
+    fun generateNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce
 }

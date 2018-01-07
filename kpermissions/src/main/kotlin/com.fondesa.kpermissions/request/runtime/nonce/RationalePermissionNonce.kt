@@ -19,7 +19,12 @@ package com.fondesa.kpermissions.request.runtime.nonce
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Implementation of [PermissionNonce] used to request the permissions again when
+ * the rationale related to these permissions was displayed to the user.
+ * If this [PermissionNonce] is used more than one time, it throws a [PermissionNonceUsedException].
+ *
+ * @property handler the [RuntimePermissionHandler] used to request the permissions again.
+ * @property permissions the permissions that must be requested again.
  */
 class RationalePermissionNonce(private val handler: RuntimePermissionHandler,
                                private val permissions: Array<out String>) : PermissionNonce {

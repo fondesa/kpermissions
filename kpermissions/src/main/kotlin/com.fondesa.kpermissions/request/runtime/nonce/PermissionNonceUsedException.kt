@@ -17,6 +17,8 @@
 package com.fondesa.kpermissions.request.runtime.nonce
 
 /**
- * Created by antoniolig on 06/01/18.
+ * Exception indicating that a [PermissionNonce] is used more than one time.
+ *
+ * @param msg the message of the [Exception].
  */
 class PermissionNonceUsedException(msg: String) : Exception(msg)

@@ -175,7 +175,6 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         // The listener mustn't be called with a denied permission.
         verify(listener).permissionsAccepted(permissions)
-        verifyNoMoreInteractions(listener)
     }
 
     @Test

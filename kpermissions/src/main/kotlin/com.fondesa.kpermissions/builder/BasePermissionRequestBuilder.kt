@@ -22,7 +22,12 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 import com.fondesa.kpermissions.request.runtime.nonce.RationalePermissionNonceGenerator
 
 /**
- * Created by antoniolig on 06/01/18.
+ * Base [PermissionRequestBuilder] that specifies the common configurations.
+ *
+ * This builder specifies also the default configurations and throws the correct
+ * exceptions when the method [build] is invoked with an invalid configuration.
+ * When the method [createRequest] is called, the configuration can't change anymore,
+ * all the defaults are assigned and it can be considered valid.
  */
 abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
 
@@ -69,6 +74,15 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
         return request
     }
 
+    /**
+     * Create the [PermissionRequest] after the common checks are executed, the defaults are
+     * assigned and this configuration can be considered valid.
+     *
+     * @param permissions set of permissions that must be requested.
+     * @param nonceGenerator instance of [PermissionNonceGenerator] specified in this configuration.
+     * @param runtimeHandlerProvider instance of [RuntimePermissionHandlerProvider] specified in this configuration.
+     * @return instance of [PermissionRequest] that uses this configuration.
+     */
     protected abstract fun createRequest(permissions: Array<out String>,
                                          nonceGenerator: PermissionNonceGenerator,
                                          runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest

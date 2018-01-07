@@ -27,6 +27,9 @@ abstract class BasePermissionRequest : PermissionRequest {
     protected var deniedListener: PermissionRequest.DeniedListener? = null
         private set
 
+    protected var permanentlyDeniedListener: PermissionRequest.PermanentlyDeniedListener? = null
+        private set
+
     protected var rationaleListener: PermissionRequest.RationaleListener? = null
         private set
 
@@ -36,6 +39,10 @@ abstract class BasePermissionRequest : PermissionRequest {
 
     override fun deniedListener(listener: PermissionRequest.DeniedListener) {
         deniedListener = listener
+    }
+
+    override fun permanentlyDeniedListener(listener: PermissionRequest.PermanentlyDeniedListener) {
+        permanentlyDeniedListener = listener
     }
 
     override fun rationaleListener(listener: PermissionRequest.RationaleListener) {
@@ -50,6 +57,10 @@ abstract class BasePermissionRequest : PermissionRequest {
         deniedListener = null
     }
 
+    override fun detachPermanentlyDeniedListener() {
+        permanentlyDeniedListener = null
+    }
+
     override fun detachRationaleListener() {
         rationaleListener = null
     }
@@ -57,6 +68,7 @@ abstract class BasePermissionRequest : PermissionRequest {
     override fun detachAllListeners() {
         detachAcceptedListener()
         detachDeniedListener()
+        detachPermanentlyDeniedListener()
         detachRationaleListener()
     }
 }

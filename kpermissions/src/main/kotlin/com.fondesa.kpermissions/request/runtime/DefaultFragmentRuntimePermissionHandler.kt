@@ -44,11 +44,16 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
         }
 
         if (deniedPermissions.isNotEmpty()) {
+            var rationaleHandled = false
             val permissionsWithRationale = permissionsThatShouldShowRationale(deniedPermissions.toTypedArray())
-            val rationaleHandled = if (permissionsWithRationale.isNotEmpty()) {
-                // Show rationale of permissions.
-                listener.permissionsShouldShowRationale(permissionsWithRationale)
-            } else false
+            if (permissionsWithRationale.isNotEmpty()) {
+                // Show rationale of permissions if possible.
+                val rationaleShown = listener.permissionsShouldShowRationale(permissionsWithRationale)
+                if (!rationaleShown) {
+                    // Otherwise, if possible, notify the listener that the permissions are denied.
+                    rationaleHandled = listener.permissionsDenied(permissionsWithRationale)
+                }
+            }
 
             val permanentlyDeniedPermissions = deniedPermissions.minus(permissionsWithRationale).toTypedArray()
             if (!rationaleHandled && permanentlyDeniedPermissions.isNotEmpty()) {

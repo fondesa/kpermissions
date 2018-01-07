@@ -43,7 +43,11 @@ class RuntimePermissionRequest(private val permissions: Array<out String>,
         onPermissionsAccepted(permissions)
     }
 
-    override fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean = invokeOn(deniedListener) {
+    override fun permissionsDenied(permissions: Array<out String>): Boolean = invokeOn(deniedListener) {
+        onPermissionsDenied(permissions)
+    }
+
+    override fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean = invokeOn(permanentlyDeniedListener) {
         onPermissionsPermanentlyDenied(permissions)
     }
 

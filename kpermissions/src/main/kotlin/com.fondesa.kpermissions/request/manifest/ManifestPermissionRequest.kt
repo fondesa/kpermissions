@@ -33,7 +33,7 @@ class ManifestPermissionRequest(private val context: Context,
         }.toTypedArray()
 
         if (deniedPermissions.isNotEmpty()) {
-            deniedListener?.onPermissionsPermanentlyDenied(deniedPermissions)
+            deniedListener?.onPermissionsDenied(deniedPermissions)
         } else {
             acceptedListener?.onPermissionsAccepted(permissions)
         }

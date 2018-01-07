@@ -35,7 +35,7 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
  */
 class MainActivity : AppCompatActivity(),
         PermissionRequest.AcceptedListener,
-        PermissionRequest.DeniedListener,
+        PermissionRequest.PermanentlyDeniedListener,
         PermissionRequest.RationaleListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity(),
 class DummyFragment : Fragment(),
         PermissionRequest.AcceptedListener,
         PermissionRequest.DeniedListener,
+        PermissionRequest.PermanentlyDeniedListener,
         PermissionRequest.RationaleListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,6 +117,11 @@ class DummyFragment : Fragment(),
     override fun onPermissionsAccepted(permissions: Array<out String>) {
         log("onPermissionsAccepted: ${permissions.flatString()}")
         Toast.makeText(activity!!, "ACCEPTED", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPermissionsDenied(permissions: Array<out String>) {
+        log("onPermissionsDenied: ${permissions.flatString()}")
+        Toast.makeText(activity!!, "DENIED", Toast.LENGTH_SHORT).show()
     }
 
     override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
@@ -140,7 +146,8 @@ class DummyFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
 
         request.acceptedListener(this)
-        request.deniedListener(DialogDeniedListener(activity!!))
+        request.deniedListener(this)
+        request.permanentlyDeniedListener(DialogPermanentlyDeniedListener(activity!!))
         request.rationaleListener(DialogRationaleListener(activity!!))
 
         view.findViewById<View>(R.id.btn_test_permissions).setOnClickListener {

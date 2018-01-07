@@ -48,8 +48,8 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
             val permissionsWithRationale = permissionsThatShouldShowRationale(deniedPermissions.toTypedArray())
             if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions if possible.
-                val rationaleShown = listener.permissionsShouldShowRationale(permissionsWithRationale)
-                if (!rationaleShown) {
+                rationaleHandled = listener.permissionsShouldShowRationale(permissionsWithRationale)
+                if (!rationaleHandled) {
                     // Otherwise, if possible, notify the listener that the permissions are denied.
                     rationaleHandled = listener.permissionsDenied(permissionsWithRationale)
                 }

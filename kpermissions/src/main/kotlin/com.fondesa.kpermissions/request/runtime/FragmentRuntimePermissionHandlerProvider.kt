@@ -28,6 +28,7 @@ open class FragmentRuntimePermissionHandlerProvider(private val manager: Fragmen
 
     @RequiresApi(Build.VERSION_CODES.M)
     final override fun provideHandler(): RuntimePermissionHandler {
+        // Obtain the current Fragment if possible, otherwise create it.
         var fragment = manager.findFragmentByTag(FRAGMENT_TAG) as? RuntimePermissionHandler
         if (fragment == null) {
             // Create the Fragment delegated to handle permissions.
@@ -51,6 +52,6 @@ open class FragmentRuntimePermissionHandlerProvider(private val manager: Fragmen
             DefaultFragmentRuntimePermissionHandler()
 
     companion object {
-        private const val FRAGMENT_TAG = "KPermissionsFragment-normal"
+        private const val FRAGMENT_TAG = "KPermissionsFragment"
     }
 }

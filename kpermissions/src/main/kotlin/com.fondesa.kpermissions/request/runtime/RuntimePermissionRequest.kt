@@ -20,7 +20,16 @@ import com.fondesa.kpermissions.request.BasePermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Implementation of [BasePermissionRequest] that checks the permissions since Android M.
+ *
+ * The checks on the permissions are delegated to the [RuntimePermissionHandler] provided
+ * to this request.
+ * All the listeners could be notified.
+ *
+ * @property permissions the set of permissions that must be checked.
+ * @property permissionNonceGenerator the [PermissionNonceGenerator] that generates the nonce for
+ * the permissions that needs a rationale.
+ * @property handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
  */
 class RuntimePermissionRequest(private val permissions: Array<out String>,
                                private val permissionNonceGenerator: PermissionNonceGenerator,
@@ -35,7 +44,7 @@ class RuntimePermissionRequest(private val permissions: Array<out String>,
     }
 
     override fun send() {
-        // Send permission request.
+        // The RuntimePermissionHandler will handle the request.
         handler.handleRuntimePermissions(permissions)
     }
 

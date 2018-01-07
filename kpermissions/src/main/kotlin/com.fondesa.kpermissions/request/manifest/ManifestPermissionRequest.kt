@@ -19,15 +19,26 @@ package com.fondesa.kpermissions.request.manifest
 import android.content.Context
 import com.fondesa.kpermissions.extensions.isPermissionGranted
 import com.fondesa.kpermissions.request.BasePermissionRequest
+import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Implementation of [BasePermissionRequest] that checks the permissions below Android M.
+ *
+ * The check is done using [Context.isPermissionGranted] that is compatible with all APIs.
+ * In this case, the check is executed using only the information contained in the manifest.
+ * Only two listeners can be notified:
+ * - [PermissionRequest.AcceptedListener] when ALL permissions are accepted
+ * - [PermissionRequest.DeniedListener] when AT LEAST one permission is denied
+ *
+ * @property context the [Context] used to check the status of the permissions.
+ * @property permissions the set of permissions that must be checked.
  */
 class ManifestPermissionRequest(private val context: Context,
                                 private val permissions: Array<out String>) :
         BasePermissionRequest() {
 
     override fun send() {
+        // Get all the permissions that are denied.
         val deniedPermissions = permissions.filter {
             !context.isPermissionGranted(it)
         }.toTypedArray()
@@ -35,6 +46,7 @@ class ManifestPermissionRequest(private val context: Context,
         if (deniedPermissions.isNotEmpty()) {
             deniedListener?.onPermissionsDenied(deniedPermissions)
         } else {
+            // If there aren't denied permissions, it means that are all accepted.
             acceptedListener?.onPermissionsAccepted(permissions)
         }
     }

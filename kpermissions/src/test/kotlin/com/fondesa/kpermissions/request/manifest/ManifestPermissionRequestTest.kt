@@ -103,6 +103,51 @@ class ManifestPermissionRequestTest {
         verify(deniedListener).onPermissionsDenied(arrayOf(second))
     }
 
+    @Test
+    fun detachAcceptedListener() {
+        val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        val request = requestOf(*permission)
+
+        // Grant the permission
+        shadowOf(context).grantPermissions(*permission)
+
+        request.send()
+        verify(acceptedListener).onPermissionsAccepted(permission)
+
+        request.detachAcceptedListener()
+        request.send()
+        verify(acceptedListener).onPermissionsAccepted(permission)
+
+        request.acceptedListener(acceptedListener)
+        request.send()
+        verify(acceptedListener, times(2)).onPermissionsAccepted(permission)
+
+        request.detachAllListeners()
+        request.send()
+        verify(acceptedListener, times(2)).onPermissionsAccepted(permission)
+    }
+
+    @Test
+    fun detachDeniedListener() {
+        val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        val request = requestOf(*permission)
+
+        request.send()
+        verify(deniedListener).onPermissionsDenied(permission)
+
+        request.detachDeniedListener()
+        request.send()
+        verify(deniedListener).onPermissionsDenied(permission)
+
+        request.deniedListener(deniedListener)
+        request.send()
+        verify(deniedListener, times(2)).onPermissionsDenied(permission)
+
+        request.detachAllListeners()
+        request.send()
+        verify(deniedListener, times(2)).onPermissionsDenied(permission)
+    }
+
     private fun requestOf(vararg permissions: String, listeners: Boolean = true): ManifestPermissionRequest {
         val request = ManifestPermissionRequest(context, permissions)
         if (listeners) {

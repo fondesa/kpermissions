@@ -16,18 +16,29 @@
 
 package com.fondesa.kpermissions.request.runtime
 
+import android.app.Activity
+import android.app.Fragment
 import android.app.FragmentManager
 import android.os.Build
 import android.support.annotation.RequiresApi
+import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider.Companion.FRAGMENT_TAG
 
 /**
- * Created by antoniolig on 06/01/18.
+ * Implementation of [RuntimePermissionHandler] that uses a [FragmentRuntimePermissionHandler]
+ * to manage the permissions.
+ *
+ * The [Fragment] will be added synchronously to the [Activity] with the tag [FRAGMENT_TAG].
+ * Only one [Fragment] in the same [Activity] will be instantiated to avoid
+ * multiple instances.
+ *
+ * @property manager the [FragmentManager] of the [Activity].
  */
 open class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
         RuntimePermissionHandlerProvider {
 
     @RequiresApi(Build.VERSION_CODES.M)
     final override fun provideHandler(): RuntimePermissionHandler {
+        // Obtain the current Fragment if possible, otherwise create it.
         var fragment = manager.findFragmentByTag(FRAGMENT_TAG) as? RuntimePermissionHandler
         if (fragment == null) {
             // Create the Fragment delegated to handle permissions.
@@ -51,6 +62,6 @@ open class FragmentRuntimePermissionHandlerProvider(private val manager: Fragmen
             DefaultFragmentRuntimePermissionHandler()
 
     companion object {
-        private const val FRAGMENT_TAG = "KPermissionsFragment-normal"
+        private const val FRAGMENT_TAG = "KPermissionsFragment"
     }
 }

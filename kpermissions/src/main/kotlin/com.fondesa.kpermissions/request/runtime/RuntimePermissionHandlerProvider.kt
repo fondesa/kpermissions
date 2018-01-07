@@ -16,10 +16,21 @@
 
 package com.fondesa.kpermissions.request.runtime
 
+import android.app.Fragment
+
 /**
- * Created by antoniolig on 06/01/18.
+ * Provides a [RuntimePermissionHandler] to manage runtime permissions since Android M.
+ *
+ * The [RuntimePermissionHandler] must be available instantly so, for example, if
+ * it's a [Fragment], it must be committed synchronously.
  */
 interface RuntimePermissionHandlerProvider {
 
+    /**
+     * Provides an instance of [RuntimePermissionHandler] used to check permissions
+     * since Android M.
+     *
+     * @return instance of [RuntimePermissionHandler].
+     */
     fun provideHandler(): RuntimePermissionHandler
 }

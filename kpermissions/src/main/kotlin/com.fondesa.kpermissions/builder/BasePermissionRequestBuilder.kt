@@ -69,7 +69,7 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
         return request
     }
 
-    abstract fun createRequest(permissions: Array<out String>,
-                               nonceGenerator: PermissionNonceGenerator,
-                               runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest
+    protected abstract fun createRequest(permissions: Array<out String>,
+                                         nonceGenerator: PermissionNonceGenerator,
+                                         runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest
 }

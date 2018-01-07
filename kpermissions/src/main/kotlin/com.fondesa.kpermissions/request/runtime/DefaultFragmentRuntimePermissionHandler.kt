@@ -22,9 +22,38 @@ import android.support.annotation.RequiresApi
 import android.util.Log
 import com.fondesa.kpermissions.extensions.flatString
 import com.fondesa.kpermissions.extensions.isPermissionGranted
+import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Implementation of [FragmentRuntimePermissionHandler] that specifies the lifecycle of the
+ * runtime permissions' requests.
+ *
+ * It can process maximum one permissions' request at the same. This is done to avoid multiple
+ * requests handled by the OS together that will show overlapped permission's dialogs.
+ *
+ * Considering a lifecycle the group of phases that passes from [requestPermissions] till the end
+ * of [managePermissionsResult], this handler notifies the [RuntimePermissionHandler.Listener]
+ * for maximum one event during the lifecycle.
+ * For example if a permission's request contains two permissions and the user accepts only one of
+ * them, the [RuntimePermissionHandler.Listener] won't be notified on the accepted permissions, but
+ * only on the denied one.
+ *
+ * This is done following the consideration that a permissions' request must contain only
+ * the permissions that are related to a single functionality, so the functionality mustn't be
+ * available if the user doesn't "resolve" the permissions.
+ *
+ * Every state needs a [PermissionRequest]'s listener attached to be handled, otherwise the
+ * application will proceed to the next state, if any.
+ *
+ * The available states are the following.
+ * - rationale: happens when a permission is denied and a rationale is needed. It can be notified
+ * before the request is sent and after the result is received.
+ * - denied: happens when a permission is denied and the rationale state isn't handled. It can be
+ * notified after the result is received.
+ * - permanently denied: happens when the user selects the "never ask again" checkbox and the
+ * rationale/denied state isn't handled. It can be notified after the result is received.
+ * - accepted: happens when the user accepts ALL the permissions. It can be notified before
+ * the request is sent or after the result is received.
  */
 @RequiresApi(Build.VERSION_CODES.M)
 class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler() {
@@ -45,6 +74,7 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
 
         if (deniedPermissions.isNotEmpty()) {
             var rationaleHandled = false
+            // Get the permissions that need a rationale.
             val permissionsWithRationale = permissionsThatShouldShowRationale(deniedPermissions.toTypedArray())
             if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions if possible.
@@ -103,4 +133,9 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
         Log.d(TAG, "requesting permissions: ${permissions.flatString()}")
         requestPermissions(permissions)
     }
+
+    private fun permissionsThatShouldShowRationale(permissions: Array<out String>): Array<out String> =
+            permissions.filter {
+                shouldShowRequestPermissionRationale(it)
+            }.toTypedArray()
 }

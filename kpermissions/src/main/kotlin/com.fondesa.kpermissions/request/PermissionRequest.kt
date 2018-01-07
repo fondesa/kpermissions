@@ -29,11 +29,15 @@ interface PermissionRequest {
 
     fun deniedListener(listener: DeniedListener)
 
+    fun permanentlyDeniedListener(listener: PermanentlyDeniedListener)
+
     fun rationaleListener(listener: RationaleListener)
 
     fun detachAcceptedListener()
 
     fun detachDeniedListener()
+
+    fun detachPermanentlyDeniedListener()
 
     fun detachRationaleListener()
 
@@ -45,6 +49,11 @@ interface PermissionRequest {
     }
 
     interface DeniedListener {
+
+        fun onPermissionsDenied(permissions: Array<out String>)
+    }
+
+    interface PermanentlyDeniedListener {
 
         fun onPermissionsPermanentlyDenied(permissions: Array<out String>)
     }

@@ -31,6 +31,8 @@ interface RuntimePermissionHandler {
 
         fun permissionsAccepted(permissions: Array<out String>): Boolean
 
+        fun permissionsDenied(permissions: Array<out String>): Boolean
+
         fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean
 
         fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean

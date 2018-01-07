@@ -27,7 +27,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
 /**
  * Created by antoniolig on 05/01/18.
  */
-class DialogDeniedListener(private val context: Context) : PermissionRequest.DeniedListener {
+class DialogPermanentlyDeniedListener(private val context: Context) : PermissionRequest.PermanentlyDeniedListener {
 
     override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
         AlertDialog.Builder(context)

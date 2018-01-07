@@ -32,6 +32,8 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  * Since Android M, this builder creates a [RuntimePermissionRequest] that uses the
  * [RuntimePermissionHandler] provided by this builder.
  * Below Android M, this builder creates a [ManifestPermissionRequest].
+ *
+ * @property context the [Context] used to create the [PermissionRequest].
  */
 class CompatPermissionRequestBuilder internal constructor(private val context: Context) :
         BasePermissionRequestBuilder() {

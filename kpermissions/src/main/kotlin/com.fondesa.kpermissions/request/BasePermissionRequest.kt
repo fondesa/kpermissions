@@ -17,7 +17,8 @@
 package com.fondesa.kpermissions.request
 
 /**
- * Created by antoniolig on 06/01/18.
+ * Base implementation of [PermissionRequest] that implements all the listeners' logic
+ * that must be the same to all its subclasses.
  */
 abstract class BasePermissionRequest : PermissionRequest {
 

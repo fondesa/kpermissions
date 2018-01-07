@@ -1,15 +1,23 @@
 KAndroidPlugin.attachLibrary(project)
 BintrayDeployPlugin.attach(project)
 
+// Used by Robolectric.
 android.testOptions.unitTests.includeAndroidResources = true
 
 dependencies {
+    // Used to run basic unit test.
     testApi "junit:junit:$JUNIT_VERSION"
+    // Used to enable the mocks on final classes.
     testApi "org.mockito:mockito-inline:$MOCKITO_VERSION"
+    // Used as an helper library to use Mockito with Kotlin.
     testApi "com.nhaarman:mockito-kotlin:$KOTLIN_MOCKITO_VERSION"
+    // Used to test the Android components in unit tests.
     testApi "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
+    // Used to test the Android support components in unit tests.
     testApi "org.robolectric:shadows-supportv4:$ROBOLECTRIC_VERSION"
 
+    // Used to access the base extensions of Kotlin.
     api "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    // Used to access the support resources of the Android framework.
     api "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
 }

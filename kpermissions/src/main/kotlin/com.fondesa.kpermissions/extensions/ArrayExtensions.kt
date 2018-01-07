@@ -17,13 +17,20 @@
 package com.fondesa.kpermissions.extensions
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Creates a [String] using this array's elements.
+ * The elements will be appended to each other separated by the [separator].
+ *
+ * @param separator character used to separate the elements of the array.
+ * By default the [separator] is a comma.
+ * @return result [String] with the elements of the array or an empty [String]
+ * if the array was empty.
  */
 fun Array<out String>.flatString(separator: Char = ','): String {
     val sb = StringBuilder()
     forEachIndexed { index, s ->
         sb.append(s)
         if (index != lastIndex) {
+            // Don't add the separator after the last element.
             sb.append(separator)
         }
     }

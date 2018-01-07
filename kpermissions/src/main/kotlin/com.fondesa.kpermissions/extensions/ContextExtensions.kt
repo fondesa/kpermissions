@@ -21,7 +21,11 @@ import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Convenience method to check if a permission is granted or not.
+ * This method is compatible with all API versions.
+ *
+ * @param permission permission that must be checked.
+ * @return true if the [permission] is granted, false otherwise.
  */
 fun Context.isPermissionGranted(permission: String): Boolean =
         ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED

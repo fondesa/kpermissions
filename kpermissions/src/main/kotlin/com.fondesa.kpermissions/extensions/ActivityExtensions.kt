@@ -20,15 +20,20 @@ import android.app.Activity
 import com.fondesa.kpermissions.builder.CompatPermissionRequestBuilder
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.request.runtime.nonce.RationalePermissionNonceGenerator
 
 /**
- * Created by antoniolig on 05/01/18.
+ * Creates the default [PermissionRequestBuilder] using the context of the [Activity].
+ * The builder will use the default configurations and will be provided with
+ * the set of [permissions] attached to it.
+ *
+ * @param permissions set of permissions that must be attached to the builder.
+ * @return new instance of the default [PermissionRequestBuilder].
  */
 fun Activity.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
     val context = applicationContext
     val handler = FragmentRuntimePermissionHandlerProvider(fragmentManager)
 
+    // Creates the builder.
     return CompatPermissionRequestBuilder(context)
             .permissions(*permissions)
             .runtimeHandlerProvider(handler)

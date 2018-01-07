@@ -1,7 +1,15 @@
 KAndroidPlugin.attachLibrary(project)
 BintrayDeployPlugin.attach(project)
 
+android.testOptions.unitTests.includeAndroidResources = true
+
 dependencies {
+    testApi "junit:junit:$JUNIT_VERSION"
+    testApi "org.mockito:mockito-inline:$MOCKITO_VERSION"
+    testApi "com.nhaarman:mockito-kotlin:$KOTLIN_MOCKITO_VERSION"
+    testApi "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
+    testApi "org.robolectric:shadows-supportv4:$ROBOLECTRIC_VERSION"
+
     api "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     api "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
 }

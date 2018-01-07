@@ -19,10 +19,13 @@ package com.fondesa.kpermissions.request.runtime.nonce
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
 
 /**
- * Created by antoniolig on 06/01/18.
+ * Implementation of [PermissionNonceGenerator] that generates a [RationalePermissionNonce]
+ * that can be used to request the permissions again when the rationale related to these
+ * permissions was displayed to the user.
  */
 class RationalePermissionNonceGenerator : PermissionNonceGenerator {
 
-    override fun provideNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce =
+    override fun generateNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce =
+            // Generates the PermissionNonce.
             RationalePermissionNonce(handler, permissions)
 }

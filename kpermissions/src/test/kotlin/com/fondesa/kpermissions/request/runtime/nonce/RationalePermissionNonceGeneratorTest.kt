@@ -37,7 +37,7 @@ class RationalePermissionNonceGeneratorTest {
         val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
 
         // Provide the nonce.
-        val nonce = generator.provideNonce(handler, permissions)
+        val nonce = generator.generateNonce(handler, permissions)
 
         assertNotNull(nonce)
         assertThat(nonce, instanceOf(PermissionNonce::class.java))

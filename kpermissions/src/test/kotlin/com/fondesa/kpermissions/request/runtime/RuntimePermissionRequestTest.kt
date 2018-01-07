@@ -36,7 +36,7 @@ class RuntimePermissionRequestTest {
     private val handler = mock<RuntimePermissionHandler>()
     private val nonce = mock<PermissionNonce>()
     private val nonceGenerator = mock<PermissionNonceGenerator> {
-        on(it.provideNonce(eq(handler), any())).thenReturn(nonce)
+        on(it.generateNonce(eq(handler), any())).thenReturn(nonce)
     }
 
     private val acceptedListener = mock<PermissionRequest.AcceptedListener>()
@@ -121,7 +121,7 @@ class RuntimePermissionRequestTest {
 
         assertTrue(handled)
         // The nonce must be provided for the full permission set.
-        verify(nonceGenerator).provideNonce(handler, permissions)
+        verify(nonceGenerator).generateNonce(handler, permissions)
         verify(rationaleListener).onPermissionsShouldShowRationale(rationalePermissions, nonce)
     }
 

@@ -19,9 +19,4 @@ package com.fondesa.kpermissions.request.runtime.nonce
 /**
  * Created by antoniolig on 06/01/18.
  */
-class PermissionNonceUsedException: Exception {
-
-    constructor(): super()
-
-    constructor(msg: String): super(msg)
-}
+class PermissionNonceUsedException(msg: String) : Exception(msg)

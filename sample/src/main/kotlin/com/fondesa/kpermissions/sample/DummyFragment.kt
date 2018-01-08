@@ -19,8 +19,10 @@ package com.fondesa.kpermissions.sample
 import android.Manifest
 import android.os.Bundle
 import android.support.annotation.StringRes
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.fondesa.kpermissions.extensions.flatString
 import com.fondesa.kpermissions.extensions.permissionsBuilder
@@ -28,35 +30,38 @@ import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
 /**
- * The main screen of this application that requires some permissions.
+ * An simple [Fragment] used to request the permissions.
  */
-class MainActivity : AppCompatActivity(),
+class DummyFragment : Fragment(),
         PermissionRequest.AcceptedListener,
         PermissionRequest.DeniedListener,
         PermissionRequest.PermanentlyDeniedListener,
         PermissionRequest.RationaleListener {
 
     private val request by lazy {
-        permissionsBuilder(Manifest.permission.CAMERA)
+        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.SEND_SMS)
                 .build()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_view, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val activity = activity ?: throw NullPointerException("The Activity mustn't be null.")
 
         request.acceptedListener(this)
         request.deniedListener(this)
-        request.permanentlyDeniedListener(DialogPermanentlyDeniedListener(this))
-        request.rationaleListener(DialogRationaleListener(this))
+        request.permanentlyDeniedListener(DialogPermanentlyDeniedListener(activity))
+//        request.rationaleListener(this)
 
-        findViewById<View>(R.id.btn_test_activity_permissions).setOnClickListener {
+        view.findViewById<View>(R.id.btn_test_fragment_permissions).setOnClickListener {
             request.send()
         }
-
-        supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, DummyFragment())
-                .commit()
     }
 
     override fun onPermissionsAccepted(permissions: Array<out String>) {
@@ -76,8 +81,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun toastOf(@StringRes format: Int, permissions: Array<out String>) {
-        val msg = String.format(getString(format), permissions.flatString())
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        activity?.let {
+            val msg = String.format(getString(format), permissions.flatString())
+            Toast.makeText(it, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 }
-

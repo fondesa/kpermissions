@@ -18,19 +18,23 @@ package com.fondesa.kpermissions.sample
 
 import android.app.AlertDialog
 import android.content.Context
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
+import com.fondesa.kpermissions.extensions.flatString
 import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
 /**
- * Created by antoniolig on 05/01/18.
+ * An example of a [PermissionRequest.RationaleListener].
  */
 class DialogRationaleListener(private val context: Context) : PermissionRequest.RationaleListener {
 
     override fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce) {
+        val msg = String.format(context.getString(R.string.rationale_permissions),
+                permissions.flatString())
+
         AlertDialog.Builder(context)
-                .setTitle("Rational title")
-                .setMessage("Rational message")
-                .setPositiveButton(android.R.string.ok) { _, _ ->
+                .setTitle(R.string.permissions_required)
+                .setMessage(msg)
+                .setPositiveButton(R.string.request_again) { _, _ ->
                     // Send the request again.
                     nonce.use()
                 }

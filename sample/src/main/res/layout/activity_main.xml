@@ -5,16 +5,23 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/first_fragment_container"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@android:color/darker_gray" />
 
     <FrameLayout
-        android:id="@+id/second_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@android:color/white" />
+        android:background="@android:color/white">
+
+        <Button
+            android:id="@+id/btn_test_activity_permissions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/test_activity_permissions" />
+    </FrameLayout>
 </LinearLayout>

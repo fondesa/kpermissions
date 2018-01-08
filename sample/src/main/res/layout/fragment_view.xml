@@ -4,9 +4,9 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/btn_test_permissions"
+        android:id="@+id/btn_test_fragment_permissions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/test_permissions" />
+        android:text="@string/test_fragment_permissions" />
 </FrameLayout>

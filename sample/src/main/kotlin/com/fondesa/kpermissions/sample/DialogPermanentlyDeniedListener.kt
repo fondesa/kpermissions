@@ -21,19 +21,22 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import com.fondesa.kpermissions.extensions.flatString
 import com.fondesa.kpermissions.request.PermissionRequest
 
-
 /**
- * Created by antoniolig on 05/01/18.
+ * An example of a [PermissionRequest.PermanentlyDeniedListener].
  */
 class DialogPermanentlyDeniedListener(private val context: Context) : PermissionRequest.PermanentlyDeniedListener {
 
     override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
+        val msg = String.format(context.getString(R.string.permanently_denied_permissions),
+                permissions.flatString())
+
         AlertDialog.Builder(context)
-                .setTitle("Denied title")
-                .setMessage("Denied message")
-                .setPositiveButton(android.R.string.ok) { _, _ ->
+                .setTitle(R.string.permissions_required)
+                .setMessage(msg)
+                .setPositiveButton(R.string.action_settings) { _, _ ->
                     // Open the app's settings.
                     val intent = createAppSettingsIntent()
                     context.startActivity(intent)

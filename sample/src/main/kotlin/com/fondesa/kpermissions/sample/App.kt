@@ -23,6 +23,7 @@ import com.squareup.leakcanary.LeakCanary
  * Main entry point of the entire application used to initialize the resources
  * that will be used during the entire application's time.
  */
+@Suppress("unused")
 class App : Application() {
 
     override fun onCreate() {

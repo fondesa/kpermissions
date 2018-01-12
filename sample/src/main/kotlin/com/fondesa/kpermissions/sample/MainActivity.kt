@@ -22,8 +22,8 @@ import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
-import com.fondesa.kpermissions.extensions.flatString
-import com.fondesa.kpermissions.extensions.permissionsBuilder
+import com.fondesa.kpermissions.extension.flatString
+import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 

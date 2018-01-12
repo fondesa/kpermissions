@@ -20,8 +20,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.Log
-import com.fondesa.kpermissions.extensions.flatString
-import com.fondesa.kpermissions.extensions.isPermissionGranted
+import com.fondesa.kpermissions.extension.flatString
+import com.fondesa.kpermissions.extension.isPermissionGranted
 import com.fondesa.kpermissions.request.PermissionRequest
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.extensions
+package com.fondesa.kpermissions.extension
 
 import android.Manifest
 import com.fondesa.test.context

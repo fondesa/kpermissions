@@ -21,7 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import com.fondesa.kpermissions.extensions.flatString
+import com.fondesa.kpermissions.extension.flatString
 import com.fondesa.kpermissions.request.PermissionRequest
 
 /**

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.extensions
+package com.fondesa.kpermissions.extension
 
 import android.Manifest
-import android.app.Activity
+import android.app.Fragment
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
-import com.fondesa.test.createActivity
+import com.fondesa.test.createFragment
+import com.fondesa.test.createSupportFragment
 import junit.framework.Assert.assertNotNull
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
@@ -29,15 +30,15 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Tests for ActivityExtensions.kt extensions.
+ * Tests for FragmentExtensions.kt extensions.
  */
 @RunWith(RobolectricTestRunner::class)
-class ActivityExtensionsTest {
+class FragmentExtensionsTest {
 
     @Test(expected = IllegalArgumentException::class)
-    fun actPermissionBuilderWithZeroPermissions() {
-        val activity = createActivity<Activity>()
-        val builder = activity.permissionsBuilder()
+    fun fragPermissionBuilderWithZeroPermissions() {
+        val fragment = createFragment<Fragment>()
+        val builder = fragment.permissionsBuilder()
 
         assertNotNull(builder)
         assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))
@@ -47,9 +48,35 @@ class ActivityExtensionsTest {
     }
 
     @Test
-    fun actPermissionBuilderWithSomePermissions() {
-        val activity = createActivity<Activity>()
-        val builder = activity.permissionsBuilder(Manifest.permission.SEND_SMS,
+    fun fragPermissionBuilderWithSomePermissions() {
+        val fragment = createFragment<Fragment>()
+        val builder = fragment.permissionsBuilder(Manifest.permission.SEND_SMS,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+
+        assertNotNull(builder)
+        assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))
+
+        val request = builder.build()
+        assertNotNull(request)
+        assertThat(request, instanceOf(PermissionRequest::class.java))
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun suppFragPermissionBuilderWithZeroPermissions() {
+        val fragment = createSupportFragment<android.support.v4.app.Fragment>()
+        val builder = fragment.permissionsBuilder()
+
+        assertNotNull(builder)
+        assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))
+
+        // This must throw IllegalArgumentException.
+        builder.build()
+    }
+
+    @Test
+    fun suppFragPermissionBuilderWithSomePermissions() {
+        val fragment = createSupportFragment<android.support.v4.app.Fragment>()
+        val builder = fragment.permissionsBuilder(Manifest.permission.SEND_SMS,
                 Manifest.permission.ACCESS_FINE_LOCATION)
 
         assertNotNull(builder)

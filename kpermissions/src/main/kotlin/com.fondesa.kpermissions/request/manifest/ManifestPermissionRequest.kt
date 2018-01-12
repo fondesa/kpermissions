@@ -17,7 +17,7 @@
 package com.fondesa.kpermissions.request.manifest
 
 import android.content.Context
-import com.fondesa.kpermissions.extensions.isPermissionGranted
+import com.fondesa.kpermissions.extension.isPermissionGranted
 import com.fondesa.kpermissions.request.BasePermissionRequest
 import com.fondesa.kpermissions.request.PermissionRequest
 

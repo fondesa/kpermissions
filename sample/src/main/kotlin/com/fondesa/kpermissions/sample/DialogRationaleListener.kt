@@ -18,7 +18,7 @@ package com.fondesa.kpermissions.sample
 
 import android.app.AlertDialog
 import android.content.Context
-import com.fondesa.kpermissions.extensions.flatString
+import com.fondesa.kpermissions.extension.flatString
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 

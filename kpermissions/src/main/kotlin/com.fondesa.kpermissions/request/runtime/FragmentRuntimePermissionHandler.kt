@@ -20,7 +20,7 @@ import android.app.Fragment
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import com.fondesa.kpermissions.extensions.flatString
+import com.fondesa.kpermissions.extension.flatString
 
 /**
  * Implementation of [RuntimePermissionHandler] that uses a [Fragment] to handle the permissions.

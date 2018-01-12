@@ -20,8 +20,6 @@ import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
 import junit.framework.Assert.assertNotNull
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
@@ -36,7 +34,6 @@ import org.robolectric.RobolectricTestRunner
 class BasePermissionRequestBuilderTest {
 
     private val builder: BasePermissionRequestBuilder = MockBuilder()
-    private val spiedBuilder = spy(builder)
 
     private val provider = mock<RuntimePermissionHandlerProvider> {
         on(it.provideHandler()).thenReturn(mock())
@@ -78,15 +75,6 @@ class BasePermissionRequestBuilderTest {
                 .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))
-    }
-
-    @Test
-    fun sendAndBuild() {
-        spiedBuilder.permissions("example")
-                .runtimeHandlerProvider(provider)
-                .send()
-
-        verify(spiedBuilder).build()
     }
 
     class MockBuilder : BasePermissionRequestBuilder() {

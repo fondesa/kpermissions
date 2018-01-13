@@ -102,3 +102,6 @@ dependencies {
   <type>pom</type>
 </dependency>
 ```
+
+### Contributing ###
+Feel free to contribute to this project following the [contributing guidelines](https://github.com/Fondesa/KPermissions/blob/master/.github/CONTRIBUTING.md).

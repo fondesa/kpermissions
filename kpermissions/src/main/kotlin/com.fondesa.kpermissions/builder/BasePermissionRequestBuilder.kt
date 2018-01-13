@@ -66,14 +66,6 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
                 runtimeHandlerProvider)
     }
 
-    override fun send(): PermissionRequest {
-        // Build the request.
-        val request = build()
-        // Send it directly.
-        request.send()
-        return request
-    }
-
     /**
      * Create the [PermissionRequest] after the common checks are executed, the defaults are
      * assigned and this configuration can be considered valid.

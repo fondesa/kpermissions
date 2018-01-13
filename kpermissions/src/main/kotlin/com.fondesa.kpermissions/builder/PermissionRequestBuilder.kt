@@ -68,15 +68,4 @@ interface PermissionRequestBuilder {
      * are not specified.
      */
     fun build(): PermissionRequest
-
-    /**
-     * Build the [PermissionRequest] with all the configurations set and send it directly.
-     * It will also assigns the default values and throw some exceptions if the configuration
-     * of this builder isn't a valid one.
-     *
-     * @return instance of [PermissionRequest] built from these configurations.
-     * @throws IllegalArgumentException if the permissions or the [RuntimePermissionHandlerProvider]
-     * are not specified.
-     */
-    fun send(): PermissionRequest
 }

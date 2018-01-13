@@ -1,5 +1,5 @@
 <!-- 
-Make sure you've run `./gradlew clean build` before submit the PR. 
+Make sure you've read the file `CONTRIBUTING.md` before submit the PR. 
 Any HTML comment will be stripped when the markdown is rendered, so you don't need to delete them.
 -->
 
@@ -12,6 +12,6 @@ If this PR is related to an issue, reference it here.
 ### Motivation
 <!--
 If this solves a bug, provide the steps to reproduce it or reference the issue, if opened.
-In the other cases, specify why this change or this new functionality is required or why
+In the other cases, specify why this change or this new feature is required or why
 it can be helpful to the other users. 
 -->

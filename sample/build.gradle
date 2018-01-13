@@ -11,7 +11,7 @@ android {
     }
 }
 
-def libRemoteVersion = "0.0.1"
+def libRemoteVersion = "1.0.0"
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
@@ -19,7 +19,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
 
     localImplementation project(':kpermissions')
-//    remoteImplementation "com.github.fondesa:kpermissions:$libRemoteVersion"
+    remoteImplementation "com.github.fondesa:kpermissions:$libRemoteVersion"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_VERSION"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"

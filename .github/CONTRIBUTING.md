@@ -28,7 +28,8 @@ When you want to submit a pull request, remember to:
 - follow this library's code style
 - run `./gradlew clean build`
 - write tests for each new public API
-- write the **KDoc** on each API and comment the new features
+- write the **KDoc** on each API
+- write inline comments for features that aren't so clear
 
 ### Code style
 The first rule is to write everything in **Kotlin** (for sources) and **Groovy** (for plugins).
@@ -36,24 +37,26 @@ The first rule is to write everything in **Kotlin** (for sources) and **Groovy**
 For **Kotlin** files follow the official [coding conventions](https://kotlinlang.org/docs/reference/coding-conventions.html).
 There are also some others conventions in this project to follow when writing **Kotlin** files.
 
-##### Root classes / interfaces / objects
-Don't write more than one root class/interface in the same file.
+#### Root classes / interfaces / objects
+Don't write more than one root class/interface/object in the same file.
 
 Nested and inner classes/interfaces/objects are allowed.
 
-##### Extensions
+The file's name must be equal to the name of the root class/interface/object.
+
+#### Extensions
 All the public extensions are contained under the package `$.extension`.
 
 The name of the file that contains a group of public extensions must follow the 
 pattern `{x}Extensions.kt` where `x` is the name of the class the extensions are added to.
 
-##### Type aliases
+#### Type aliases
 All the public type aliases are contained under the package `$.alias`.
 
 The name of the file that contains a group of public aliases must follow the 
 pattern `{x}Aliases.kt` where `x` is the name of the class/functionality the aliases are related to.
 
-##### Tests
+#### Tests
 All the tests files must follow the pattern `{package}.{x}Test` where `package` is the package
 of the class/object that is tested and `x` is the name of the class/object or the name of the 
 extensions' file that is tested.
@@ -70,7 +73,7 @@ fun thisIsValid() {
 }
 ```
 
-##### Imports
+#### Imports
 The static imports are allowed only in tests.
 
 Leave a blank line between the imports and the documentation.

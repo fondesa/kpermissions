@@ -61,7 +61,7 @@ All the tests files must follow the pattern `{package}.{x}Test` where `package` 
 of the class/object that is tested and `x` is the name of the class/object or the name of the 
 extensions' file that is tested.
 
-Avoid to write the annotation `@Test` inlined to the declaration of the function.
+Avoid to write the annotation `@Test` inlined to the function's declaration.
 
 The only style allowed is lower camel case without underscores or backticks.
 

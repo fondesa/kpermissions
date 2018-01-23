@@ -43,4 +43,4 @@ If you are getting an error in the LogCat, paste here the stack trace.
 Paste the stack trace here.
 ```
 
-<!-- If the issue can't be reproduced easily, a demo project is well-liked. 
+<!-- If the issue can't be reproduced easily, a demo project is well-liked. -->

@@ -19,9 +19,9 @@ package com.fondesa.kpermissions.request.manifest
 import android.Manifest
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.test.context
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.times
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

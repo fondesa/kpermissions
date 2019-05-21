@@ -10,7 +10,7 @@ dependencies {
     // Used to enable the mocks on final classes.
     testImplementation "org.mockito:mockito-inline:$MOCKITO_VERSION"
     // Used as an helper library to use Mockito with Kotlin.
-    testImplementation "com.nhaarman:mockito-kotlin:$KOTLIN_MOCKITO_VERSION"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$KOTLIN_MOCKITO_VERSION"
     // Used to test the Android components in unit tests.
     testImplementation "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
     // Used to test the Android support components in unit tests.

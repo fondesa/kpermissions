@@ -18,10 +18,10 @@ package com.fondesa.kpermissions.request.runtime.nonce
 
 import android.Manifest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
-import com.nhaarman.mockito_kotlin.mock
-import junit.framework.Assert.assertNotNull
+import com.nhaarman.mockitokotlin2.mock
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 /**

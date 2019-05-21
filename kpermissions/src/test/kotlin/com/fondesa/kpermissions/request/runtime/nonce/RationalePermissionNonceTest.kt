@@ -18,8 +18,8 @@ package com.fondesa.kpermissions.request.runtime.nonce
 
 import android.Manifest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
 
 /**

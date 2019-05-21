@@ -20,9 +20,9 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import com.fondesa.test.context
-import com.nhaarman.mockito_kotlin.*
-import junit.framework.Assert.assertNull
-import junit.framework.Assert.assertTrue
+import com.nhaarman.mockitokotlin2.*
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

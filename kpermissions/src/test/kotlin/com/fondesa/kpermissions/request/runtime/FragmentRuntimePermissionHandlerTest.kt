@@ -17,8 +17,8 @@
 package com.fondesa.kpermissions.request.runtime
 
 import android.os.Build
-import junit.framework.Assert.assertNull
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -48,6 +48,9 @@ class FragmentRuntimePermissionHandlerTest {
 
         override fun handleRuntimePermissions(permissions: Array<out String>) = Unit
         override fun requestRuntimePermissions(permissions: Array<out String>) = Unit
-        override fun managePermissionsResult(permissions: Array<out String>, grantResults: IntArray) = Unit
+        override fun managePermissionsResult(
+            permissions: Array<out String>,
+            grantResults: IntArray
+        ) = Unit
     }
 }

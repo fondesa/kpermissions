@@ -6,15 +6,15 @@ android.testOptions.unitTests.includeAndroidResources = true
 
 dependencies {
     // Used to run basic unit test.
-    testApi "junit:junit:$JUNIT_VERSION"
+    testImplementation "junit:junit:$JUNIT_VERSION"
     // Used to enable the mocks on final classes.
-    testApi "org.mockito:mockito-inline:$MOCKITO_VERSION"
+    testImplementation "org.mockito:mockito-inline:$MOCKITO_VERSION"
     // Used as an helper library to use Mockito with Kotlin.
-    testApi "com.nhaarman:mockito-kotlin:$KOTLIN_MOCKITO_VERSION"
+    testImplementation "com.nhaarman:mockito-kotlin:$KOTLIN_MOCKITO_VERSION"
     // Used to test the Android components in unit tests.
-    testApi "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
+    testImplementation "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
     // Used to test the Android support components in unit tests.
-    testApi "org.robolectric:shadows-supportv4:$ROBOLECTRIC_VERSION"
+    testImplementation "org.robolectric:shadows-supportv4:$ROBOLECTRIC_VERSION"
 
     // Used to access the base extensions of Kotlin.
     api "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"

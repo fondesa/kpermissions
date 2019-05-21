@@ -69,7 +69,6 @@ class KAndroidPlugin extends ConfiguredProjectPlugin {
         // Add Android extension.
         project.android {
             compileSdkVersion prop(androidProps, "COMPILE_SDK").toInteger()
-            buildToolsVersion prop(androidProps, "BUILD_TOOLS")
 
             defaultConfig {
                 minSdkVersion prop(androidProps, "MIN_SDK").toInteger()

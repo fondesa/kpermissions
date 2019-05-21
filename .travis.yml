@@ -11,14 +11,13 @@ env:
     - API=28
 
 before_install:
-- yes | sdkmanager "platforms;android-28"
+- yes | sdkmanager "platforms;android-${API}"
+- yes | sdkmanager "build-tools;${BUILD_TOOLS_VERSION}"
 
 android:
   components:
     - tools
     - platform-tools
-    - build-tools-${BUILD_TOOLS_VERSION}
-    - android-${API}
     # Support libraries.
     - extra-android-support
     - extra-android-m2repository

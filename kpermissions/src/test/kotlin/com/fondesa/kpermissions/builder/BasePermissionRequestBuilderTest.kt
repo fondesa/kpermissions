@@ -19,10 +19,10 @@ package com.fondesa.kpermissions.builder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
-import com.nhaarman.mockito_kotlin.mock
-import junit.framework.Assert.assertNotNull
+import com.nhaarman.mockitokotlin2.mock
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

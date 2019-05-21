@@ -20,7 +20,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 import com.fondesa.test.context
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.mock
 import junit.framework.Assert.assertNotNull
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat

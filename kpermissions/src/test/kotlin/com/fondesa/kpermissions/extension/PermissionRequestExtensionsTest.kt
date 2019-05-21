@@ -19,8 +19,8 @@ package com.fondesa.kpermissions.extension
 import android.Manifest
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
-import com.nhaarman.mockito_kotlin.*
-import junit.framework.Assert.assertEquals
+import com.nhaarman.mockitokotlin2.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

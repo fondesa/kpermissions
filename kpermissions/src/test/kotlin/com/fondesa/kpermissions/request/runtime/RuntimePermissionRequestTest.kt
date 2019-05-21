@@ -20,9 +20,9 @@ import android.Manifest
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
-import com.nhaarman.mockito_kotlin.*
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
+import com.nhaarman.mockitokotlin2.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

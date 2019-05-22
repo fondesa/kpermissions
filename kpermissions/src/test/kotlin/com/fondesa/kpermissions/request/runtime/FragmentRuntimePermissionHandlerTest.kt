@@ -17,12 +17,12 @@
 package com.fondesa.kpermissions.request.runtime
 
 import android.os.Build
+import com.fondesa.test.createFragment
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.android.controller.FragmentController
 import org.robolectric.annotation.Config
 
 /**
@@ -32,12 +32,10 @@ import org.robolectric.annotation.Config
 @Config(minSdk = Build.VERSION_CODES.M)
 class FragmentRuntimePermissionHandlerTest {
 
-    private val fragment: FragmentRuntimePermissionHandler = MockFragment()
+    private val fragment: FragmentRuntimePermissionHandler = createFragment<MockFragment>()
 
     @Test
     fun fragmentCreationSuccessful() {
-        // Create the Fragment.
-        FragmentController.of(fragment).create()
         // The Fragment must retain the instance.
         assertTrue(fragment.retainInstance)
         // It mustn't have a layout.

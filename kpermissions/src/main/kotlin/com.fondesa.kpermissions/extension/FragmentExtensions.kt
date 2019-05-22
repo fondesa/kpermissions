@@ -17,7 +17,7 @@
 package com.fondesa.kpermissions.extension
 
 import android.app.Activity
-import android.app.Fragment
+import androidx.fragment.app.Fragment
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 
 /**
@@ -31,21 +31,6 @@ import com.fondesa.kpermissions.builder.PermissionRequestBuilder
  * @throws NullPointerException if the [Fragment] is not attached to an [Activity].
  */
 fun Fragment.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
-    val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
-    return activity.permissionsBuilder(*permissions)
-}
-
-/**
- * Creates the default [PermissionRequestBuilder] using the context of the [Activity] at which
- * this [android.support.v4.app.Fragment] is attached.
- * The builder will use the default configurations and will be provided with
- * the set of [permissions] attached to it.
- *
- * @param permissions set of permissions that must be attached to the builder.
- * @return new instance of the default [PermissionRequestBuilder].
- * @throws NullPointerException if the [android.support.v4.app.Fragment] is not attached to an [Activity].
- */
-fun android.support.v4.app.Fragment.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
     val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
     return activity.permissionsBuilder(*permissions)
 }

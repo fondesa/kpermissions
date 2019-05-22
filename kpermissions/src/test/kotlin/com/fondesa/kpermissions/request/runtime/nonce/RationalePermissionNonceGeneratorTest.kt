@@ -34,7 +34,8 @@ class RationalePermissionNonceGeneratorTest {
     @Test
     fun generateNonce() {
         val handler = mock<RuntimePermissionHandler>()
-        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
+        val permissions =
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
 
         // Provide the nonce.
         val nonce = generator.generateNonce(handler, permissions)

@@ -63,14 +63,15 @@ inline fun PermissionRequest.onDenied(crossinline callback: DeniedCallback) = ap
  * @param callback lambda that must be executed when the listener is notified.
  * @return the [PermissionRequest] itself.
  */
-inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: PermanentlyDeniedCallback) = apply {
-    // Attach the listener that will invoke the callback.
-    permanentlyDeniedListener(object : PermissionRequest.PermanentlyDeniedListener {
-        override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
-            callback(permissions)
-        }
-    })
-}
+inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: PermanentlyDeniedCallback) =
+    apply {
+        // Attach the listener that will invoke the callback.
+        permanentlyDeniedListener(object : PermissionRequest.PermanentlyDeniedListener {
+            override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
+                callback(permissions)
+            }
+        })
+    }
 
 /**
  * Used to attach a [PermissionRequest.RationaleListener] to the request that will
@@ -79,14 +80,18 @@ inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: Permanent
  * @param callback lambda that must be executed when the listener is notified.
  * @return the [PermissionRequest] itself.
  */
-inline fun PermissionRequest.onShouldShowRationale(crossinline callback: RationaleCallback) = apply {
-    // Attach the listener that will invoke the callback.
-    rationaleListener(object : PermissionRequest.RationaleListener {
-        override fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce) {
-            callback(permissions, nonce)
-        }
-    })
-}
+inline fun PermissionRequest.onShouldShowRationale(crossinline callback: RationaleCallback) =
+    apply {
+        // Attach the listener that will invoke the callback.
+        rationaleListener(object : PermissionRequest.RationaleListener {
+            override fun onPermissionsShouldShowRationale(
+                permissions: Array<out String>,
+                nonce: PermissionNonce
+            ) {
+                callback(permissions, nonce)
+            }
+        })
+    }
 
 /**
  * Used to declare the listeners of a [PermissionRequest] with a DSL style.

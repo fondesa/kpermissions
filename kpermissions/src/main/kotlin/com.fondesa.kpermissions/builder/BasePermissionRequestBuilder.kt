@@ -39,13 +39,15 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
         this.permissions = permissions
     }
 
-    override fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder = apply {
-        this.nonceGenerator = nonceGenerator
-    }
+    override fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder =
+        apply {
+            this.nonceGenerator = nonceGenerator
+        }
 
-    override fun runtimeHandlerProvider(runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequestBuilder = apply {
-        this.runtimeHandlerProvider = runtimeHandlerProvider
-    }
+    override fun runtimeHandlerProvider(runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequestBuilder =
+        apply {
+            this.runtimeHandlerProvider = runtimeHandlerProvider
+        }
 
     override fun build(): PermissionRequest {
         val permissions = permissions
@@ -59,11 +61,13 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
 
         // Get the runtime handler.
         val runtimeHandlerProvider = runtimeHandlerProvider
-                ?: throw IllegalArgumentException("A runtime handler is necessary to request the permissions.")
+            ?: throw IllegalArgumentException("A runtime handler is necessary to request the permissions.")
 
-        return createRequest(permissions,
-                nonceGenerator,
-                runtimeHandlerProvider)
+        return createRequest(
+            permissions,
+            nonceGenerator,
+            runtimeHandlerProvider
+        )
     }
 
     /**
@@ -75,7 +79,9 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
      * @param runtimeHandlerProvider instance of [RuntimePermissionHandlerProvider] specified in this configuration.
      * @return instance of [PermissionRequest] that uses this configuration.
      */
-    protected abstract fun createRequest(permissions: Array<out String>,
-                                         nonceGenerator: PermissionNonceGenerator,
-                                         runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest
+    protected abstract fun createRequest(
+        permissions: Array<out String>,
+        nonceGenerator: PermissionNonceGenerator,
+        runtimeHandlerProvider: RuntimePermissionHandlerProvider
+    ): PermissionRequest
 }

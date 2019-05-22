@@ -15,8 +15,7 @@ def libRemoteVersion = "1.0.0"
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
-
-    implementation "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
+    implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT_VERSION"
 
     localImplementation project(':kpermissions')
     remoteImplementation "com.github.fondesa:kpermissions:$libRemoteVersion"

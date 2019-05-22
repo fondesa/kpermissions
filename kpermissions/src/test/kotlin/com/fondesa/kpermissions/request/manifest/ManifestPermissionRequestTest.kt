@@ -148,7 +148,10 @@ class ManifestPermissionRequestTest {
         verify(deniedListener, times(2)).onPermissionsDenied(permission)
     }
 
-    private fun requestOf(vararg permissions: String, listeners: Boolean = true): ManifestPermissionRequest {
+    private fun requestOf(
+        vararg permissions: String,
+        listeners: Boolean = true
+    ): ManifestPermissionRequest {
         val request = ManifestPermissionRequest(context, permissions)
         if (listeners) {
             request.acceptedListener(acceptedListener)

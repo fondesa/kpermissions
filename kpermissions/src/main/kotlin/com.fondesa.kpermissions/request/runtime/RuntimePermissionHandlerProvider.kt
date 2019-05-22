@@ -16,7 +16,7 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import android.app.Fragment
+import androidx.fragment.app.Fragment
 
 /**
  * Provides a [RuntimePermissionHandler] to manage runtime permissions since Android M.

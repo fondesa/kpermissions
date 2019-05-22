@@ -45,8 +45,8 @@ class CompatPermissionRequestBuilderTest {
     fun verifyMinimumBuildInstance() {
         // Build the request.
         val request = builder.permissions("example")
-                .runtimeHandlerProvider(provider)
-                .build()
+            .runtimeHandlerProvider(provider)
+            .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))
     }
@@ -55,9 +55,9 @@ class CompatPermissionRequestBuilderTest {
     fun verifyFullBuildInstance() {
         // Build the request.
         val request = builder.permissions("example", "example_2")
-                .runtimeHandlerProvider(provider)
-                .nonceGenerator(nonceGenerator)
-                .build()
+            .runtimeHandlerProvider(provider)
+            .nonceGenerator(nonceGenerator)
+            .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))
     }

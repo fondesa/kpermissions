@@ -13,11 +13,8 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$KOTLIN_MOCKITO_VERSION"
     // Used to test the Android components in unit tests.
     testImplementation "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
-    // Used to test the Android support components in unit tests.
-    testImplementation "org.robolectric:shadows-supportv4:$ROBOLECTRIC_VERSION"
 
     // Used to access the base extensions of Kotlin.
     api "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
-    // Used to access the support resources of the Android framework.
-    api "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
+    api "androidx.fragment:fragment:$ANDROIDX_FRAGMENT_VERSION"
 }

@@ -18,12 +18,12 @@ package com.fondesa.kpermissions.sample
 
 import android.Manifest
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
 import com.fondesa.kpermissions.extension.flatString
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
@@ -33,19 +33,25 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
  * An simple [Fragment] used to request the permissions.
  */
 class DummyFragment : Fragment(),
-        PermissionRequest.AcceptedListener,
-        PermissionRequest.DeniedListener,
-        PermissionRequest.PermanentlyDeniedListener,
-        PermissionRequest.RationaleListener {
+    PermissionRequest.AcceptedListener,
+    PermissionRequest.DeniedListener,
+    PermissionRequest.PermanentlyDeniedListener,
+    PermissionRequest.RationaleListener {
 
     private val request by lazy {
-        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.SEND_SMS)
-                .build()
+        permissionsBuilder(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.SEND_SMS
+        )
+            .build()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_view, container, false)
     }
 
@@ -76,7 +82,10 @@ class DummyFragment : Fragment(),
         toastOf(R.string.permanently_denied_permissions, permissions)
     }
 
-    override fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce) {
+    override fun onPermissionsShouldShowRationale(
+        permissions: Array<out String>,
+        nonce: PermissionNonce
+    ) {
         toastOf(R.string.rationale_permissions, permissions)
     }
 

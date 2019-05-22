@@ -18,10 +18,10 @@ package com.fondesa.test
 
 import android.app.Activity
 import android.app.Application
-import android.app.Fragment
+import androidx.fragment.app.Fragment
 import org.robolectric.Robolectric
 import org.robolectric.RuntimeEnvironment
-import org.robolectric.shadows.support.v4.SupportFragmentController
+import org.robolectric.util.ReflectionHelpers
 
 /**
  * Get the application's instance returned by Robolectric.
@@ -32,26 +32,13 @@ val context: Application get() = RuntimeEnvironment.application
  * Create an [Activity] of type [T] using Robolectric.
  */
 inline fun <reified T : Activity> createActivity(): T = Robolectric.buildActivity(T::class.java)
-        .create()
-        .get()
+    .create()
+    .get()
 
 /**
  * Create a [Fragment] of type [T] using Robolectric.
  */
-inline fun <reified T : Fragment> createFragment(): T = Robolectric.buildFragment(T::class.java)
+inline fun <reified T : Fragment> createFragment(): T =
+    AndroidXFragmentController.of(ReflectionHelpers.callConstructor(T::class.java))
         .create()
         .get()
-
-/**
- * Create a [android.support.v4.app.Fragment] of type [T] using Robolectric.
- */
-inline fun <reified T : android.support.v4.app.Fragment> createSupportFragment(): T {
-    // Create the Fragment instance using the reflection.
-    val fragment = T::class.java.newInstance()
-            ?: throw NullPointerException("It was impossible to create an instance of the class " +
-                    T::class.java.name + " using the reflection.")
-
-    return SupportFragmentController.of(fragment)
-            .create()
-            .get()
-}

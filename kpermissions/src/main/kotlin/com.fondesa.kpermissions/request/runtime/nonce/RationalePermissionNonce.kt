@@ -26,8 +26,10 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
  * @property handler the [RuntimePermissionHandler] used to request the permissions again.
  * @property permissions the permissions that must be requested again.
  */
-class RationalePermissionNonce(private val handler: RuntimePermissionHandler,
-                               private val permissions: Array<out String>) : PermissionNonce {
+class RationalePermissionNonce(
+    private val handler: RuntimePermissionHandler,
+    private val permissions: Array<out String>
+) : PermissionNonce {
 
     private var used: Boolean = false
 

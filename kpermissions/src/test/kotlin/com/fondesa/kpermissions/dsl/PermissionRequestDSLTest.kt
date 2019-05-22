@@ -111,7 +111,10 @@ class PermissionRequestDSLTest {
         verifyNoMoreInteractions(request)
 
         // Invoke the method on the captured listener.
-        rationaleCaptor.lastValue.onPermissionsShouldShowRationale(expectedPermissions, expectedNonce)
+        rationaleCaptor.lastValue.onPermissionsShouldShowRationale(
+            expectedPermissions,
+            expectedNonce
+        )
 
         assertEquals(expectedPermissions, executedPermissions)
         assertEquals(expectedNonce, executedNonce)

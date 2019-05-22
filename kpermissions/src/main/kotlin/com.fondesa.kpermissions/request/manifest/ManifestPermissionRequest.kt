@@ -33,9 +33,11 @@ import com.fondesa.kpermissions.request.PermissionRequest
  * @property context the [Context] used to check the status of the permissions.
  * @property permissions the set of permissions that must be checked.
  */
-class ManifestPermissionRequest(private val context: Context,
-                                private val permissions: Array<out String>) :
-        BasePermissionRequest() {
+class ManifestPermissionRequest(
+    private val context: Context,
+    private val permissions: Array<out String>
+) :
+    BasePermissionRequest() {
 
     override fun send() {
         // Get all the permissions that are denied.

@@ -25,7 +25,10 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
  */
 class RationalePermissionNonceGenerator : PermissionNonceGenerator {
 
-    override fun generateNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce =
-            // Generates the PermissionNonce.
-            RationalePermissionNonce(handler, permissions)
+    override fun generateNonce(
+        handler: RuntimePermissionHandler,
+        permissions: Array<out String>
+    ): PermissionNonce =
+        // Generates the PermissionNonce.
+        RationalePermissionNonce(handler, permissions)
 }

@@ -18,8 +18,8 @@ package com.fondesa.kpermissions.request.runtime
 
 import android.content.pm.PackageManager
 import android.os.Build
-import android.support.annotation.RequiresApi
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.fondesa.kpermissions.extension.flatString
 import com.fondesa.kpermissions.extension.isPermissionGranted
 import com.fondesa.kpermissions.request.PermissionRequest
@@ -75,7 +75,8 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
         if (deniedPermissions.isNotEmpty()) {
             var rationaleHandled = false
             // Get the permissions that need a rationale.
-            val permissionsWithRationale = permissionsThatShouldShowRationale(deniedPermissions.toTypedArray())
+            val permissionsWithRationale =
+                permissionsThatShouldShowRationale(deniedPermissions.toTypedArray())
             if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions if possible.
                 rationaleHandled = listener.permissionsShouldShowRationale(permissionsWithRationale)
@@ -85,10 +86,14 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
                 }
             }
 
-            val permanentlyDeniedPermissions = deniedPermissions.minus(permissionsWithRationale).toTypedArray()
+            val permanentlyDeniedPermissions =
+                deniedPermissions.minus(permissionsWithRationale).toTypedArray()
             if (!rationaleHandled && permanentlyDeniedPermissions.isNotEmpty()) {
                 // Some permissions are permanently denied by the user.
-                Log.d(TAG, "permissions permanently denied: ${permanentlyDeniedPermissions.flatString()}")
+                Log.d(
+                    TAG,
+                    "permissions permanently denied: ${permanentlyDeniedPermissions.flatString()}"
+                )
                 listener.permissionsPermanentlyDenied(permanentlyDeniedPermissions)
             }
         } else {
@@ -135,7 +140,7 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
     }
 
     private fun permissionsThatShouldShowRationale(permissions: Array<out String>): Array<out String> =
-            permissions.filter {
-                shouldShowRequestPermissionRationale(it)
-            }.toTypedArray()
+        permissions.filter {
+            shouldShowRequestPermissionRationale(it)
+        }.toTypedArray()
 }

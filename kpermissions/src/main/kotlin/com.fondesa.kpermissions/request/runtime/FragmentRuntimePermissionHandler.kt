@@ -16,10 +16,10 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import android.app.Fragment
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.fondesa.kpermissions.extension.flatString
 
 /**
@@ -42,7 +42,11 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
         retainInstance = true
     }
 
-    final override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    final override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != REQ_CODE_PERMISSIONS || permissions.isEmpty()) {
             // Ignore the result if the request code doesn't match or
@@ -54,7 +58,10 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
         managePermissionsResult(permissions, grantResults)
     }
 
-    override fun attachListener(permissions: Array<out String>, listener: RuntimePermissionHandler.Listener) {
+    override fun attachListener(
+        permissions: Array<out String>,
+        listener: RuntimePermissionHandler.Listener
+    ) {
         val key = keyOf(permissions)
         listeners[key] = listener
     }
@@ -68,7 +75,10 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
      * @param grantResults the array containing the result of the permissions' request.
      * The [grantResults] array matches the [permissions] array 1 by 1, so the size is the same.
      */
-    protected abstract fun managePermissionsResult(permissions: Array<out String>, grantResults: IntArray)
+    protected abstract fun managePermissionsResult(
+        permissions: Array<out String>,
+        grantResults: IntArray
+    )
 
     /**
      * Get a unique key from a set of permissions.

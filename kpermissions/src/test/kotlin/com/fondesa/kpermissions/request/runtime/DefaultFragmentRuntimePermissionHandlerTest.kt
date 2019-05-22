@@ -20,6 +20,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import com.fondesa.test.context
+import com.fondesa.test.createFragment
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -28,7 +29,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.android.controller.FragmentController
 import org.robolectric.annotation.Config
 
 /**
@@ -43,12 +43,10 @@ class DefaultFragmentRuntimePermissionHandlerTest {
     private val permissions = arrayOf(firstPermission, secondPermission)
 
     private val listener = mock<RuntimePermissionHandler.Listener>()
-    private val fragment = DefaultFragmentRuntimePermissionHandler()
+    private val fragment = createFragment<DefaultFragmentRuntimePermissionHandler>()
 
     @Before
-    fun createFragment() {
-        // Create the Fragment.
-        FragmentController.of(fragment).create()
+    fun attachListenersToFragment() {
         // Attach the listener for the permissions.
         fragment.attachListener(permissions, listener)
     }
@@ -63,7 +61,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun permissionsRequested() {
-        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
+        val permissions =
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
         val spiedFragment = spy(fragment)
 
         // Request the permissions.
@@ -104,18 +103,26 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         val spiedFragment = spy(fragment)
 
         whenever(listener.permissionsShouldShowRationale(any())).thenReturn(true)
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(true)
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(true)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            true
+        )
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            true
+        )
 
         spiedFragment.handleRuntimePermissions(permissions)
         verify(listener).permissionsShouldShowRationale(permissions)
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(false)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            false
+        )
 
         spiedFragment.handleRuntimePermissions(permissions)
         verify(listener).permissionsShouldShowRationale(arrayOf(secondPermission))
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(false)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            false
+        )
 
         spiedFragment.handleRuntimePermissions(permissions)
 
@@ -149,7 +156,12 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         val reqCode = reqCodeCaptor.lastValue
         // Call the result with the captured code.
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, true))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = true
+            )
+        )
 
         spiedFragment.requestRuntimePermissions(permissions)
         // Now the method requestRuntimePermissions() can be called again because the Fragment
@@ -167,11 +179,21 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         val reqCode = reqCodeCaptor.lastValue
         // Call the result with the captured code.
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, true))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = true
+            )
+        )
 
         verify(listener).permissionsAccepted(permissions)
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = false
+            )
+        )
 
         // The listener mustn't be called with a denied permission.
         verify(listener).permissionsAccepted(permissions)
@@ -187,28 +209,51 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         val reqCode = reqCodeCaptor.lastValue
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(true)
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(true)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            true
+        )
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            true
+        )
         whenever(listener.permissionsShouldShowRationale(any())).thenReturn(true)
         whenever(listener.permissionsPermanentlyDenied(any())).thenReturn(true)
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(false, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = false,
+                secondGranted = false
+            )
+        )
 
         verify(listener).permissionsShouldShowRationale(permissions)
         verify(listener, never()).permissionsPermanentlyDenied(any())
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(false)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            false
+        )
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(false, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = false,
+                secondGranted = false
+            )
+        )
 
         verify(listener).permissionsShouldShowRationale(arrayOf(secondPermission))
         // The listener mustn't be notified about permanently denied permissions if there's at least
         // one rationale to show to the user.
         verify(listener, never()).permissionsPermanentlyDenied(any())
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(false)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            false
+        )
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(false, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = false,
+                secondGranted = false
+            )
+        )
 
         // Now the listener can be notified about the permanently denied permissions because
         // all rationales are solved.
@@ -225,16 +270,30 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         val reqCode = reqCodeCaptor.lastValue
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(true)
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(true)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            true
+        )
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            true
+        )
         whenever(listener.permissionsShouldShowRationale(any())).thenReturn(true)
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = false
+            )
+        )
 
         verify(listener).permissionsShouldShowRationale(arrayOf(secondPermission))
         verify(listener, never()).permissionsAccepted(any())
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, true))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = true
+            )
+        )
 
         verify(listener).permissionsAccepted(permissions)
     }
@@ -249,28 +308,51 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         val reqCode = reqCodeCaptor.lastValue
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(true)
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(true)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            true
+        )
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            true
+        )
         whenever(listener.permissionsDenied(any())).thenReturn(true)
         whenever(listener.permissionsPermanentlyDenied(any())).thenReturn(true)
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(false, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = false,
+                secondGranted = false
+            )
+        )
 
         verify(listener).permissionsDenied(permissions)
         verify(listener, never()).permissionsPermanentlyDenied(any())
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(false)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            false
+        )
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(false, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = false,
+                secondGranted = false
+            )
+        )
 
         verify(listener).permissionsDenied(arrayOf(secondPermission))
         // The listener mustn't be notified about permanently denied permissions if there's at least
         // one rationale to show to the user.
         verify(listener, never()).permissionsPermanentlyDenied(any())
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(false)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            false
+        )
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(false, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = false,
+                secondGranted = false
+            )
+        )
 
         // Now the listener can be notified about the permanently denied permissions because
         // all rationales are solved.
@@ -287,16 +369,30 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         val reqCode = reqCodeCaptor.lastValue
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(true)
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(true)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            true
+        )
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            true
+        )
         whenever(listener.permissionsDenied(any())).thenReturn(true)
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = false
+            )
+        )
 
         verify(listener).permissionsDenied(arrayOf(secondPermission))
         verify(listener, never()).permissionsAccepted(any())
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, true))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = true
+            )
+        )
 
         verify(listener).permissionsAccepted(permissions)
     }
@@ -311,16 +407,30 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         val reqCode = reqCodeCaptor.lastValue
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(false)
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(false)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+            false
+        )
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+            false
+        )
         whenever(listener.permissionsPermanentlyDenied(any())).thenReturn(true)
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, false))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = false
+            )
+        )
 
         verify(listener).permissionsPermanentlyDenied(arrayOf(secondPermission))
         verify(listener, never()).permissionsAccepted(any())
 
-        spiedFragment.onRequestPermissionsResult(reqCode, permissions, grantResults(true, true))
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = true,
+                secondGranted = true
+            )
+        )
 
         verify(listener).permissionsAccepted(permissions)
     }

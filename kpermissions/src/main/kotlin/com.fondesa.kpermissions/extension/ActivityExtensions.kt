@@ -17,6 +17,7 @@
 package com.fondesa.kpermissions.extension
 
 import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import com.fondesa.kpermissions.builder.CompatPermissionRequestBuilder
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider
@@ -29,12 +30,12 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
  * @param permissions set of permissions that must be attached to the builder.
  * @return new instance of the default [PermissionRequestBuilder].
  */
-fun Activity.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
+fun FragmentActivity.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
     val context = applicationContext
-    val handler = FragmentRuntimePermissionHandlerProvider(fragmentManager)
+    val handler = FragmentRuntimePermissionHandlerProvider(supportFragmentManager)
 
     // Creates the builder.
     return CompatPermissionRequestBuilder(context)
-            .permissions(*permissions)
-            .runtimeHandlerProvider(handler)
+        .permissions(*permissions)
+        .runtimeHandlerProvider(handler)
 }

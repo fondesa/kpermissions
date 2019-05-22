@@ -31,12 +31,14 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  * the permissions that needs a rationale.
  * @property handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
  */
-class RuntimePermissionRequest(private val permissions: Array<out String>,
-                               private val permissionNonceGenerator: PermissionNonceGenerator,
-                               private val handler: RuntimePermissionHandler) :
+class RuntimePermissionRequest(
+    private val permissions: Array<out String>,
+    private val permissionNonceGenerator: PermissionNonceGenerator,
+    private val handler: RuntimePermissionHandler
+) :
 
-        BasePermissionRequest(),
-        RuntimePermissionHandler.Listener {
+    BasePermissionRequest(),
+    RuntimePermissionHandler.Listener {
 
     init {
         // Attach this request as listener.
@@ -48,24 +50,28 @@ class RuntimePermissionRequest(private val permissions: Array<out String>,
         handler.handleRuntimePermissions(permissions)
     }
 
-    override fun permissionsAccepted(permissions: Array<out String>): Boolean = invokeOn(acceptedListener) {
-        onPermissionsAccepted(permissions)
-    }
+    override fun permissionsAccepted(permissions: Array<out String>): Boolean =
+        invokeOn(acceptedListener) {
+            onPermissionsAccepted(permissions)
+        }
 
-    override fun permissionsDenied(permissions: Array<out String>): Boolean = invokeOn(deniedListener) {
-        onPermissionsDenied(permissions)
-    }
+    override fun permissionsDenied(permissions: Array<out String>): Boolean =
+        invokeOn(deniedListener) {
+            onPermissionsDenied(permissions)
+        }
 
-    override fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean = invokeOn(permanentlyDeniedListener) {
-        onPermissionsPermanentlyDenied(permissions)
-    }
+    override fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean =
+        invokeOn(permanentlyDeniedListener) {
+            onPermissionsPermanentlyDenied(permissions)
+        }
 
-    override fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean = invokeOn(rationaleListener) {
-        val fullPermissions = this@RuntimePermissionRequest.permissions
-        // Generate the nonce for all the permissions.
-        val nonce = permissionNonceGenerator.generateNonce(handler, fullPermissions)
-        onPermissionsShouldShowRationale(permissions, nonce)
-    }
+    override fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean =
+        invokeOn(rationaleListener) {
+            val fullPermissions = this@RuntimePermissionRequest.permissions
+            // Generate the nonce for all the permissions.
+            val nonce = permissionNonceGenerator.generateNonce(handler, fullPermissions)
+            onPermissionsShouldShowRationale(permissions, nonce)
+        }
 
     private inline fun <T> invokeOn(instance: T?, block: T.() -> Unit): Boolean {
         if (instance == null)

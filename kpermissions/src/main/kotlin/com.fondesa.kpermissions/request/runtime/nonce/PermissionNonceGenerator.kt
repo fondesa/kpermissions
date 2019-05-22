@@ -30,5 +30,8 @@ interface PermissionNonceGenerator {
      * @param permissions the permissions that must be requested again.
      * @return unique instance of [PermissionNonce].
      */
-    fun generateNonce(handler: RuntimePermissionHandler, permissions: Array<out String>): PermissionNonce
+    fun generateNonce(
+        handler: RuntimePermissionHandler,
+        permissions: Array<out String>
+    ): PermissionNonce
 }

@@ -36,11 +36,13 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  * @property context the [Context] used to create the [PermissionRequest].
  */
 class CompatPermissionRequestBuilder internal constructor(private val context: Context) :
-        BasePermissionRequestBuilder() {
+    BasePermissionRequestBuilder() {
 
-    override fun createRequest(permissions: Array<out String>,
-                               nonceGenerator: PermissionNonceGenerator,
-                               runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequest {
+    override fun createRequest(
+        permissions: Array<out String>,
+        nonceGenerator: PermissionNonceGenerator,
+        runtimeHandlerProvider: RuntimePermissionHandlerProvider
+    ): PermissionRequest {
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Provide the handler.

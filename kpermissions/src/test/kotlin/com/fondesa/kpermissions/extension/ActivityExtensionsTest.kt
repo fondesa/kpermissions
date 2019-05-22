@@ -17,7 +17,7 @@
 package com.fondesa.kpermissions.extension
 
 import android.Manifest
-import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.test.createActivity
@@ -36,7 +36,7 @@ class ActivityExtensionsTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun actPermissionBuilderWithZeroPermissions() {
-        val activity = createActivity<Activity>()
+        val activity = createActivity<FragmentActivity>()
         val builder = activity.permissionsBuilder()
 
         assertNotNull(builder)
@@ -48,9 +48,11 @@ class ActivityExtensionsTest {
 
     @Test
     fun actPermissionBuilderWithSomePermissions() {
-        val activity = createActivity<Activity>()
-        val builder = activity.permissionsBuilder(Manifest.permission.SEND_SMS,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+        val activity = createActivity<FragmentActivity>()
+        val builder = activity.permissionsBuilder(
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
         assertNotNull(builder)
         assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))

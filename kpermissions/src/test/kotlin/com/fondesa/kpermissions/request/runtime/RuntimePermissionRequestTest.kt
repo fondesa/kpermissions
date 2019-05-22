@@ -57,8 +57,10 @@ class RuntimePermissionRequestTest {
 
     @Test
     fun moreThanOnePermissionsHandled() {
-        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.SEND_SMS)
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.SEND_SMS
+        )
         val request = requestOf(*permissions)
 
         verify(handler).attachListener(permissions, request)
@@ -226,10 +228,10 @@ class RuntimePermissionRequestTest {
     }
 
     private fun requestOf(vararg permissions: String) =
-            RuntimePermissionRequest(permissions, nonceGenerator, handler).apply {
-                acceptedListener(acceptedListener)
-                deniedListener(deniedListener)
-                permanentlyDeniedListener(permDeniedListener)
-                rationaleListener(rationaleListener)
-            }
+        RuntimePermissionRequest(permissions, nonceGenerator, handler).apply {
+            acceptedListener(acceptedListener)
+            deniedListener(deniedListener)
+            permanentlyDeniedListener(permDeniedListener)
+            rationaleListener(rationaleListener)
+        }
 }

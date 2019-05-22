@@ -18,7 +18,7 @@ package com.fondesa.kpermissions.extension
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 
 /**
  * Convenience method to check if a permission is granted or not.
@@ -28,4 +28,4 @@ import android.support.v4.content.ContextCompat
  * @return true if the [permission] is granted, false otherwise.
  */
 fun Context.isPermissionGranted(permission: String): Boolean =
-        ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+    ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED

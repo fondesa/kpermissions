@@ -53,15 +53,15 @@ class BasePermissionRequestBuilderTest {
     @Test(expected = IllegalArgumentException::class)
     fun throwsExceptionWithoutRuntimeHandler() {
         builder.permissions("example")
-                .build()
+            .build()
     }
 
     @Test
     fun verifyMinimumBuildInstance() {
         // Build the request.
         val request = builder.permissions("example")
-                .runtimeHandlerProvider(provider)
-                .build()
+            .runtimeHandlerProvider(provider)
+            .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))
     }
@@ -70,17 +70,19 @@ class BasePermissionRequestBuilderTest {
     fun verifyFullBuildInstance() {
         // Build the request.
         val request = builder.permissions("example")
-                .runtimeHandlerProvider(provider)
-                .nonceGenerator(nonceGenerator)
-                .build()
+            .runtimeHandlerProvider(provider)
+            .nonceGenerator(nonceGenerator)
+            .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))
     }
 
     class MockBuilder : BasePermissionRequestBuilder() {
 
-        override fun createRequest(permissions: Array<out String>,
-                                   nonceGenerator: PermissionNonceGenerator,
-                                   runtimeHandlerProvider: RuntimePermissionHandlerProvider) = mock<PermissionRequest>()
+        override fun createRequest(
+            permissions: Array<out String>,
+            nonceGenerator: PermissionNonceGenerator,
+            runtimeHandlerProvider: RuntimePermissionHandlerProvider
+        ) = mock<PermissionRequest>()
     }
 }

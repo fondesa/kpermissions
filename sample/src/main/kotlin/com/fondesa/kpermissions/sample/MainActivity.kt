@@ -18,10 +18,10 @@ package com.fondesa.kpermissions.sample
 
 import android.Manifest
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import com.fondesa.kpermissions.extension.flatString
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
@@ -31,14 +31,14 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
  * The main screen of this application that requires some permissions.
  */
 class MainActivity : AppCompatActivity(),
-        PermissionRequest.AcceptedListener,
-        PermissionRequest.DeniedListener,
-        PermissionRequest.PermanentlyDeniedListener,
-        PermissionRequest.RationaleListener {
+    PermissionRequest.AcceptedListener,
+    PermissionRequest.DeniedListener,
+    PermissionRequest.PermanentlyDeniedListener,
+    PermissionRequest.RationaleListener {
 
     private val request by lazy {
         permissionsBuilder(Manifest.permission.CAMERA)
-                .build()
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +55,8 @@ class MainActivity : AppCompatActivity(),
         }
 
         supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, DummyFragment())
-                .commit()
+            .add(R.id.fragment_container, DummyFragment())
+            .commit()
     }
 
     override fun onPermissionsAccepted(permissions: Array<out String>) {
@@ -71,7 +71,10 @@ class MainActivity : AppCompatActivity(),
         toastOf(R.string.permanently_denied_permissions, permissions)
     }
 
-    override fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce) {
+    override fun onPermissionsShouldShowRationale(
+        permissions: Array<out String>,
+        nonce: PermissionNonce
+    ) {
         toastOf(R.string.rationale_permissions, permissions)
     }
 

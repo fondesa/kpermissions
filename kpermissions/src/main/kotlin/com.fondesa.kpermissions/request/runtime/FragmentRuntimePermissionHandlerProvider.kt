@@ -17,10 +17,10 @@
 package com.fondesa.kpermissions.request.runtime
 
 import android.app.Activity
-import android.app.Fragment
-import android.app.FragmentManager
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider.Companion.FRAGMENT_TAG
 
 /**
@@ -34,7 +34,7 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
  * @property manager the [FragmentManager] of the [Activity].
  */
 open class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
-        RuntimePermissionHandlerProvider {
+    RuntimePermissionHandlerProvider {
 
     @RequiresApi(Build.VERSION_CODES.M)
     final override fun provideHandler(): RuntimePermissionHandler {
@@ -44,7 +44,7 @@ open class FragmentRuntimePermissionHandlerProvider(private val manager: Fragmen
             // Create the Fragment delegated to handle permissions.
             fragment = createPermissionHandlerFragment()
             val transaction = manager.beginTransaction()
-                    .add(fragment, FRAGMENT_TAG)
+                .add(fragment, FRAGMENT_TAG)
 
             // Commit the fragment synchronously.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -59,7 +59,7 @@ open class FragmentRuntimePermissionHandlerProvider(private val manager: Fragmen
 
     @RequiresApi(Build.VERSION_CODES.M)
     protected open fun createPermissionHandlerFragment(): FragmentRuntimePermissionHandler =
-            DefaultFragmentRuntimePermissionHandler()
+        DefaultFragmentRuntimePermissionHandler()
 
     companion object {
         private const val FRAGMENT_TAG = "KPermissionsFragment"

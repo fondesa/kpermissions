@@ -17,11 +17,10 @@
 package com.fondesa.kpermissions.extension
 
 import android.Manifest
-import android.app.Fragment
+import androidx.fragment.app.Fragment
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.test.createFragment
-import com.fondesa.test.createSupportFragment
 import junit.framework.Assert.assertNotNull
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
@@ -50,34 +49,10 @@ class FragmentExtensionsTest {
     @Test
     fun fragPermissionBuilderWithSomePermissions() {
         val fragment = createFragment<Fragment>()
-        val builder = fragment.permissionsBuilder(Manifest.permission.SEND_SMS,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-
-        assertNotNull(builder)
-        assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))
-
-        val request = builder.build()
-        assertNotNull(request)
-        assertThat(request, instanceOf(PermissionRequest::class.java))
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun suppFragPermissionBuilderWithZeroPermissions() {
-        val fragment = createSupportFragment<android.support.v4.app.Fragment>()
-        val builder = fragment.permissionsBuilder()
-
-        assertNotNull(builder)
-        assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))
-
-        // This must throw IllegalArgumentException.
-        builder.build()
-    }
-
-    @Test
-    fun suppFragPermissionBuilderWithSomePermissions() {
-        val fragment = createSupportFragment<android.support.v4.app.Fragment>()
-        val builder = fragment.permissionsBuilder(Manifest.permission.SEND_SMS,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+        val builder = fragment.permissionsBuilder(
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
         assertNotNull(builder)
         assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))

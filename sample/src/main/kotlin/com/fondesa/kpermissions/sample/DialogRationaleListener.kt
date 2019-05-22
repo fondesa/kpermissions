@@ -27,18 +27,23 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
  */
 class DialogRationaleListener(private val context: Context) : PermissionRequest.RationaleListener {
 
-    override fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce) {
-        val msg = String.format(context.getString(R.string.rationale_permissions),
-                permissions.flatString())
+    override fun onPermissionsShouldShowRationale(
+        permissions: Array<out String>,
+        nonce: PermissionNonce
+    ) {
+        val msg = String.format(
+            context.getString(R.string.rationale_permissions),
+            permissions.flatString()
+        )
 
         AlertDialog.Builder(context)
-                .setTitle(R.string.permissions_required)
-                .setMessage(msg)
-                .setPositiveButton(R.string.request_again) { _, _ ->
-                    // Send the request again.
-                    nonce.use()
-                }
-                .setNegativeButton(android.R.string.cancel, null)
-                .show()
+            .setTitle(R.string.permissions_required)
+            .setMessage(msg)
+            .setPositiveButton(R.string.request_again) { _, _ ->
+                // Send the request again.
+                nonce.use()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 }

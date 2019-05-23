@@ -78,6 +78,7 @@ Compatibility
 ------
 
 **Android SDK**: KPermissions requires a minimum API level of **14** (the same of the latest support libraries).
+**AndroidX**: this library requires AndroidX. To use it in a project without AndroidX, refer to the version **1.x**
 
 Integration
 ------
@@ -88,7 +89,7 @@ You can download a jar from GitHub's [releases page](https://github.com/Fondesa/
 
 ```gradle
 dependencies {
-    compile 'com.github.fondesa:kpermissions:1.0.0'
+    compile 'com.github.fondesa:kpermissions:2.0.0'
 }
 ```
 
@@ -98,7 +99,7 @@ dependencies {
 <dependency>
   <groupId>com.github.fondesa</groupId>
   <artifactId>kpermissions</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
   <type>pom</type>
 </dependency>
 ```

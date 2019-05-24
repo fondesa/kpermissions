@@ -78,6 +78,7 @@ Compatibility
 ------
 
 **Android SDK**: KPermissions requires a minimum API level of **14** (the same of the latest support libraries).
+
 **AndroidX**: this library requires AndroidX. To use it in a project without AndroidX, refer to the version **1.x**
 
 Integration

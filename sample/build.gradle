@@ -11,7 +11,7 @@ android {
     }
 }
 
-def libRemoteVersion = "2.0.0"
+def libRemoteVersion = "2.0.1"
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"

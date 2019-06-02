@@ -43,16 +43,9 @@ open class FragmentRuntimePermissionHandlerProvider(private val manager: Fragmen
         if (fragment == null) {
             // Create the Fragment delegated to handle permissions.
             fragment = createPermissionHandlerFragment()
-            val transaction = manager.beginTransaction()
+            manager.beginTransaction()
                 .add(fragment, FRAGMENT_TAG)
-
-            // Commit the fragment synchronously.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                transaction.commitNowAllowingStateLoss()
-            } else {
-                transaction.commitAllowingStateLoss()
-                manager.executePendingTransactions()
-            }
+                .commitAllowingStateLoss()
         }
         return fragment
     }

@@ -16,6 +16,7 @@
 
 package com.fondesa.kpermissions.request.runtime
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
@@ -59,6 +60,13 @@ import com.fondesa.kpermissions.request.PermissionRequest
 class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler() {
 
     private var isProcessingPermissions = false
+    private var dispatchableHandleRuntimePermissions: (() -> Unit)? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        dispatchableHandleRuntimePermissions?.invoke()
+        dispatchableHandleRuntimePermissions = null
+    }
 
     override fun managePermissionsResult(permissions: Array<out String>, grantResults: IntArray) {
         // Now the Fragment is not processing the permissions anymore.
@@ -103,8 +111,17 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
     }
 
     override fun handleRuntimePermissions(permissions: Array<out String>) {
-        val context = activity ?: throw NullPointerException("The activity mustn't be null.")
+        if (isAdded) {
+            handleRuntimePermissionsWhenAdded(permissions)
+        } else {
+            dispatchableHandleRuntimePermissions = {
+                handleRuntimePermissionsWhenAdded(permissions)
+            }
+        }
+    }
 
+    private fun handleRuntimePermissionsWhenAdded(permissions: Array<out String>) {
+        val context = requireActivity()
         val areAllGranted = permissions.all {
             context.isPermissionGranted(it)
         }

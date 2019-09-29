@@ -90,7 +90,7 @@ You can download a jar from GitHub's [releases page](https://github.com/Fondesa/
 
 ```gradle
 dependencies {
-    compile 'com.github.fondesa:kpermissions:2.0.1'
+    compile 'com.github.fondesa:kpermissions:2.0.2'
 }
 ```
 
@@ -100,7 +100,7 @@ dependencies {
 <dependency>
   <groupId>com.github.fondesa</groupId>
   <artifactId>kpermissions</artifactId>
-  <version>2.0.1</version>
+  <version>2.0.2</version>
   <type>pom</type>
 </dependency>
 ```

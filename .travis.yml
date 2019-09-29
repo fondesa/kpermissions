@@ -6,9 +6,9 @@ sudo: false
 env:
   global:
     # The same build tools version in the project.
-    - BUILD_TOOLS_VERSION=28.0.3
+    - BUILD_TOOLS_VERSION=29.0.2
     # Android API level used in this project.
-    - API=28
+    - API=29
 
 before_install:
 - yes | sdkmanager "platforms;android-${API}"

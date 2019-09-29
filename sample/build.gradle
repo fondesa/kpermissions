@@ -21,5 +21,4 @@ dependencies {
     remoteImplementation "com.github.fondesa:kpermissions:$libRemoteVersion"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_VERSION"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
 }

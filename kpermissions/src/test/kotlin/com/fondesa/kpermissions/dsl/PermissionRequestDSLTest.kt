@@ -33,7 +33,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class PermissionRequestDSLTest {
-
     private val request = mock<PermissionRequest>()
     private val dsl = PermissionRequestDSL(request)
 

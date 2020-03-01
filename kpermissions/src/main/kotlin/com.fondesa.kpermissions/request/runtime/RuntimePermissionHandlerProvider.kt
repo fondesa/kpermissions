@@ -27,8 +27,7 @@ import androidx.fragment.app.Fragment
 interface RuntimePermissionHandlerProvider {
 
     /**
-     * Provides an instance of [RuntimePermissionHandler] used to check permissions
-     * since Android M.
+     * Provides an instance of [RuntimePermissionHandler] used to check permissions since Android M.
      *
      * @return instance of [RuntimePermissionHandler].
      */

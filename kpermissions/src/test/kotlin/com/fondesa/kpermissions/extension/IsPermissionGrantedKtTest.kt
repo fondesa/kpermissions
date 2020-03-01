@@ -25,10 +25,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 
 /**
- * Tests for ContextExtensions.kt extensions.
+ * Tests for IsPermissionGranted.kt file.
  */
 @RunWith(RobolectricTestRunner::class)
-class ContextExtensionsTest {
+class IsPermissionGrantedKtTest {
 
     @Test
     fun isPermissionGrantedOrDenied() {

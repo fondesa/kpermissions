@@ -32,7 +32,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class RuntimePermissionRequestTest {
-
     private val handler = mock<RuntimePermissionHandler>()
     private val nonce = mock<PermissionNonce>()
     private val nonceGenerator = mock<PermissionNonceGenerator> {

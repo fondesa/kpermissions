@@ -22,22 +22,26 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
  * Alias used to define the lambda used to identify a request's callback invoked
  * when some permission are accepted.
  */
+@Deprecated("Use the PermissionStatus API instead.")
 typealias AcceptedCallback = (Array<out String>) -> Unit
 
 /**
  * Alias used to define the lambda used to identify a request's callback invoked
  * when some permission are denied.
  */
+@Deprecated("Use the PermissionStatus API instead.")
 typealias DeniedCallback = (Array<out String>) -> Unit
 
 /**
  * Alias used to define the lambda used to identify a request's callback invoked
  * when some permission are permanently denied.
  */
+@Deprecated("Use the PermissionStatus API instead.")
 typealias PermanentlyDeniedCallback = (Array<out String>) -> Unit
 
 /**
  * Alias used to define the lambda used to identify a request's callback invoked
  * when some permission should show a rationale.
  */
+@Deprecated("Use the PermissionStatus API instead.")
 typealias RationaleCallback = (Array<out String>, PermissionNonce) -> Unit

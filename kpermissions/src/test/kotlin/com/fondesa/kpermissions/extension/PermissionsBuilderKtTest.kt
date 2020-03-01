@@ -18,8 +18,10 @@ package com.fondesa.kpermissions.extension
 
 import android.Manifest
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.test.createActivity
 import com.fondesa.test.createFragment
 import junit.framework.Assert.assertNotNull
 import org.hamcrest.CoreMatchers.instanceOf
@@ -29,25 +31,29 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Tests for FragmentExtensions.kt extensions.
+ * Tests for PermissionsBuilder.kt file.
  */
 @RunWith(RobolectricTestRunner::class)
-class FragmentExtensionsTest {
+class PermissionsBuilderKtTest {
 
-    @Test(expected = IllegalArgumentException::class)
-    fun fragPermissionBuilderWithZeroPermissions() {
-        val fragment = createFragment<Fragment>()
-        val builder = fragment.permissionsBuilder()
+    @Test
+    fun `When permissionsBuilder() is invoked with an Activity instance, the PermissionRequest is built successfully`() {
+        val activity = createActivity<FragmentActivity>()
+        val builder = activity.permissionsBuilder(
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
         assertNotNull(builder)
         assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))
 
-        // This must throw IllegalArgumentException.
-        builder.build()
+        val request = builder.build()
+        assertNotNull(request)
+        assertThat(request, instanceOf(PermissionRequest::class.java))
     }
 
     @Test
-    fun fragPermissionBuilderWithSomePermissions() {
+    fun `When permissionsBuilder() is invoked with a Fragment instance, the PermissionRequest is built successfully`() {
         val fragment = createFragment<Fragment>()
         val builder = fragment.permissionsBuilder(
             Manifest.permission.SEND_SMS,

@@ -37,10 +37,15 @@ interface PermissionRequestBuilder {
     /**
      * Sets the permissions that must be requested.
      *
-     * @param permissions set of permissions that must be requested.
+     * @param firstPermission the first permission that must be requested.
+     * @param otherPermissions the other permissions that must be requested, if the request
+     * should handle more than one permission.
      * @return the builder itself.
      */
-    fun permissions(vararg permissions: String): PermissionRequestBuilder
+    fun permissions(
+        firstPermission: String,
+        vararg otherPermissions: String
+    ): PermissionRequestBuilder
 
     /**
      * Sets the [PermissionNonceGenerator] used to generate a [PermissionNonce].
@@ -48,6 +53,7 @@ interface PermissionRequestBuilder {
      * @param nonceGenerator instance of [PermissionNonceGenerator] that must be added.
      * @return the builder itself.
      */
+    @Deprecated("Use the PermissionStatus API instead which don't need a nonce to execute a request again.")
     fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder
 
     /**

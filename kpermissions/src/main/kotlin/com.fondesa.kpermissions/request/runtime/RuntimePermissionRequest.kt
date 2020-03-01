@@ -16,38 +16,103 @@
 
 package com.fondesa.kpermissions.request.runtime
 
+import android.app.Activity
+import com.fondesa.kpermissions.PermissionStatus
+import com.fondesa.kpermissions.extension.checkRuntimePermissionsStatus
 import com.fondesa.kpermissions.request.BasePermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 
 /**
  * Implementation of [BasePermissionRequest] that checks the permissions since Android M.
- *
  * The checks on the permissions are delegated to the [RuntimePermissionHandler] provided
  * to this request.
- * All the listeners could be notified.
- *
- * @property permissions the set of permissions that must be checked.
- * @property permissionNonceGenerator the [PermissionNonceGenerator] that generates the nonce for
- * the permissions that needs a rationale.
- * @property handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
  */
-class RuntimePermissionRequest(
-    private val permissions: Array<out String>,
-    private val permissionNonceGenerator: PermissionNonceGenerator,
+class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler.Listener {
+    private val activity: Activity?
+    private val permissions: Array<out String>
+    private val permissionNonceGenerator: PermissionNonceGenerator?
     private val handler: RuntimePermissionHandler
-) :
 
-    BasePermissionRequest(),
-    RuntimePermissionHandler.Listener {
-
-    init {
+    /**
+     * Creates a new [RuntimePermissionRequest].
+     *
+     * @param activity the [Activity] used to check the permissions status.
+     * @param permissions the set of permissions that must be checked.
+     * @param handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
+     */
+    constructor(
+        activity: Activity,
+        permissions: Array<out String>,
+        handler: RuntimePermissionHandler
+    ) : super() {
+        this.activity = activity
+        this.permissions = permissions
+        this.permissionNonceGenerator = null
+        this.handler = handler
         // Attach this request as listener.
         handler.attachListener(permissions, this)
+    }
+
+    /**
+     * Creates a new [RuntimePermissionRequest].
+     *
+     * @param activity the [Activity] used to check the permissions status.
+     * @param permissions the set of permissions that must be checked.
+     * @param permissionNonceGenerator the [PermissionNonceGenerator] that generates the nonce for
+     * the permissions that needs a rationale.
+     * @param handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
+     */
+    @Deprecated("Use the constructor (Activity, Array<out String>, RuntimePermissionsHandler) instead.")
+    constructor(
+        activity: Activity,
+        permissions: Array<out String>,
+        permissionNonceGenerator: PermissionNonceGenerator,
+        handler: RuntimePermissionHandler
+    ) : super() {
+        this.activity = activity
+        this.permissions = permissions
+        this.permissionNonceGenerator = permissionNonceGenerator
+        this.handler = handler
+        // Attach this request as listener.
+        handler.attachListener(permissions, this)
+    }
+
+    /**
+     * Creates a new [RuntimePermissionRequest].
+     *
+     * @param permissions the set of permissions that must be checked.
+     * @param permissionNonceGenerator the [PermissionNonceGenerator] that generates the nonce for
+     * the permissions that needs a rationale.
+     * @param handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
+     */
+    @Deprecated("Use the constructor (Activity, Array<out String>, RuntimePermissionsHandler) instead.")
+    constructor(
+        permissions: Array<out String>,
+        permissionNonceGenerator: PermissionNonceGenerator,
+        handler: RuntimePermissionHandler
+    ) : super() {
+        this.activity = null
+        this.permissions = permissions
+        this.permissionNonceGenerator = permissionNonceGenerator
+        this.handler = handler
+        // Attach this request as listener.
+        handler.attachListener(permissions, this)
+    }
+
+    override fun checkStatus(): List<PermissionStatus> {
+        val activity = activity ?: throw IllegalStateException(
+            "The status can be checked only with an ${Activity::class.java.simpleName} instance."
+        )
+        return activity.checkRuntimePermissionsStatus(permissions.toList())
     }
 
     override fun send() {
         // The RuntimePermissionHandler will handle the request.
         handler.handleRuntimePermissions(permissions)
+    }
+
+    override fun onPermissionsResult(result: List<PermissionStatus>) {
+        listeners.forEach { it.onPermissionsResult(result) }
     }
 
     override fun permissionsAccepted(permissions: Array<out String>): Boolean =
@@ -69,6 +134,9 @@ class RuntimePermissionRequest(
         invokeOn(rationaleListener) {
             val fullPermissions = this@RuntimePermissionRequest.permissions
             // Generate the nonce for all the permissions.
+            val permissionNonceGenerator = permissionNonceGenerator ?: throw IllegalStateException(
+                "The nonce generator is necessary with the legacy API."
+            )
             val nonce = permissionNonceGenerator.generateNonce(handler, fullPermissions)
             onPermissionsShouldShowRationale(permissions, nonce)
         }

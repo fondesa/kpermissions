@@ -16,7 +16,7 @@
 
 package com.fondesa.kpermissions.builder
 
-import android.content.Context
+import android.app.Activity
 import android.os.Build
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
@@ -33,9 +33,9 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  * [RuntimePermissionHandler] provided by this builder.
  * Below Android M, this builder creates a [ManifestPermissionRequest].
  *
- * @property context the [Context] used to create the [PermissionRequest].
+ * @property activity the [Activity] used to create the [PermissionRequest].
  */
-class CompatPermissionRequestBuilder internal constructor(private val context: Context) :
+class CompatPermissionRequestBuilder internal constructor(private val activity: Activity) :
     BasePermissionRequestBuilder() {
 
     override fun createRequest(
@@ -48,10 +48,10 @@ class CompatPermissionRequestBuilder internal constructor(private val context: C
             // Provide the handler.
             val handler = runtimeHandlerProvider.provideHandler()
             // Create the runtime request.
-            RuntimePermissionRequest(permissions, nonceGenerator, handler)
+            RuntimePermissionRequest(activity, permissions, nonceGenerator, handler)
         } else {
             // Create the manifest request.
-            ManifestPermissionRequest(context, permissions)
+            ManifestPermissionRequest(activity, permissions)
         }
     }
 }

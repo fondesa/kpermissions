@@ -16,6 +16,7 @@
 
 package com.fondesa.kpermissions.request.runtime.nonce
 
+@Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
 /**
  * Used to request some permissions again.
  * A [PermissionNonce] can be used only one time.
@@ -28,5 +29,6 @@ interface PermissionNonce {
      * @throws PermissionNonceUsedException if this method is invoke more than one time
      * on the same instance of [PermissionNonce].
      */
+    @Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
     fun use()
 }

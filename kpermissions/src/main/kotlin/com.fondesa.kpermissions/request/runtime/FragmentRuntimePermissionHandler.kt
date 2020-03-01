@@ -20,7 +20,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import com.fondesa.kpermissions.extension.flatString
 
 /**
  * Implementation of [RuntimePermissionHandler] that uses a [Fragment] to handle the permissions.
@@ -86,7 +85,8 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
      * @param permissions the permissions that are used to generate the key.
      * @return unique key in [String] format generated from [permissions].
      */
-    protected open fun keyOf(permissions: Array<out String>): String = permissions.flatString()
+    protected open fun keyOf(permissions: Array<out String>): String =
+        permissions.joinToString(separator = ",")
 
     /**
      * Request the permissions with a fixed request code.

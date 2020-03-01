@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import com.fondesa.kpermissions.extension.flatString
 import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
@@ -33,7 +32,7 @@ class DialogPermanentlyDeniedListener(private val context: Context) :
     override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
         val msg = String.format(
             context.getString(R.string.permanently_denied_permissions),
-            permissions.flatString()
+            permissions.joinToString()
         )
 
         AlertDialog.Builder(context)

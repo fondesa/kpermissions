@@ -16,6 +16,8 @@
 
 package com.fondesa.kpermissions.request.runtime
 
+import com.fondesa.kpermissions.PermissionStatus
+
 /**
  * Used to handle the runtime permissions since Android M.
  * This component must persist across configuration changes because the
@@ -57,11 +59,19 @@ interface RuntimePermissionHandler {
     interface Listener {
 
         /**
+         * Notified when the permissions request ended and a status for each permission is available.
+         *
+         * @param result the status of each permission.
+         */
+        fun onPermissionsResult(result: List<PermissionStatus>)
+
+        /**
          * Notified when some permissions are accepted.
          *
          * @param permissions set of permissions that are accepted.
          * @return true if the listener handled this permissions' state, false otherwise.
          */
+        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
         fun permissionsAccepted(permissions: Array<out String>): Boolean
 
         /**
@@ -70,6 +80,7 @@ interface RuntimePermissionHandler {
          * @param permissions set of permissions that are denied.
          * @return true if the listener handled this permissions' state, false otherwise.
          */
+        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
         fun permissionsDenied(permissions: Array<out String>): Boolean
 
         /**
@@ -78,6 +89,7 @@ interface RuntimePermissionHandler {
          * @param permissions set of permissions that are permanently denied.
          * @return true if the listener handled this permissions' state, false otherwise.
          */
+        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
         fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean
 
         /**
@@ -86,6 +98,7 @@ interface RuntimePermissionHandler {
          * @param permissions set of permissions that need a rationale.
          * @return true if the listener handled this permissions' state, false otherwise.
          */
+        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
         fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean
     }
 }

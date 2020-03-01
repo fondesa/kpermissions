@@ -18,7 +18,6 @@ package com.fondesa.kpermissions.sample
 
 import android.app.AlertDialog
 import android.content.Context
-import com.fondesa.kpermissions.extension.flatString
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
@@ -33,7 +32,7 @@ class DialogRationaleListener(private val context: Context) : PermissionRequest.
     ) {
         val msg = String.format(
             context.getString(R.string.rationale_permissions),
-            permissions.flatString()
+            permissions.joinToString()
         )
 
         AlertDialog.Builder(context)

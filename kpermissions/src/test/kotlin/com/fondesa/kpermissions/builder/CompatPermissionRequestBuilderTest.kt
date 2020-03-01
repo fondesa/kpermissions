@@ -16,10 +16,11 @@
 
 package com.fondesa.kpermissions.builder
 
+import android.app.Activity
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
-import com.fondesa.test.context
+import com.fondesa.test.createActivity
 import com.nhaarman.mockitokotlin2.mock
 import junit.framework.Assert.assertNotNull
 import org.hamcrest.CoreMatchers.instanceOf
@@ -33,9 +34,8 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class CompatPermissionRequestBuilderTest {
-
-    private val builder: CompatPermissionRequestBuilder = CompatPermissionRequestBuilder(context)
-
+    private val activity = createActivity<Activity>()
+    private val builder: CompatPermissionRequestBuilder = CompatPermissionRequestBuilder(activity)
     private val provider = mock<RuntimePermissionHandlerProvider> {
         on(it.provideHandler()).thenReturn(mock())
     }

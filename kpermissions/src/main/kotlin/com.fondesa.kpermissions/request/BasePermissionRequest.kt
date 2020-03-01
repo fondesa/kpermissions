@@ -22,6 +22,8 @@ package com.fondesa.kpermissions.request
  */
 abstract class BasePermissionRequest : PermissionRequest {
 
+    protected val listeners = mutableSetOf<PermissionRequest.Listener>()
+
     protected var acceptedListener: PermissionRequest.AcceptedListener? = null
         private set
 
@@ -33,6 +35,22 @@ abstract class BasePermissionRequest : PermissionRequest {
 
     protected var rationaleListener: PermissionRequest.RationaleListener? = null
         private set
+
+    override fun addListener(listener: PermissionRequest.Listener) {
+        listeners += listener
+    }
+
+    override fun removeListener(listener: PermissionRequest.Listener) {
+        listeners -= listener
+    }
+
+    override fun removeAllListeners() {
+        listeners.clear()
+        detachAcceptedListener()
+        detachDeniedListener()
+        detachPermanentlyDeniedListener()
+        detachRationaleListener()
+    }
 
     override fun acceptedListener(listener: PermissionRequest.AcceptedListener) {
         acceptedListener = listener
@@ -67,9 +85,6 @@ abstract class BasePermissionRequest : PermissionRequest {
     }
 
     override fun detachAllListeners() {
-        detachAcceptedListener()
-        detachDeniedListener()
-        detachPermanentlyDeniedListener()
-        detachRationaleListener()
+        removeAllListeners()
     }
 }

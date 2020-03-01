@@ -26,11 +26,10 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Tests for PermissionRequestExtensions.kt extensions.
+ * Tests for PermissionRequestListeners.kt file.
  */
 @RunWith(RobolectricTestRunner::class)
-class PermissionRequestExtensionsTest {
-
+class PermissionRequestListenersKtTest {
     private val request = mock<PermissionRequest>()
 
     @Test

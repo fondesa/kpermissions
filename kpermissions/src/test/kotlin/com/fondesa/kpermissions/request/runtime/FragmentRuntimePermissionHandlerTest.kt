@@ -31,7 +31,6 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(minSdk = Build.VERSION_CODES.M)
 class FragmentRuntimePermissionHandlerTest {
-
     private val fragment: FragmentRuntimePermissionHandler = createFragment<MockFragment>()
 
     @Test

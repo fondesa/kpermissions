@@ -58,6 +58,11 @@ interface RuntimePermissionHandler {
      */
     interface Listener {
 
+        /**
+         * Notified when the permissions request ended and a status for each permission is available.
+         *
+         * @param result the status of each permission.
+         */
         fun onPermissionsResult(result: List<PermissionStatus>)
 
         /**
@@ -66,7 +71,7 @@ interface RuntimePermissionHandler {
          * @param permissions set of permissions that are accepted.
          * @return true if the listener handled this permissions' state, false otherwise.
          */
-        @Deprecated("LYRA_DEPRECATED")
+        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
         fun permissionsAccepted(permissions: Array<out String>): Boolean
 
         /**
@@ -75,7 +80,7 @@ interface RuntimePermissionHandler {
          * @param permissions set of permissions that are denied.
          * @return true if the listener handled this permissions' state, false otherwise.
          */
-        @Deprecated("LYRA_DEPRECATED")
+        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
         fun permissionsDenied(permissions: Array<out String>): Boolean
 
         /**
@@ -84,7 +89,7 @@ interface RuntimePermissionHandler {
          * @param permissions set of permissions that are permanently denied.
          * @return true if the listener handled this permissions' state, false otherwise.
          */
-        @Deprecated("LYRA_DEPRECATED")
+        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
         fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean
 
         /**
@@ -93,7 +98,7 @@ interface RuntimePermissionHandler {
          * @param permissions set of permissions that need a rationale.
          * @return true if the listener handled this permissions' state, false otherwise.
          */
-        @Deprecated("LYRA_DEPRECATED")
+        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
         fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean
     }
 }

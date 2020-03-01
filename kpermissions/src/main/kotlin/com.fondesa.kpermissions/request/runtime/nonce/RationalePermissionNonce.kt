@@ -26,7 +26,7 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
  * @property handler the [RuntimePermissionHandler] used to request the permissions again.
  * @property permissions the permissions that must be requested again.
  */
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
 class RationalePermissionNonce(
     private val handler: RuntimePermissionHandler,
     private val permissions: Array<out String>

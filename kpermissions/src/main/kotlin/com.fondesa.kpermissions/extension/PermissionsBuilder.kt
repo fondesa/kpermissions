@@ -17,9 +17,8 @@
 package com.fondesa.kpermissions.extension
 
 import android.app.Activity
-import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.builder.CompatPermissionRequestBuilder
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider
@@ -29,10 +28,15 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
  * The builder will use the default configurations and will be provided with
  * the set of [otherPermissions] attached to it.
  *
- * @param otherPermissions set of permissions that must be attached to the builder.
+ * @param firstPermission the first permission which should be requested.
+ * @param otherPermissions the other permissions that must be requested, if the request
+ * should handle more than one permission.
  * @return new instance of the default [PermissionRequestBuilder].
  */
-fun FragmentActivity.permissionsBuilder(firstPermission: String, vararg otherPermissions: String): PermissionRequestBuilder {
+fun FragmentActivity.permissionsBuilder(
+    firstPermission: String,
+    vararg otherPermissions: String
+): PermissionRequestBuilder {
     val handler = FragmentRuntimePermissionHandlerProvider(supportFragmentManager)
     // Creates the builder.
     return CompatPermissionRequestBuilder(this)
@@ -40,14 +44,20 @@ fun FragmentActivity.permissionsBuilder(firstPermission: String, vararg otherPer
         .runtimeHandlerProvider(handler)
 }
 
-internal fun Activity.checkPermissionsStatus(permissions: List<String>): List<PermissionStatus> =
-    permissions.map { permission ->
-        if (isPermissionGranted(permission)) {
-            return@map PermissionStatus.Granted(permission)
-        }
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-            PermissionStatus.Denied.Permanently(permission)
-        } else {
-            PermissionStatus.RequestRequired(permission)
-        }
-    }
+/**
+ * Creates the default [PermissionRequestBuilder] using the context of the [Activity] at which
+ * this [Fragment] is attached.
+ * The builder will use the default configurations and will be provided with
+ * the set of [firstPermission] plus [otherPermissions] attached to it.
+ *
+ * @param firstPermission the first permission which should be requested.
+ * @param otherPermissions the other permissions that must be requested, if the request
+ * should handle more than one permission.
+ * @return new instance of the default [PermissionRequestBuilder].
+ * @throws NullPointerException if the [Fragment] is not attached to an [Activity].
+ */
+fun Fragment.permissionsBuilder(
+    firstPermission: String,
+    vararg otherPermissions: String
+): PermissionRequestBuilder =
+    requireActivity().permissionsBuilder(firstPermission, *otherPermissions)

@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Tests for FragmentExtensions.kt extensions.
+ * Tests for PermissionsBuilder.kt extensions.
  */
 @RunWith(RobolectricTestRunner::class)
 class FragmentExtensionsTest {

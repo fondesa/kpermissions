@@ -23,7 +23,7 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
  * that can be used to request the permissions again when the rationale related to these
  * permissions was displayed to the user.
  */
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
 class RationalePermissionNonceGenerator : PermissionNonceGenerator {
 
     override fun generateNonce(

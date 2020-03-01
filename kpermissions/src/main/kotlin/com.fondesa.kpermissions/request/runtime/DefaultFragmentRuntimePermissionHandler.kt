@@ -22,7 +22,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.fondesa.kpermissions.*
-import com.fondesa.kpermissions.extension.checkPermissionsStatus
+import com.fondesa.kpermissions.extension.checkRuntimePermissionsStatus
 import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
@@ -32,6 +32,17 @@ import com.fondesa.kpermissions.request.PermissionRequest
  * It can process maximum one permissions' request at the same. This is done to avoid multiple
  * requests handled by the OS together that will show overlapped permission's dialogs.
  *
+ * If you are using the new status API:
+ * The [PermissionRequest.Listener] will be notified with a number of [PermissionStatus] equals to
+ * the number of permissions requested.
+ * The possible status which can be notified with a runtime request are:
+ * - [PermissionStatus.Granted] -> the permission is granted
+ * - [PermissionStatus.Denied.ShouldShowRationale] -> the permission is denied by the user and it can be useful to
+ * show a rationale explaining the motivation of this permission request
+ * - [PermissionStatus.Denied.Permanently] -> the permission is permanently denied by the user using the
+ * "never ask again" button on the permissions dialog.
+ *
+ * If you are using the legacy API:
  * Considering a lifecycle the group of phases that passes from [requestPermissions] till the end
  * of [managePermissionsResult], this handler notifies the [RuntimePermissionHandler.Listener]
  * for maximum one event during the lifecycle.
@@ -139,7 +150,7 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
 
     private fun handleRuntimePermissionsWhenAdded(permissions: Array<out String>) {
         val activity = requireActivity()
-        val currentStatus = activity.checkPermissionsStatus(permissions.toList())
+        val currentStatus = activity.checkRuntimePermissionsStatus(permissions.toList())
         val areAllGranted = currentStatus.all { it.isGranted() }
         if (!areAllGranted) {
             if (isProcessingPermissions) {

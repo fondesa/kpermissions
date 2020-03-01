@@ -25,6 +25,12 @@ import com.fondesa.kpermissions.dsl.PermissionRequestDSL
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
+/**
+ * Adds a [PermissionRequest.Listener] using a convenience lambda.
+ * This method isn't needed in Java since there's the SAM conversion for [PermissionRequest.Listener].
+ *
+ * @param callback the lambda which must be executed when the listener is notified.
+ */
 @JvmSynthetic
 inline fun PermissionRequest.addListener(crossinline callback: (List<PermissionStatus>) -> Unit) {
     addListener(object : PermissionRequest.Listener {
@@ -41,7 +47,7 @@ inline fun PermissionRequest.addListener(crossinline callback: (List<PermissionS
  * @param callback lambda that must be executed when the listener is notified.
  * @return the [PermissionRequest] itself.
  */
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated("Use the PermissionStatus API instead.")
 inline fun PermissionRequest.onAccepted(crossinline callback: AcceptedCallback) = apply {
     // Attach the listener that will invoke the callback.
     acceptedListener(object : PermissionRequest.AcceptedListener {
@@ -58,7 +64,7 @@ inline fun PermissionRequest.onAccepted(crossinline callback: AcceptedCallback) 
  * @param callback lambda that must be executed when the listener is notified.
  * @return the [PermissionRequest] itself.
  */
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated("Use the PermissionStatus API instead.")
 inline fun PermissionRequest.onDenied(crossinline callback: DeniedCallback) = apply {
     // Attach the listener that will invoke the callback.
     deniedListener(object : PermissionRequest.DeniedListener {
@@ -75,7 +81,7 @@ inline fun PermissionRequest.onDenied(crossinline callback: DeniedCallback) = ap
  * @param callback lambda that must be executed when the listener is notified.
  * @return the [PermissionRequest] itself.
  */
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated("Use the PermissionStatus API instead.")
 inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: PermanentlyDeniedCallback) =
     apply {
         // Attach the listener that will invoke the callback.
@@ -93,7 +99,7 @@ inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: Permanent
  * @param callback lambda that must be executed when the listener is notified.
  * @return the [PermissionRequest] itself.
  */
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated("Use the PermissionStatus API instead.")
 inline fun PermissionRequest.onShouldShowRationale(crossinline callback: RationaleCallback) =
     apply {
         // Attach the listener that will invoke the callback.
@@ -114,7 +120,7 @@ inline fun PermissionRequest.onShouldShowRationale(crossinline callback: Rationa
  *
  * @param listeners lambda invoked on a context of type [PermissionRequestDSL].
  */
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated("Use the PermissionStatus API instead.")
 fun PermissionRequest.listeners(listeners: PermissionRequestDSL.() -> Unit) {
     val dsl = PermissionRequestDSL(this)
     // Add the listeners to the request.

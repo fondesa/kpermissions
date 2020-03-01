@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Tests for PermissionRequestExtensions.kt extensions.
+ * Tests for PermissionRequestListeners.kt extensions.
  */
 @RunWith(RobolectricTestRunner::class)
 class PermissionRequestExtensionsTest {

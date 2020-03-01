@@ -33,7 +33,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
  * @property request the [PermissionRequest] which the listeners will be attached to.
  */
 @Suppress("KDocUnresolvedReference")
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated("Use the PermissionStatus API instead.")
 class PermissionRequestDSL internal constructor(private val request: PermissionRequest) {
 
     /**
@@ -42,7 +42,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      *
      * @param callback lambda that must be executed when the listener is notified.
      */
-    @Deprecated("LYRA_DEPRECATED")
+    @Deprecated("Use the PermissionStatus API instead.")
     fun onAccepted(callback: AcceptedCallback) {
         request.onAccepted(callback)
     }
@@ -53,7 +53,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      *
      * @param callback lambda that must be executed when the listener is notified.
      */
-    @Deprecated("LYRA_DEPRECATED")
+    @Deprecated("Use the PermissionStatus API instead.")
     fun onDenied(callback: DeniedCallback) {
         request.onDenied(callback)
     }
@@ -64,7 +64,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      *
      * @param callback lambda that must be executed when the listener is notified.
      */
-    @Deprecated("LYRA_DEPRECATED")
+    @Deprecated("Use the PermissionStatus API instead.")
     fun onPermanentlyDenied(callback: PermanentlyDeniedCallback) {
         request.onPermanentlyDenied(callback)
     }
@@ -75,7 +75,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      *
      * @param callback lambda that must be executed when the listener is notified.
      */
-    @Deprecated("LYRA_DEPRECATED")
+    @Deprecated("Use the PermissionStatus API instead.")
     fun onShouldShowRationale(callback: RationaleCallback) {
         request.onShouldShowRationale(callback)
     }

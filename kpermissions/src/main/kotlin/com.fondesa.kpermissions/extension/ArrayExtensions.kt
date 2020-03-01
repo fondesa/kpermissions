@@ -25,6 +25,9 @@ package com.fondesa.kpermissions.extension
  * @return result [String] with the elements of the array or an empty [String]
  * if the array was empty.
  */
-@Deprecated("LYRA_DEPRECATED")
+@Deprecated(
+    "This method is no longer needed since the Kotlin stdlib contains it.",
+    ReplaceWith("joinToString(separator = separator.toString())")
+)
 fun Array<out String>.flatString(separator: Char = ','): String =
     joinToString(separator = separator.toString())

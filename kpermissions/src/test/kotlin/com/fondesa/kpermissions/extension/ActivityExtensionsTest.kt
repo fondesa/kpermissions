@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Tests for ActivityExtensions.kt extensions.
+ * Tests for CheckPermissionsStatus.kt extensions.
  */
 @RunWith(RobolectricTestRunner::class)
 class ActivityExtensionsTest {

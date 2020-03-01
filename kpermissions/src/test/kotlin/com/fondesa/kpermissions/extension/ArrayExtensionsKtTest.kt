@@ -22,10 +22,10 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Tests for ArrayExtensions.kt extensions.
+ * Tests for ArrayExtensions.kt file.
  */
 @RunWith(RobolectricTestRunner::class)
-class ArrayExtensionsTest {
+class ArrayExtensionsKtTest {
 
     @Test
     fun emptyArrayReturnsEmptyString() {

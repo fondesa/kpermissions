@@ -32,7 +32,6 @@ import org.robolectric.Shadows.shadowOf
  */
 @RunWith(RobolectricTestRunner::class)
 class ManifestPermissionRequestTest {
-
     private val acceptedListener = mock<PermissionRequest.AcceptedListener>()
     private val deniedListener = mock<PermissionRequest.DeniedListener>()
 

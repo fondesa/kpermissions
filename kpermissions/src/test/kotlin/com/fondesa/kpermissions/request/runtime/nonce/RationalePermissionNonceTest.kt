@@ -26,7 +26,6 @@ import org.junit.Test
  * Tests for [RationalePermissionNonce].
  */
 class RationalePermissionNonceTest {
-
     private val permissions =
         arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
     private val handler = mock<RuntimePermissionHandler>()

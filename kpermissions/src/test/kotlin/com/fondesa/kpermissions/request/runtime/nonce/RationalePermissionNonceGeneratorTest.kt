@@ -28,7 +28,6 @@ import org.junit.Test
  * Tests for [RationalePermissionNonceGenerator].
  */
 class RationalePermissionNonceGeneratorTest {
-
     private val generator = RationalePermissionNonceGenerator()
 
     @Test

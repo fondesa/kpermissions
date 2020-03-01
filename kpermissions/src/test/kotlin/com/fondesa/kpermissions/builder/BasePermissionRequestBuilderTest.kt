@@ -32,9 +32,7 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class BasePermissionRequestBuilderTest {
-
     private val builder: BasePermissionRequestBuilder = MockBuilder()
-
     private val provider = mock<RuntimePermissionHandlerProvider> {
         on(it.provideHandler()).thenReturn(mock())
     }
@@ -43,11 +41,6 @@ class BasePermissionRequestBuilderTest {
     @Test(expected = IllegalArgumentException::class)
     fun throwsExceptionWithoutPermissions() {
         builder.build()
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun throwsExceptionWithEmptyPermissions() {
-        builder.permissions().build()
     }
 
     @Test(expected = IllegalArgumentException::class)

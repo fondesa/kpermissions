@@ -37,7 +37,6 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(minSdk = Build.VERSION_CODES.M)
 class DefaultFragmentRuntimePermissionHandlerTest {
-
     private val firstPermission = Manifest.permission.ACCESS_FINE_LOCATION
     private val secondPermission = Manifest.permission.SEND_SMS
     private val permissions = arrayOf(firstPermission, secondPermission)

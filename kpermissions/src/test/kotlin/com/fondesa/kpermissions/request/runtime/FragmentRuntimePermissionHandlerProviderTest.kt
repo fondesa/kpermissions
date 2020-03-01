@@ -34,7 +34,6 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(minSdk = Build.VERSION_CODES.M)
 class FragmentRuntimePermissionHandlerProviderTest {
-
     private val activity = createActivity<FragmentActivity>()
     private val provider = FragmentRuntimePermissionHandlerProvider(activity.supportFragmentManager)
 

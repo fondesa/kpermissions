@@ -19,6 +19,8 @@ package com.fondesa.kpermissions.request.runtime
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.fragment.app.FragmentActivity
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.test.context
 import com.fondesa.test.createFragment
 import com.nhaarman.mockitokotlin2.*
@@ -40,7 +42,6 @@ class DefaultFragmentRuntimePermissionHandlerTest {
     private val firstPermission = Manifest.permission.ACCESS_FINE_LOCATION
     private val secondPermission = Manifest.permission.SEND_SMS
     private val permissions = arrayOf(firstPermission, secondPermission)
-
     private val listener = mock<RuntimePermissionHandler.Listener>()
     private val fragment = createFragment<DefaultFragmentRuntimePermissionHandler>()
 
@@ -90,6 +91,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         fragment.handleRuntimePermissions(permissions)
 
         verify(listener).permissionsAccepted(permissions)
+        verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
         verifyNoMoreInteractions(listener)
 
         shadowApp.denyPermissions(firstPermission)
@@ -99,27 +101,32 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun permissionsNotifyRationaleListener() {
-        val spiedFragment = spy(fragment)
+        val mockActivity = mock<FragmentActivity> {
+            on(it.checkPermission(any(), any(), any())) doReturn PackageManager.PERMISSION_DENIED
+        }
+        val spiedFragment = spy(fragment) {
+            on(it.requireActivity()) doReturn mockActivity
+        }
 
         whenever(listener.permissionsShouldShowRationale(any())).thenReturn(true)
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+        whenever(mockActivity.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
             true
         )
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+        whenever(mockActivity.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
             true
         )
 
         spiedFragment.handleRuntimePermissions(permissions)
         verify(listener).permissionsShouldShowRationale(permissions)
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
+        whenever(mockActivity.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
             false
         )
 
         spiedFragment.handleRuntimePermissions(permissions)
         verify(listener).permissionsShouldShowRationale(arrayOf(secondPermission))
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
+        whenever(mockActivity.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
             false
         )
 

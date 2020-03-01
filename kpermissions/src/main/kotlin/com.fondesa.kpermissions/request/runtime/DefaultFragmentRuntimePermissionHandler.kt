@@ -21,9 +21,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.fondesa.kpermissions.*
+import com.fondesa.kpermissions.PermissionStatus
+import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.extension.checkRuntimePermissionsStatus
+import com.fondesa.kpermissions.isPermanentlyDenied
 import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.shouldShowRationale
 
 /**
  * Implementation of [FragmentRuntimePermissionHandler] that specifies the lifecycle of the
@@ -151,14 +154,14 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
     private fun handleRuntimePermissionsWhenAdded(permissions: Array<out String>) {
         val activity = requireActivity()
         val currentStatus = activity.checkRuntimePermissionsStatus(permissions.toList())
-        val areAllGranted = currentStatus.all { it.isGranted() }
+        val areAllGranted = currentStatus.allGranted()
         if (!areAllGranted) {
             if (isProcessingPermissions) {
                 // The Fragment can process only one request at the same time.
                 return
             }
             val permissionsWithRationale = currentStatus
-                .filter { it.isDenied() && it.shouldShowRationale() }
+                .filter { it.shouldShowRationale() }
                 .map { it.permission }
                 .toTypedArray()
 

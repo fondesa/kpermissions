@@ -68,7 +68,7 @@ class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler
         handler.attachListener(permissions, this)
     }
 
-    override fun checkCurrentStatus(): List<PermissionStatus> {
+    override fun checkStatus(): List<PermissionStatus> {
         val activity = activity ?: throw IllegalStateException(
             "The status can be checked only with an ${Activity::class.java.simpleName} instance."
         )

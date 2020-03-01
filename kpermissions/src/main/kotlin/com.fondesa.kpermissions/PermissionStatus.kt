@@ -30,17 +30,7 @@ sealed class PermissionStatus(open val permission: String) {
         data class ShouldShowRationale(override val permission: String) : Denied(permission)
     }
 
-    data class Unknown(override val permission: String) : PermissionStatus(permission)
-}
-
-internal data class Suca(override val permission: String) : PermissionStatus(permission)
-
-@UseExperimental(ExperimentalContracts::class)
-fun PermissionStatus.isGranted(): Boolean {
-    contract {
-        returns(true) implies (this@isGranted is PermissionStatus.Granted)
-    }
-    return this is PermissionStatus.Granted
+    data class RequestRequired(override val permission: String) : PermissionStatus(permission)
 }
 
 @UseExperimental(ExperimentalContracts::class)
@@ -52,15 +42,7 @@ fun PermissionStatus.isDenied(): Boolean {
 }
 
 @UseExperimental(ExperimentalContracts::class)
-fun PermissionStatus.isUnknown(): Boolean {
-    contract {
-        returns(true) implies (this@isUnknown is PermissionStatus.Unknown)
-    }
-    return this is PermissionStatus.Unknown
-}
-
-@UseExperimental(ExperimentalContracts::class)
-fun PermissionStatus.Denied.isPermanentlyDenied(): Boolean {
+fun PermissionStatus.isPermanentlyDenied(): Boolean {
     contract {
         returns(true) implies (this@isPermanentlyDenied is PermissionStatus.Denied.Permanently)
     }
@@ -68,10 +50,52 @@ fun PermissionStatus.Denied.isPermanentlyDenied(): Boolean {
 }
 
 @UseExperimental(ExperimentalContracts::class)
-fun PermissionStatus.Denied.shouldShowRationale(): Boolean {
+fun PermissionStatus.shouldShowRationale(): Boolean {
     contract {
         returns(true) implies (this@shouldShowRationale is PermissionStatus.Denied.ShouldShowRationale)
     }
     return this is PermissionStatus.Denied.ShouldShowRationale
 }
 
+@UseExperimental(ExperimentalContracts::class)
+fun PermissionStatus.isRequestRequired(): Boolean {
+    contract {
+        returns(true) implies (this@isRequestRequired is PermissionStatus.RequestRequired)
+    }
+    return this is PermissionStatus.RequestRequired
+}
+
+
+fun List<PermissionStatus>.allGranted(): Boolean = all { it.isGranted() }
+
+fun List<PermissionStatus>.allDenied(): Boolean = all { it.isDenied() }
+
+fun List<PermissionStatus>.allShouldShowRationale(): Boolean =
+    all { it.isDenied() && it.shouldShowRationale() }
+
+fun List<PermissionStatus>.allPermanentlyDenied(): Boolean =
+    all { it.isDenied() && it.isPermanentlyDenied() }
+
+fun List<PermissionStatus>.allRequestRequired(): Boolean =
+    all { it.isRequestRequired() }
+
+fun List<PermissionStatus>.anyGranted(): Boolean = any { it.isGranted() }
+
+fun List<PermissionStatus>.anyDenied(): Boolean = any { it.isDenied() }
+
+fun List<PermissionStatus>.anyShouldShowRationale(): Boolean =
+    any { it.isDenied() && it.shouldShowRationale() }
+
+fun List<PermissionStatus>.anyPermanentlyDenied(): Boolean =
+    any { it.isDenied() && it.isPermanentlyDenied() }
+
+fun List<PermissionStatus>.anyRequestRequired(): Boolean =
+    any { it.isRequestRequired() }
+
+@UseExperimental(ExperimentalContracts::class)
+fun PermissionStatus.isGranted(): Boolean {
+    contract {
+        returns(true) implies (this@isGranted is PermissionStatus.Granted)
+    }
+    return this is PermissionStatus.Granted
+}

@@ -30,7 +30,7 @@ import com.fondesa.kpermissions.builder.PermissionRequestBuilder
  * @return new instance of the default [PermissionRequestBuilder].
  * @throws NullPointerException if the [Fragment] is not attached to an [Activity].
  */
-fun Fragment.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
+fun Fragment.permissionsBuilder(firstPermission: String, vararg otherPermissions: String): PermissionRequestBuilder {
     val activity = activity ?: throw NullPointerException("The activity mustn't be null.")
-    return activity.permissionsBuilder(*permissions)
+    return activity.permissionsBuilder(firstPermission, *otherPermissions)
 }

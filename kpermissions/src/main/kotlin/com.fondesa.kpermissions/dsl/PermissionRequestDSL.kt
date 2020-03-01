@@ -26,13 +26,14 @@ import com.fondesa.kpermissions.extension.onPermanentlyDenied
 import com.fondesa.kpermissions.extension.onShouldShowRationale
 import com.fondesa.kpermissions.request.PermissionRequest
 
-@Suppress("KDocUnresolvedReference")
 /**
  * Used only to define the listeners of a [PermissionRequest] with a DSL style.
  * It must be accessed using the extension [PermissionRequest.listeners].
  *
  * @property request the [PermissionRequest] which the listeners will be attached to.
  */
+@Suppress("KDocUnresolvedReference")
+@Deprecated("LYRA_DEPRECATED")
 class PermissionRequestDSL internal constructor(private val request: PermissionRequest) {
 
     /**
@@ -41,6 +42,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      *
      * @param callback lambda that must be executed when the listener is notified.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun onAccepted(callback: AcceptedCallback) {
         request.onAccepted(callback)
     }
@@ -51,6 +53,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      *
      * @param callback lambda that must be executed when the listener is notified.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun onDenied(callback: DeniedCallback) {
         request.onDenied(callback)
     }
@@ -61,6 +64,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      *
      * @param callback lambda that must be executed when the listener is notified.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun onPermanentlyDenied(callback: PermanentlyDeniedCallback) {
         request.onPermanentlyDenied(callback)
     }
@@ -71,6 +75,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      *
      * @param callback lambda that must be executed when the listener is notified.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun onShouldShowRationale(callback: RationaleCallback) {
         request.onShouldShowRationale(callback)
     }

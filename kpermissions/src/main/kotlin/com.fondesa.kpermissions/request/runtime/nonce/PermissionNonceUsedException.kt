@@ -21,4 +21,5 @@ package com.fondesa.kpermissions.request.runtime.nonce
  *
  * @param msg the message of the [Exception].
  */
+@Deprecated("LYRA_DEPRECATED")
 class PermissionNonceUsedException(msg: String) : Exception(msg)

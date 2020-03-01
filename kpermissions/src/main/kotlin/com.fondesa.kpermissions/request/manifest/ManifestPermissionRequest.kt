@@ -40,7 +40,7 @@ class ManifestPermissionRequest(
     private val permissions: Array<out String>
 ) : BasePermissionRequest() {
 
-    override fun checkCurrentStatus(): List<PermissionStatus> = permissions.map { permission ->
+    override fun checkStatus(): List<PermissionStatus> = permissions.map { permission ->
         if (context.isPermissionGranted(permission)) {
             PermissionStatus.Granted(permission)
         } else {
@@ -49,7 +49,7 @@ class ManifestPermissionRequest(
     }
 
     override fun send() {
-        val result = checkCurrentStatus()
+        val result = checkStatus()
         listeners.forEach { it.onPermissionsResult(result) }
 
         // Get all the permissions that are denied.

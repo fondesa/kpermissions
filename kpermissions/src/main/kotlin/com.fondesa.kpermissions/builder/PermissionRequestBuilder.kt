@@ -40,7 +40,10 @@ interface PermissionRequestBuilder {
      * @param permissions set of permissions that must be requested.
      * @return the builder itself.
      */
-    fun permissions(vararg permissions: String): PermissionRequestBuilder
+    fun permissions(
+        firstPermission: String,
+        vararg otherPermissions: String
+    ): PermissionRequestBuilder
 
     /**
      * Sets the [PermissionNonceGenerator] used to generate a [PermissionNonce].

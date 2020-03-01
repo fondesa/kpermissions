@@ -35,8 +35,17 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
     private var nonceGenerator: PermissionNonceGenerator? = null
     private var runtimeHandlerProvider: RuntimePermissionHandlerProvider? = null
 
-    override fun permissions(vararg permissions: String): PermissionRequestBuilder = apply {
-        this.permissions = permissions
+    override fun permissions(
+        firstPermission: String,
+        vararg otherPermissions: String
+    ): PermissionRequestBuilder = apply {
+        this.permissions = Array(otherPermissions.size + 1) { index ->
+            if (index == 0) {
+                firstPermission
+            } else {
+                otherPermissions[index - 1]
+            }
+        }
     }
 
     override fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder =
@@ -51,10 +60,7 @@ abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
 
     override fun build(): PermissionRequest {
         val permissions = permissions
-        if (permissions == null || permissions.isEmpty()) {
-            // Throw an exception if there isn't any permission specified.
-            throw IllegalArgumentException("You have to specify at least one permission.")
-        }
+            ?: throw IllegalArgumentException("The permissions names are necessary.")
 
         // Instantiate the default NonceGenerator if a custom one isn't set.
         val nonceGenerator = nonceGenerator ?: RationalePermissionNonceGenerator()

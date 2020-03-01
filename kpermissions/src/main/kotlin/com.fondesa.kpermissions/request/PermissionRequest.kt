@@ -41,7 +41,7 @@ interface PermissionRequest {
 
     fun removeAllListeners()
 
-    fun checkCurrentStatus(): List<PermissionStatus>
+    fun checkStatus(): List<PermissionStatus>
 
     /**
      * Sends the [PermissionRequest] and performs the checks on its status.

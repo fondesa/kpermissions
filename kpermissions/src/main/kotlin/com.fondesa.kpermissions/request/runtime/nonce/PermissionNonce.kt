@@ -20,6 +20,7 @@ package com.fondesa.kpermissions.request.runtime.nonce
  * Used to request some permissions again.
  * A [PermissionNonce] can be used only one time.
  */
+@Deprecated("LYRA_DEPRECATED")
 interface PermissionNonce {
 
     /**
@@ -28,5 +29,6 @@ interface PermissionNonce {
      * @throws PermissionNonceUsedException if this method is invoke more than one time
      * on the same instance of [PermissionNonce].
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun use()
 }

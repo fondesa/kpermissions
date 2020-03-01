@@ -17,7 +17,9 @@
 package com.fondesa.kpermissions.extension
 
 import android.app.Activity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.builder.CompatPermissionRequestBuilder
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider
@@ -25,15 +27,27 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
 /**
  * Creates the default [PermissionRequestBuilder] using the context of the [Activity].
  * The builder will use the default configurations and will be provided with
- * the set of [permissions] attached to it.
+ * the set of [otherPermissions] attached to it.
  *
- * @param permissions set of permissions that must be attached to the builder.
+ * @param otherPermissions set of permissions that must be attached to the builder.
  * @return new instance of the default [PermissionRequestBuilder].
  */
-fun FragmentActivity.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
+fun FragmentActivity.permissionsBuilder(firstPermission: String, vararg otherPermissions: String): PermissionRequestBuilder {
     val handler = FragmentRuntimePermissionHandlerProvider(supportFragmentManager)
     // Creates the builder.
     return CompatPermissionRequestBuilder(this)
-        .permissions(*permissions)
+        .permissions(firstPermission, *otherPermissions)
         .runtimeHandlerProvider(handler)
 }
+
+internal fun Activity.checkPermissionsStatus(permissions: List<String>): List<PermissionStatus> =
+    permissions.map { permission ->
+        if (isPermissionGranted(permission)) {
+            return@map PermissionStatus.Granted(permission)
+        }
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+            PermissionStatus.Denied.Permanently(permission)
+        } else {
+            PermissionStatus.RequestRequired(permission)
+        }
+    }

@@ -17,7 +17,9 @@
 package com.fondesa.kpermissions.request.manifest
 
 import android.content.Context
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.extension.isPermissionGranted
+import com.fondesa.kpermissions.isDenied
 import com.fondesa.kpermissions.request.BasePermissionRequest
 import com.fondesa.kpermissions.request.PermissionRequest
 
@@ -36,14 +38,24 @@ import com.fondesa.kpermissions.request.PermissionRequest
 class ManifestPermissionRequest(
     private val context: Context,
     private val permissions: Array<out String>
-) :
-    BasePermissionRequest() {
+) : BasePermissionRequest() {
+
+    override fun checkCurrentStatus(): List<PermissionStatus> = permissions.map { permission ->
+        if (context.isPermissionGranted(permission)) {
+            PermissionStatus.Granted(permission)
+        } else {
+            PermissionStatus.Denied.Permanently(permission)
+        }
+    }
 
     override fun send() {
+        val result = checkCurrentStatus()
+        listeners.forEach { it.onPermissionsResult(result) }
+
         // Get all the permissions that are denied.
-        val deniedPermissions = permissions.filter {
-            !context.isPermissionGranted(it)
-        }.toTypedArray()
+        val deniedPermissions = result.filter { status -> status.isDenied() }
+            .map { it.permission }
+            .toTypedArray()
 
         if (deniedPermissions.isNotEmpty()) {
             deniedListener?.onPermissionsDenied(deniedPermissions)
@@ -51,5 +63,7 @@ class ManifestPermissionRequest(
             // If there aren't denied permissions, it means that are all accepted.
             acceptedListener?.onPermissionsAccepted(permissions)
         }
+
+
     }
 }

@@ -16,6 +16,9 @@
 
 package com.fondesa.kpermissions.request.runtime
 
+import android.app.Activity
+import com.fondesa.kpermissions.PermissionStatus
+import com.fondesa.kpermissions.extension.checkPermissionsStatus
 import com.fondesa.kpermissions.request.BasePermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 
@@ -31,23 +34,54 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  * the permissions that needs a rationale.
  * @property handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
  */
-class RuntimePermissionRequest(
-    private val permissions: Array<out String>,
-    private val permissionNonceGenerator: PermissionNonceGenerator,
+class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler.Listener {
+    private val activity: Activity?
+    private val permissions: Array<out String>
+    private val permissionNonceGenerator: PermissionNonceGenerator
     private val handler: RuntimePermissionHandler
-) :
 
-    BasePermissionRequest(),
-    RuntimePermissionHandler.Listener {
-
-    init {
+    constructor(
+        activity: Activity,
+        permissions: Array<out String>,
+        permissionNonceGenerator: PermissionNonceGenerator,
+        handler: RuntimePermissionHandler
+    ) : super() {
+        this.activity = activity
+        this.permissions = permissions
+        this.permissionNonceGenerator = permissionNonceGenerator
+        this.handler = handler
         // Attach this request as listener.
         handler.attachListener(permissions, this)
+    }
+
+    @Deprecated("LYRA_DEPRECATED")
+    constructor(
+        permissions: Array<out String>,
+        permissionNonceGenerator: PermissionNonceGenerator,
+        handler: RuntimePermissionHandler
+    ) : super() {
+        this.activity = null
+        this.permissions = permissions
+        this.permissionNonceGenerator = permissionNonceGenerator
+        this.handler = handler
+        // Attach this request as listener.
+        handler.attachListener(permissions, this)
+    }
+
+    override fun checkCurrentStatus(): List<PermissionStatus> {
+        val activity = activity ?: throw IllegalStateException(
+            "The status can be checked only with an ${Activity::class.java.simpleName} instance."
+        )
+        return activity.checkPermissionsStatus(permissions.toList())
     }
 
     override fun send() {
         // The RuntimePermissionHandler will handle the request.
         handler.handleRuntimePermissions(permissions)
+    }
+
+    override fun onPermissionsResult(result: List<PermissionStatus>) {
+        listeners.forEach { it.onPermissionsResult(result) }
     }
 
     override fun permissionsAccepted(permissions: Array<out String>): Boolean =

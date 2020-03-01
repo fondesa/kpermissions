@@ -21,8 +21,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.fondesa.kpermissions.extension.flatString
-import com.fondesa.kpermissions.extension.isPermissionGranted
+import com.fondesa.kpermissions.*
+import com.fondesa.kpermissions.extension.checkPermissionsStatus
 import com.fondesa.kpermissions.request.PermissionRequest
 
 /**
@@ -75,16 +75,29 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
         // Get the listener for this set of permissions.
         val listener = listenerOf(permissions)
 
-        // Get the denied permissions.
-        val deniedPermissions = permissions.filterIndexed { index, _ ->
-            grantResults[index] == PackageManager.PERMISSION_DENIED
+        val result = permissions.mapIndexed { index, permission ->
+            val isGranted = grantResults[index] == PackageManager.PERMISSION_GRANTED
+            if (isGranted) {
+                return@mapIndexed PermissionStatus.Granted(permission)
+            }
+            if (shouldShowRequestPermissionRationale(permission)) {
+                PermissionStatus.Denied.ShouldShowRationale(permission)
+            } else {
+                PermissionStatus.Denied.Permanently(permission)
+            }
         }
+        listener.onPermissionsResult(result)
+
+        // Get the denied permissions.
+        val deniedPermissions = result.filterIsInstance<PermissionStatus.Denied>()
 
         if (deniedPermissions.isNotEmpty()) {
             var rationaleHandled = false
             // Get the permissions that need a rationale.
-            val permissionsWithRationale =
-                permissionsThatShouldShowRationale(deniedPermissions.toTypedArray())
+            val permissionsWithRationale = deniedPermissions
+                .filter { it.shouldShowRationale() }
+                .map { it.permission }
+                .toTypedArray()
             if (permissionsWithRationale.isNotEmpty()) {
                 // Show rationale of permissions if possible.
                 rationaleHandled = listener.permissionsShouldShowRationale(permissionsWithRationale)
@@ -94,13 +107,17 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
                 }
             }
 
-            val permanentlyDeniedPermissions =
-                deniedPermissions.minus(permissionsWithRationale).toTypedArray()
+            val permanentlyDeniedPermissions = deniedPermissions
+                .filter { it.isPermanentlyDenied() }
+                .map { it.permission }
+                .toTypedArray()
             if (!rationaleHandled && permanentlyDeniedPermissions.isNotEmpty()) {
                 // Some permissions are permanently denied by the user.
                 Log.d(
                     TAG,
-                    "permissions permanently denied: ${permanentlyDeniedPermissions.flatString()}"
+                    "permissions permanently denied: ${permanentlyDeniedPermissions.joinToString(
+                        separator = ","
+                    )}"
                 )
                 listener.permissionsPermanentlyDenied(permanentlyDeniedPermissions)
             }
@@ -121,17 +138,19 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
     }
 
     private fun handleRuntimePermissionsWhenAdded(permissions: Array<out String>) {
-        val context = requireActivity()
-        val areAllGranted = permissions.all {
-            context.isPermissionGranted(it)
-        }
+        val activity = requireActivity()
+        val currentStatus = activity.checkPermissionsStatus(permissions.toList())
+        val areAllGranted = currentStatus.all { it.isGranted() }
         if (!areAllGranted) {
             if (isProcessingPermissions) {
                 // The Fragment can process only one request at the same time.
                 return
             }
+            val permissionsWithRationale = currentStatus
+                .filter { it.isDenied() && it.shouldShowRationale() }
+                .map { it.permission }
+                .toTypedArray()
 
-            val permissionsWithRationale = permissionsThatShouldShowRationale(permissions)
             val rationaleHandled = if (permissionsWithRationale.isNotEmpty()) {
                 val listener = listenerOf(permissions)
                 // Show rationale of permissions.
@@ -146,18 +165,14 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
             val listener = listenerOf(permissions)
             // All permissions are accepted.
             listener.permissionsAccepted(permissions)
+            listener.onPermissionsResult(currentStatus)
         }
     }
 
     override fun requestRuntimePermissions(permissions: Array<out String>) {
         // The Fragment is now processing some permissions.
         isProcessingPermissions = true
-        Log.d(TAG, "requesting permissions: ${permissions.flatString()}")
+        Log.d(TAG, "requesting permissions: ${permissions.joinToString(separator = ",")}")
         requestPermissions(permissions)
     }
-
-    private fun permissionsThatShouldShowRationale(permissions: Array<out String>): Array<out String> =
-        permissions.filter {
-            shouldShowRequestPermissionRationale(it)
-        }.toTypedArray()
 }

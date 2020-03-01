@@ -24,7 +24,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import com.fondesa.kpermissions.extension.flatString
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
@@ -36,7 +36,8 @@ class DummyFragment : Fragment(),
     PermissionRequest.AcceptedListener,
     PermissionRequest.DeniedListener,
     PermissionRequest.PermanentlyDeniedListener,
-    PermissionRequest.RationaleListener {
+    PermissionRequest.RationaleListener,
+    PermissionRequest.Listener {
 
     private val request by lazy {
         permissionsBuilder(
@@ -60,14 +61,21 @@ class DummyFragment : Fragment(),
 
         val activity = activity ?: throw NullPointerException("The Activity mustn't be null.")
 
-        request.acceptedListener(this)
-        request.deniedListener(this)
-        request.permanentlyDeniedListener(DialogPermanentlyDeniedListener(activity))
+//        request.acceptedListener(this)
+//        request.deniedListener(this)
+//        request.permanentlyDeniedListener(DialogPermanentlyDeniedListener(activity))
 //        request.rationaleListener(this)
+        request.addListener(this)
 
         view.findViewById<View>(R.id.btn_test_fragment_permissions).setOnClickListener {
             request.send()
         }
+    }
+
+    override fun onPermissionsResult(result: List<PermissionStatus>) {
+        val msg =
+            result.joinToString(separator = "\n") { "${it.permission} = ${it::class.java.simpleName}" }
+        Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun onPermissionsAccepted(permissions: Array<out String>) {
@@ -91,7 +99,7 @@ class DummyFragment : Fragment(),
 
     private fun toastOf(@StringRes format: Int, permissions: Array<out String>) {
         activity?.let {
-            val msg = String.format(getString(format), permissions.flatString())
+            val msg = String.format(getString(format), permissions.joinToString())
             Toast.makeText(it, msg, Toast.LENGTH_SHORT).show()
         }
     }

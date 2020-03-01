@@ -31,11 +31,9 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
  * @return new instance of the default [PermissionRequestBuilder].
  */
 fun FragmentActivity.permissionsBuilder(vararg permissions: String): PermissionRequestBuilder {
-    val context = applicationContext
     val handler = FragmentRuntimePermissionHandlerProvider(supportFragmentManager)
-
     // Creates the builder.
-    return CompatPermissionRequestBuilder(context)
+    return CompatPermissionRequestBuilder(this)
         .permissions(*permissions)
         .runtimeHandlerProvider(handler)
 }

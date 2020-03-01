@@ -16,9 +16,12 @@
 
 package com.fondesa.kpermissions.extension
 
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.fondesa.kpermissions.PermissionStatus
 
 /**
  * Convenience method to check if a permission is granted or not.
@@ -29,3 +32,15 @@ import androidx.core.content.ContextCompat
  */
 fun Context.isPermissionGranted(permission: String): Boolean =
     ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+
+internal fun Activity.checkPermissionsStatus(permissions: List<String>): List<PermissionStatus> =
+    permissions.map { permission ->
+        if (isPermissionGranted(permission)) {
+            return@map PermissionStatus.Granted(permission)
+        }
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+            PermissionStatus.Denied.Permanently(permission)
+        } else {
+            PermissionStatus.Unknown(permission)
+        }
+    }

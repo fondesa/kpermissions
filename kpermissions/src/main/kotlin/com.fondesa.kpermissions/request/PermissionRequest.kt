@@ -17,6 +17,7 @@
 package com.fondesa.kpermissions.request
 
 import android.app.Activity
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
 /**
@@ -34,6 +35,14 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
  */
 interface PermissionRequest {
 
+    fun addListener(listener: Listener)
+
+    fun removeListener(listener: Listener)
+
+    fun removeAllListeners()
+
+    fun checkCurrentStatus(): List<PermissionStatus>
+
     /**
      * Sends the [PermissionRequest] and performs the checks on its status.
      * The result will be returned to the correct attached listener, if possible.
@@ -46,6 +55,7 @@ interface PermissionRequest {
      *
      * @param listener [AcceptedListener] that must be attached.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun acceptedListener(listener: AcceptedListener)
 
     /**
@@ -54,6 +64,7 @@ interface PermissionRequest {
      *
      * @param listener [DeniedListener] that must be attached.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun deniedListener(listener: DeniedListener)
 
     /**
@@ -62,6 +73,7 @@ interface PermissionRequest {
      *
      * @param listener [PermanentlyDeniedListener] that must be attached.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun permanentlyDeniedListener(listener: PermanentlyDeniedListener)
 
     /**
@@ -70,36 +82,54 @@ interface PermissionRequest {
      *
      * @param listener [RationaleListener] that must be attached.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun rationaleListener(listener: RationaleListener)
 
     /**
      * Detaches the current attached instance of [AcceptedListener], if any.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun detachAcceptedListener()
 
     /**
      * Detaches the current attached instance of [DeniedListener], if any.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun detachDeniedListener()
 
     /**
      * Detaches the current attached instance of [PermanentlyDeniedListener], if any.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun detachPermanentlyDeniedListener()
 
     /**
      * Detaches the current attached instance of [RationaleListener], if any.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun detachRationaleListener()
 
     /**
      * Detaches all the current attached listeners.
      */
+    @Deprecated("LYRA_DEPRECATED")
     fun detachAllListeners()
+
+    /**
+     * TODO: LYRA_DOC
+     */
+    interface Listener {
+
+        /**
+         * TODO: LYRA_DOC
+         */
+        fun onPermissionsResult(result: List<PermissionStatus>)
+    }
 
     /**
      * Listener used to receive information about the accepted status of some permissions.
      */
+    @Deprecated("LYRA_DEPRECATED")
     interface AcceptedListener {
 
         /**
@@ -107,12 +137,14 @@ interface PermissionRequest {
          *
          * @param permissions set of accepted permissions.
          */
+        @Deprecated("LYRA_DEPRECATED")
         fun onPermissionsAccepted(permissions: Array<out String>)
     }
 
     /**
      * Listener used to receive information about the denied status of some permissions.
      */
+    @Deprecated("LYRA_DEPRECATED")
     interface DeniedListener {
 
         /**
@@ -120,12 +152,14 @@ interface PermissionRequest {
          *
          * @param permissions set of denied permissions.
          */
+        @Deprecated("LYRA_DEPRECATED")
         fun onPermissionsDenied(permissions: Array<out String>)
     }
 
     /**
      * Listener used to receive information about the permanently denied status of some permissions.
      */
+    @Deprecated("LYRA_DEPRECATED")
     interface PermanentlyDeniedListener {
 
         /**
@@ -135,12 +169,14 @@ interface PermissionRequest {
          *
          * @param permissions set of permanently denied permissions.
          */
+        @Deprecated("LYRA_DEPRECATED")
         fun onPermissionsPermanentlyDenied(permissions: Array<out String>)
     }
 
     /**
      * Listener used to receive information about the rationale of some permissions.
      */
+    @Deprecated("LYRA_DEPRECATED")
     interface RationaleListener {
 
         /**
@@ -151,6 +187,7 @@ interface PermissionRequest {
          * @param permissions set of permissions that needs a rationale.
          * @param nonce instance of [PermissionNonce] that can be used one time.
          */
+        @Deprecated("LYRA_DEPRECATED")
         fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce)
     }
 }

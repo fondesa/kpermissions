@@ -22,7 +22,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import com.fondesa.kpermissions.extension.flatString
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
@@ -34,7 +34,8 @@ class MainActivity : AppCompatActivity(),
     PermissionRequest.AcceptedListener,
     PermissionRequest.DeniedListener,
     PermissionRequest.PermanentlyDeniedListener,
-    PermissionRequest.RationaleListener {
+    PermissionRequest.RationaleListener,
+    PermissionRequest.Listener {
 
     private val request by lazy {
         permissionsBuilder(Manifest.permission.CAMERA)
@@ -45,10 +46,11 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        request.acceptedListener(this)
-        request.deniedListener(this)
-        request.permanentlyDeniedListener(DialogPermanentlyDeniedListener(this))
-        request.rationaleListener(DialogRationaleListener(this))
+        request.addListener(this)
+//        request.acceptedListener(this)
+//        request.deniedListener(this)
+//        request.permanentlyDeniedListener(DialogPermanentlyDeniedListener(this))
+//        request.rationaleListener(DialogRationaleListener(this))
 
         findViewById<View>(R.id.btn_test_activity_permissions).setOnClickListener {
             request.send()
@@ -57,6 +59,12 @@ class MainActivity : AppCompatActivity(),
         supportFragmentManager.beginTransaction()
             .add(R.id.fragment_container, DummyFragment())
             .commit()
+    }
+
+    override fun onPermissionsResult(result: List<PermissionStatus>) {
+        val msg =
+            result.joinToString(separator = "\n") { "${it.permission} = ${it::class.java.simpleName}" }
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun onPermissionsAccepted(permissions: Array<out String>) {
@@ -79,7 +87,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun toastOf(@StringRes format: Int, permissions: Array<out String>) {
-        val msg = String.format(getString(format), permissions.flatString())
+        val msg = String.format(getString(format), permissions.joinToString())
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }

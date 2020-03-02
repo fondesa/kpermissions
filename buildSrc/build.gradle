@@ -32,3 +32,10 @@ repositories {
     jcenter()
     google()
 }
+
+dependencies {
+    implementation deps.androidPlugin
+    implementation deps.dokkaPlugin
+    implementation deps.kotlinPlugin
+    implementation deps.kotlinStdLib
+}

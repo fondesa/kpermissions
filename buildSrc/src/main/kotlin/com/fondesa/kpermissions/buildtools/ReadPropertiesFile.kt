@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kpermissions-android'
+package com.fondesa.kpermissions.buildtools
 
-android {
-    defaultConfig.applicationId "com.fondesa.kpermissions.sample"
+import org.gradle.api.Project
+import java.io.File
+import java.util.*
 
-    flavorDimensions "app"
-
-    productFlavors {
-        local.dimension "app"
-        remote.dimension "app"
-    }
+fun Project.readPropertiesOf(fileName: String): Properties {
+    val rootPropsFile = rootProject.file(fileName)
+    val propsFile = file(fileName)
+    return readPropertiesFiles(rootPropsFile, propsFile)
 }
 
-dependencies {
-    implementation Deps.androidxAppCompat
-    implementation Deps.kotlinStdLib
-
-    localImplementation project(':kpermissions')
-    remoteImplementation Deps.kPermissions
-
-    debugImplementation Deps.leakCanary
+private fun readPropertiesFiles(vararg files: File): Properties = Properties().apply {
+    files.filter { file -> file.exists() }.forEach { file -> load(file.inputStream()) }
 }

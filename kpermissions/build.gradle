@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-KAndroidPlugin.attachLibrary(project)
+apply plugin: 'com.android.library'
+apply plugin: 'kpermissions-android'
 BintrayDeployPlugin.attach(project)
-
-// Used by Robolectric.
-android.testOptions.unitTests.includeAndroidResources = true
 
 dependencies {
     api Deps.androidxFragment

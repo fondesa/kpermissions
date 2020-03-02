@@ -20,7 +20,6 @@ import com.android.build.gradle.BasePlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.SourceSetContainer
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -47,12 +46,12 @@ class AndroidModulePlugin : Plugin<Project> {
                 }
                 // Used by Robolectric since Android resources can be used in unit tests.
                 testOptions.unitTests.isIncludeAndroidResources = true
-            }
-        }
-        extensions.configure(SourceSetContainer::class.java) { sourceSetContainer ->
-            // Adds the Kotlin source set for each Java source set..
-            sourceSetContainer.all { sourceSet ->
-                sourceSet.java.srcDir("src/${sourceSet.name}/kotlin")
+                // Adds the Kotlin source set for each Java source set.
+                sourceSets { sourceSetContainer ->
+                    sourceSetContainer.all {sourceSet ->
+                        sourceSet.java.srcDir("src/${sourceSet.name}/kotlin")
+                    }
+                }
             }
         }
         tasks.withType(DokkaTask::class.java) {

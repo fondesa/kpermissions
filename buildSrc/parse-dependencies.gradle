@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-apply plugin: "groovy"
-apply plugin: 'kotlin'
+import java.util.regex.Pattern
 
-buildscript {
-    apply from: 'parse-dependencies.gradle'
-    repositories {
-        jcenter()
-        google()
-    }
-    dependencies {
-        classpath deps.kotlinPlugin
-    }
-}
-
-repositories {
-    jcenter()
-    google()
-}
+def dependencyLinePattern = Pattern.compile("\\s*const\\s*val\\s*(\\w+)\\s*=\\s*\"([\\w\\d.:\\-]+)\"")
+ext.deps = file("src/main/kotlin/Deps.kt")
+        .readLines()
+        .stream()
+        .map { line ->
+            def matcher = dependencyLinePattern.matcher(line)
+            if (matcher.matches()) new Tuple2(matcher.group(1), matcher.group(2)) else null
+        }
+        .filter { it != null }
+        .collect()
+        .groupBy { it.first }
+        .collectEntries { key, value -> [key, value.second.first()] }

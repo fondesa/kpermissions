@@ -15,12 +15,27 @@
  */
 
 apply plugin: "groovy"
+apply plugin: 'kotlin'
+
+buildscript {
+    apply from: 'parse-dependencies.gradle'
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath deps.kotlinPlugin
+    }
+}
 
 repositories {
-    mavenLocal()
+    jcenter()
+    google()
 }
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
+    implementation deps.androidPlugin
+    implementation deps.dokkaPlugin
+    implementation deps.kotlinPlugin
+    implementation deps.kotlinStdLib
 }

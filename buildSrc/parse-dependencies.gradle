@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kpermissions-android'
+import java.util.regex.Pattern
 
-android {
-    defaultConfig.applicationId "com.fondesa.kpermissions.sample"
-
-    flavorDimensions "app"
-
-    productFlavors {
-        local.dimension "app"
-        remote.dimension "app"
-    }
-}
-
-dependencies {
-    implementation Deps.androidxAppCompat
-    implementation Deps.kotlinStdLib
-
-    localImplementation project(':kpermissions')
-    remoteImplementation Deps.kPermissions
-
-    debugImplementation Deps.leakCanary
-}
+def dependencyLinePattern = Pattern.compile("\\s*const\\s*val\\s*(\\w+)\\s*=\\s*\"([\\w\\d.:\\-]+)\"")
+ext.deps = file("src/main/kotlin/Deps.kt")
+        .readLines()
+        .stream()
+        .map { line ->
+            def matcher = dependencyLinePattern.matcher(line)
+            if (matcher.matches()) new Tuple2(matcher.group(1), matcher.group(2)) else null
+        }
+        .filter { it != null }
+        .collect()
+        .groupBy { it.first }
+        .collectEntries { key, value -> [key, value.second.first()] }

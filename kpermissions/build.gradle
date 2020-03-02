@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-KAndroidPlugin.attachLibrary(project)
+apply plugin: 'com.android.library'
+apply plugin: 'kpermissions-android'
 BintrayDeployPlugin.attach(project)
 
-// Used by Robolectric.
-android.testOptions.unitTests.includeAndroidResources = true
-
 dependencies {
-    // Used to run basic unit test.
-    testImplementation "junit:junit:$JUNIT_VERSION"
-    // Used to enable the mocks on final classes.
-    testImplementation "org.mockito:mockito-inline:$MOCKITO_VERSION"
-    // Used as an helper library to use Mockito with Kotlin.
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$KOTLIN_MOCKITO_VERSION"
-    // Used to test the Android components in unit tests.
-    testImplementation "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
+    api Deps.androidxFragment
+    api Deps.kotlinStdLib
 
-    // Used to access the base extensions of Kotlin.
-    api "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
-    api "androidx.fragment:fragment:$ANDROIDX_FRAGMENT_VERSION"
+    testImplementation Deps.junit
+    testImplementation Deps.mockitoKotlin
+    testImplementation Deps.mockitoInLine
+    testImplementation Deps.robolectric
 }

@@ -18,6 +18,7 @@ package com.fondesa.kpermissions.buildtools
 
 import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -31,6 +32,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.util.*
+import java.util.regex.Pattern
 
 class BintrayDeployPlugin : Plugin<Project> {
 
@@ -44,6 +46,8 @@ class BintrayDeployPlugin : Plugin<Project> {
         val sourcesJarArchive = artifacts.add("archives", sourcesJarTask)
         val javadocJarArchive = artifacts.add("archives", javadocJarTask)
         configureMavenPublication(bintrayDeployProperties, javadocJarArchive, sourcesJarArchive)
+        configureBintrayUpload(bintrayDeployProperties)
+        registerPublishLibraryTask()
         Unit
     }
 
@@ -90,14 +94,14 @@ class BintrayDeployPlugin : Plugin<Project> {
                     publication.artifactId =
                         bintrayDeployProperties.getProperty("BINTRAY_LIB_ARTIFACT_ID")
                     publication.version = bintrayDeployProperties.getProperty("BINTRAY_LIB_VERSION")
-                    publication.pom { pom -> configurePom(pom, bintrayDeployProperties) }
+                    publication.pom { pom -> configureMavenPom(pom, bintrayDeployProperties) }
                 }
             }
         }
     }
 
     @Suppress("UnstableApiUsage")
-    private fun Project.configurePom(pom: MavenPom, bintrayDeployProperties: Properties) {
+    private fun Project.configureMavenPom(pom: MavenPom, bintrayDeployProperties: Properties) {
         pom.name.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_NAME"))
         pom.description.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_DESCRIPTION"))
         pom.url.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_URL"))
@@ -118,10 +122,10 @@ class BintrayDeployPlugin : Plugin<Project> {
             scmSpec.developerConnection.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_GIT_URL"))
             scmSpec.url.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_SITE_URL"))
         }
-        configurePomDependencies(pom)
+        configureMavenPomDependencies(pom)
     }
 
-    private fun Project.configurePomDependencies(pom: MavenPom) {
+    private fun Project.configureMavenPomDependencies(pom: MavenPom) {
         pom.withXml { xmlProvider ->
             val dependenciesNode = xmlProvider.asNode().appendNode("dependencies")
             val exportedConfigurationsNames = setOf("compile", "implementation", "api")
@@ -149,6 +153,60 @@ class BintrayDeployPlugin : Plugin<Project> {
                     dependencyNode.appendNode("version", dependency.version)
                 }
                 addedDependencies += configDependencies
+            }
+        }
+    }
+
+    private fun Project.configureBintrayUpload(bintrayDeployProperties: Properties) {
+        extensions.configure(BintrayExtension::class.java) { bintray ->
+            bintray.user = getProperty("BINTRAY_COMMON_USERNAME")
+            bintray.key = getProperty("BINTRAY_COMMON_API_KEY")
+            bintray.publish = true
+            bintray.setPublications("libraryPublication")
+            bintray.pkg.also { bintrayPkg ->
+                bintrayPkg.repo = getProperty("BINTRAY_COMMON_REPO")
+                bintrayPkg.name = bintrayDeployProperties.getProperty("BINTRAY_LIB_NAME")
+                bintrayPkg.desc = bintrayDeployProperties.getProperty("BINTRAY_LIB_DESCRIPTION")
+                bintrayPkg.websiteUrl = bintrayDeployProperties.getProperty("BINTRAY_LIB_SITE_URL")
+                bintrayPkg.issueTrackerUrl =
+                    bintrayDeployProperties.getProperty("BINTRAY_LIB_ISSUE_TRACKER_URL")
+                bintrayPkg.vcsUrl = bintrayDeployProperties.getProperty("BINTRAY_LIB_GIT_URL")
+                bintrayPkg.setLicenses(getProperty("BINTRAY_COMMON_LICENSE_ID"))
+                bintrayPkg.isPublicDownloadNumbers = true
+                val tags = bintrayDeployProperties.getProperty("BINTRAY_LIB_TAGS")
+                bintrayPkg.setLabels(*tags.split(Pattern.quote("|")).toTypedArray())
+                bintrayPkg.githubRepo =
+                    bintrayDeployProperties.getProperty("BINTRAY_LIB_GITHUB_REPO")
+                bintrayPkg.version.also { version ->
+                    version.name = bintrayDeployProperties.getProperty("BINTRAY_LIB_VERSION")
+                    version.desc =
+                        bintrayDeployProperties.getProperty("BINTRAY_LIB_VERSION_DESCRIPTION")
+                    version.gpg.also { gpg ->
+                        gpg.sign = true
+                        gpg.passphrase =
+                            bintrayDeployProperties.getProperty("BINTRAY_COMMON_GPG_PASSWORD")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun Project.registerPublishLibraryTask() {
+        tasks.register("publishLibrary").configure { task ->
+            task.dependsOn("clean")
+            task.dependsOn("assembleRelease")
+            task.dependsOn("sourcesJar")
+            task.dependsOn("javadocJar")
+            task.dependsOn("generatePomFileForLibraryPublicationPublication")
+            task.finalizedBy("bintrayUpload")
+        }
+
+        tasks.configureEach { task ->
+            when (task.name) {
+                "assembleRelease" -> task.mustRunAfter("clean")
+                "sourcesJar" -> task.mustRunAfter("assembleRelease")
+                "javadocJar" -> task.mustRunAfter("sourcesJar")
+                "generatePomFileForLibraryPublicationPublication" -> task.mustRunAfter("javadocJar")
             }
         }
     }

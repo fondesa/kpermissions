@@ -114,9 +114,9 @@ class BintrayDeployPlugin : Plugin<Project> {
             }
         }
         pom.scm { scmSpec ->
-            scmSpec.connection.set(getProperty("BINTRAY_LIB_GIT_URL"))
-            scmSpec.developerConnection.set(getProperty("BINTRAY_LIB_GIT_URL"))
-            scmSpec.url.set(getProperty("BINTRAY_LIB_SITE_URL"))
+            scmSpec.connection.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_GIT_URL"))
+            scmSpec.developerConnection.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_GIT_URL"))
+            scmSpec.url.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_SITE_URL"))
         }
         configurePomDependencies(pom)
     }

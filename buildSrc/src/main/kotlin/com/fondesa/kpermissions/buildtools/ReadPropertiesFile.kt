@@ -20,7 +20,7 @@ import org.gradle.api.Project
 import java.io.File
 import java.util.*
 
-fun Project.readPropertiesOf(fileName: String): Properties {
+internal fun Project.readPropertiesOf(fileName: String): Properties {
     val rootPropsFile = rootProject.file(fileName)
     val propsFile = file(fileName)
     return readPropertiesFiles(rootPropsFile, propsFile)

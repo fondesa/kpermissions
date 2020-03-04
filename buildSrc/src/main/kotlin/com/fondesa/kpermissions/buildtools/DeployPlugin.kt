@@ -34,19 +34,24 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import java.util.*
 import java.util.regex.Pattern
 
-class BintrayDeployPlugin : Plugin<Project> {
+/**
+ * Deploys this library to jCenter and Maven Central through Bintray.
+ * The public deploy properties are defined in the file "deploy.properties".
+ * The private deploy properties aren't versioned.
+ */
+class DeployPlugin : Plugin<Project> {
 
     override fun apply(project: Project) = with(project) {
         plugins.apply("maven-publish")
         plugins.apply("com.jfrog.bintray")
 
-        val bintrayDeployProperties = readPropertiesOf("bintray-deploy.properties")
+        val deployProperties = readPropertiesOf("deploy.properties")
         val sourcesJarTask = registerSourcesJarTask()
         val javadocJarTask = registerJavadocJarTask()
         val sourcesJarArchive = artifacts.add("archives", sourcesJarTask)
         val javadocJarArchive = artifacts.add("archives", javadocJarTask)
-        configureMavenPublication(bintrayDeployProperties, javadocJarArchive, sourcesJarArchive)
-        configureBintrayUpload(bintrayDeployProperties)
+        configureMavenPublication(deployProperties, javadocJarArchive, sourcesJarArchive)
+        configureBintrayUpload(deployProperties)
         registerPublishLibraryTask()
         Unit
     }
@@ -77,7 +82,7 @@ class BintrayDeployPlugin : Plugin<Project> {
     }
 
     private fun Project.configureMavenPublication(
-        bintrayDeployProperties: Properties,
+        deployProperties: Properties,
         javadocJarArchive: PublishArtifact,
         sourcesJarArchive: PublishArtifact
     ) {
@@ -90,37 +95,37 @@ class BintrayDeployPlugin : Plugin<Project> {
                     publication.artifact(javadocJarArchive)
                     publication.artifact(sourcesJarArchive)
                     publication.artifact("$buildDir/outputs/aar/$name-release.aar")
-                    publication.groupId = getProperty("BINTRAY_COMMON_GROUP_ID")
-                    publication.artifactId =
-                        bintrayDeployProperties.getProperty("BINTRAY_LIB_ARTIFACT_ID")
-                    publication.version = bintrayDeployProperties.getProperty("BINTRAY_LIB_VERSION")
-                    publication.pom { pom -> configureMavenPom(pom, bintrayDeployProperties) }
+                    publication.groupId = deployProperties.getProperty("group.id")
+                    publication.artifactId = deployProperties.getProperty("artifact.id")
+                    publication.version = deployProperties.getProperty("version.name")
+                    publication.pom { pom -> configureMavenPom(pom, deployProperties) }
                 }
             }
         }
     }
 
     @Suppress("UnstableApiUsage")
-    private fun Project.configureMavenPom(pom: MavenPom, bintrayDeployProperties: Properties) {
-        pom.name.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_NAME"))
-        pom.description.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_DESCRIPTION"))
-        pom.url.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_URL"))
+    private fun Project.configureMavenPom(pom: MavenPom, deployProperties: Properties) {
+        pom.name.set(deployProperties.getProperty("lib.name"))
+        pom.description.set(deployProperties.getProperty("lib.description"))
+        pom.url.set(deployProperties.getProperty("site.url"))
         pom.licenses { licenseSpec ->
             licenseSpec.license { license ->
-                license.url.set(getProperty("BINTRAY_COMMON_LICENSE_URL"))
+                license.name.set(deployProperties.getProperty("license.name"))
+                license.url.set(deployProperties.getProperty("license.url"))
             }
         }
         pom.developers { developerSpec ->
             developerSpec.developer { developer ->
-                developer.id.set(getProperty("BINTRAY_COMMON_DEV_ID"))
-                developer.name.set(getProperty("BINTRAY_COMMON_DEV_NAME"))
-                developer.email.set(getProperty("BINTRAY_COMMON_DEV_MAIL"))
+                developer.id.set(deployProperties.getProperty("developer.id"))
+                developer.name.set(deployProperties.getProperty("developer.name"))
+                developer.email.set(deployProperties.getProperty("developer.mail"))
             }
         }
         pom.scm { scmSpec ->
-            scmSpec.connection.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_GIT_URL"))
-            scmSpec.developerConnection.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_GIT_URL"))
-            scmSpec.url.set(bintrayDeployProperties.getProperty("BINTRAY_LIB_SITE_URL"))
+            scmSpec.connection.set(deployProperties.getProperty("git.url"))
+            scmSpec.developerConnection.set(deployProperties.getProperty("git.url"))
+            scmSpec.url.set(deployProperties.getProperty("site.url"))
         }
         configureMavenPomDependencies(pom)
     }
@@ -157,34 +162,36 @@ class BintrayDeployPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.configureBintrayUpload(bintrayDeployProperties: Properties) {
+    private fun Project.configureBintrayUpload(deployProperties: Properties) {
         extensions.configure(BintrayExtension::class.java) { bintray ->
-            bintray.user = getProperty("BINTRAY_COMMON_USERNAME")
-            bintray.key = getProperty("BINTRAY_COMMON_API_KEY")
+            bintray.user = getProperty("bintray.username")
+            bintray.key = getProperty("bintray.api.key")
             bintray.publish = true
             bintray.setPublications("libraryPublication")
             bintray.pkg.also { bintrayPkg ->
-                bintrayPkg.repo = getProperty("BINTRAY_COMMON_REPO")
-                bintrayPkg.name = bintrayDeployProperties.getProperty("BINTRAY_LIB_NAME")
-                bintrayPkg.desc = bintrayDeployProperties.getProperty("BINTRAY_LIB_DESCRIPTION")
-                bintrayPkg.websiteUrl = bintrayDeployProperties.getProperty("BINTRAY_LIB_SITE_URL")
-                bintrayPkg.issueTrackerUrl =
-                    bintrayDeployProperties.getProperty("BINTRAY_LIB_ISSUE_TRACKER_URL")
-                bintrayPkg.vcsUrl = bintrayDeployProperties.getProperty("BINTRAY_LIB_GIT_URL")
-                bintrayPkg.setLicenses(getProperty("BINTRAY_COMMON_LICENSE_ID"))
+                bintrayPkg.repo = deployProperties.getProperty("bintray.repo")
+                bintrayPkg.name = deployProperties.getProperty("lib.name")
+                bintrayPkg.desc = deployProperties.getProperty("lib.description")
+                bintrayPkg.websiteUrl = deployProperties.getProperty("site.url")
+                bintrayPkg.issueTrackerUrl = deployProperties.getProperty("issue.tracker.url")
+                bintrayPkg.vcsUrl = deployProperties.getProperty("git.url")
+                bintrayPkg.setLicenses(deployProperties.getProperty("license.id"))
                 bintrayPkg.isPublicDownloadNumbers = true
-                val tags = bintrayDeployProperties.getProperty("BINTRAY_LIB_TAGS")
+                val tags = deployProperties.getProperty("lib.tags")
                 bintrayPkg.setLabels(*tags.split(Pattern.quote("|")).toTypedArray())
-                bintrayPkg.githubRepo =
-                    bintrayDeployProperties.getProperty("BINTRAY_LIB_GITHUB_REPO")
+                bintrayPkg.githubRepo = deployProperties.getProperty("github.repo")
                 bintrayPkg.version.also { version ->
-                    version.name = bintrayDeployProperties.getProperty("BINTRAY_LIB_VERSION")
-                    version.desc =
-                        bintrayDeployProperties.getProperty("BINTRAY_LIB_VERSION_DESCRIPTION")
+                    version.name = deployProperties.getProperty("version.name")
+                    version.released = Date().toString()
+                    version.desc = deployProperties.getProperty("version.description")
                     version.gpg.also { gpg ->
                         gpg.sign = true
-                        gpg.passphrase =
-                            bintrayDeployProperties.getProperty("BINTRAY_COMMON_GPG_PASSWORD")
+                        gpg.passphrase = getProperty("bintray.gpg.password")
+                    }
+                    version.mavenCentralSync.also { mavenCentral ->
+                        mavenCentral.sync = true
+                        mavenCentral.user = getProperty("maven.central.username")
+                        mavenCentral.password = getProperty("maven.central.password")
                     }
                 }
             }

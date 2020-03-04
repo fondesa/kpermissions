@@ -16,7 +16,7 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kpermissions-android'
-apply plugin: 'bintray-deploy'
+apply plugin: 'kpermissions-deploy'
 
 dependencies {
     api Deps.androidxFragment

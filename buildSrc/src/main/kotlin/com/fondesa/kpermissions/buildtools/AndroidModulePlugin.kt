@@ -48,7 +48,7 @@ class AndroidModulePlugin : Plugin<Project> {
                 testOptions.unitTests.isIncludeAndroidResources = true
                 // Adds the Kotlin source set for each Java source set.
                 sourceSets { sourceSetContainer ->
-                    sourceSetContainer.all {sourceSet ->
+                    sourceSetContainer.all { sourceSet ->
                         sourceSet.java.srcDir("src/${sourceSet.name}/kotlin")
                     }
                 }

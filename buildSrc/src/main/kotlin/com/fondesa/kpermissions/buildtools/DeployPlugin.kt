@@ -1,0 +1,223 @@
+/*
+ * Copyright (c) 2020 Fondesa
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.fondesa.kpermissions.buildtools
+
+import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.jfrog.bintray.gradle.BintrayExtension
+import org.gradle.api.GradleException
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.PublishArtifact
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPom
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.jvm.tasks.Jar
+import org.jetbrains.dokka.gradle.DokkaTask
+import java.util.*
+import java.util.regex.Pattern
+
+/**
+ * Deploys this library to jCenter and Maven Central through Bintray.
+ * The public deploy properties are defined in the file "deploy.properties".
+ * The private deploy properties aren't versioned.
+ */
+class DeployPlugin : Plugin<Project> {
+
+    override fun apply(project: Project) = with(project) {
+        plugins.apply("maven-publish")
+        plugins.apply("com.jfrog.bintray")
+
+        val deployProperties = readPropertiesOf("deploy.properties")
+        val sourcesJarTask = registerSourcesJarTask()
+        val javadocJarTask = registerJavadocJarTask()
+        val sourcesJarArchive = artifacts.add("archives", sourcesJarTask)
+        val javadocJarArchive = artifacts.add("archives", javadocJarTask)
+        configureMavenPublication(deployProperties, javadocJarArchive, sourcesJarArchive)
+        configureBintrayUpload(deployProperties)
+        registerPublishLibraryTask()
+        Unit
+    }
+
+    private fun Project.registerSourcesJarTask(): TaskProvider<out Task> {
+        val sourcesJarTask = tasks.register("sourcesJar", Jar::class.java)
+        plugins.withType(BasePlugin::class.java) { androidPlugin ->
+            androidPlugin.extension.sourceSets.named("main") { sourceSet ->
+                sourcesJarTask.configure { task ->
+                    task.archiveClassifier.set("sources")
+                    task.from(sourceSet.java.srcDirs)
+                }
+            }
+        }
+        return sourcesJarTask
+    }
+
+    private fun Project.registerJavadocJarTask(): TaskProvider<out Task> {
+        val javadocJarTask = tasks.register("javadocJar", Jar::class.java)
+        javadocJarTask.dependsOn("dokka")
+        tasks.withType(DokkaTask::class.java) { dokkaTask ->
+            javadocJarTask.configure { task ->
+                task.archiveClassifier.set("javadoc")
+                task.from(dokkaTask.outputDirectory)
+            }
+        }
+        return javadocJarTask
+    }
+
+    private fun Project.configureMavenPublication(
+        deployProperties: Properties,
+        javadocJarArchive: PublishArtifact,
+        sourcesJarArchive: PublishArtifact
+    ) {
+        extensions.configure(PublishingExtension::class.java) { publishingExtension ->
+            publishingExtension.publications { publicationContainer ->
+                publicationContainer.create(
+                    "libraryPublication",
+                    MavenPublication::class.java
+                ) { publication ->
+                    publication.artifact(javadocJarArchive)
+                    publication.artifact(sourcesJarArchive)
+                    publication.artifact("$buildDir/outputs/aar/$name-release.aar")
+                    publication.groupId = deployProperties.getProperty("group.id")
+                    publication.artifactId = deployProperties.getProperty("artifact.id")
+                    publication.version = deployProperties.getProperty("version.name")
+                    publication.pom { pom -> configureMavenPom(pom, deployProperties) }
+                }
+            }
+        }
+    }
+
+    @Suppress("UnstableApiUsage")
+    private fun Project.configureMavenPom(pom: MavenPom, deployProperties: Properties) {
+        pom.name.set(deployProperties.getProperty("lib.name"))
+        pom.description.set(deployProperties.getProperty("lib.description"))
+        pom.url.set(deployProperties.getProperty("site.url"))
+        pom.licenses { licenseSpec ->
+            licenseSpec.license { license ->
+                license.name.set(deployProperties.getProperty("license.name"))
+                license.url.set(deployProperties.getProperty("license.url"))
+            }
+        }
+        pom.developers { developerSpec ->
+            developerSpec.developer { developer ->
+                developer.id.set(deployProperties.getProperty("developer.id"))
+                developer.name.set(deployProperties.getProperty("developer.name"))
+                developer.email.set(deployProperties.getProperty("developer.mail"))
+            }
+        }
+        pom.scm { scmSpec ->
+            scmSpec.connection.set(deployProperties.getProperty("git.url"))
+            scmSpec.developerConnection.set(deployProperties.getProperty("git.url"))
+            scmSpec.url.set(deployProperties.getProperty("site.url"))
+        }
+        configureMavenPomDependencies(pom)
+    }
+
+    private fun Project.configureMavenPomDependencies(pom: MavenPom) {
+        pom.withXml { xmlProvider ->
+            val dependenciesNode = xmlProvider.asNode().appendNode("dependencies")
+            val exportedConfigurationsNames = setOf("compile", "implementation", "api")
+            val addedDependencies = mutableMapOf<String, Dependency>()
+            configurations.configureEach { configuration ->
+                if (configuration.name !in exportedConfigurationsNames) {
+                    return@configureEach
+                }
+                val configDependencies = configuration.allDependencies
+                    .filter { dependency -> dependency.group != null && dependency.version != null }
+                    .filter { dependency -> addedDependencies[dependency.name] == null }
+                    .map { dependency -> dependency.name to dependency }
+                    .toMap()
+
+                val localDependencies = configDependencies
+                    .filter { (_, dependency) -> dependency.version == "unspecified" }
+
+                if (localDependencies.isNotEmpty()) {
+                    throw GradleException("Can't publish artifacts depending on local dependencies: ${localDependencies.keys.joinToString()}")
+                }
+                configDependencies.values.forEach { dependency ->
+                    val dependencyNode = dependenciesNode.appendNode("dependency")
+                    dependencyNode.appendNode("groupId", dependency.group)
+                    dependencyNode.appendNode("artifactId", dependency.name)
+                    dependencyNode.appendNode("version", dependency.version)
+                }
+                addedDependencies += configDependencies
+            }
+        }
+    }
+
+    private fun Project.configureBintrayUpload(deployProperties: Properties) {
+        extensions.configure(BintrayExtension::class.java) { bintray ->
+            bintray.user = getProperty("bintray.username")
+            bintray.key = getProperty("bintray.api.key")
+            bintray.publish = true
+            bintray.setPublications("libraryPublication")
+            bintray.pkg.also { bintrayPkg ->
+                bintrayPkg.repo = deployProperties.getProperty("bintray.repo")
+                bintrayPkg.name = deployProperties.getProperty("lib.name")
+                bintrayPkg.desc = deployProperties.getProperty("lib.description")
+                bintrayPkg.websiteUrl = deployProperties.getProperty("site.url")
+                bintrayPkg.issueTrackerUrl = deployProperties.getProperty("issue.tracker.url")
+                bintrayPkg.vcsUrl = deployProperties.getProperty("git.url")
+                bintrayPkg.setLicenses(deployProperties.getProperty("license.id"))
+                bintrayPkg.isPublicDownloadNumbers = true
+                val tags = deployProperties.getProperty("lib.tags")
+                bintrayPkg.setLabels(*tags.split(Pattern.quote("|")).toTypedArray())
+                bintrayPkg.githubRepo = deployProperties.getProperty("github.repo")
+                bintrayPkg.version.also { version ->
+                    version.name = deployProperties.getProperty("version.name")
+                    version.released = Date().toString()
+                    version.desc = deployProperties.getProperty("version.description")
+                    version.gpg.also { gpg ->
+                        gpg.sign = true
+                        gpg.passphrase = getProperty("bintray.gpg.password")
+                    }
+                    version.mavenCentralSync.also { mavenCentral ->
+                        mavenCentral.sync = true
+                        mavenCentral.user = getProperty("maven.central.username")
+                        mavenCentral.password = getProperty("maven.central.password")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun Project.registerPublishLibraryTask() {
+        tasks.register("publishLibrary").configure { task ->
+            task.dependsOn("clean")
+            task.dependsOn("assembleRelease")
+            task.dependsOn("sourcesJar")
+            task.dependsOn("javadocJar")
+            task.dependsOn("generatePomFileForLibraryPublicationPublication")
+            task.finalizedBy("bintrayUpload")
+        }
+
+        tasks.configureEach { task ->
+            when (task.name) {
+                "assembleRelease" -> task.mustRunAfter("clean")
+                "sourcesJar" -> task.mustRunAfter("assembleRelease")
+                "javadocJar" -> task.mustRunAfter("sourcesJar")
+                "generatePomFileForLibraryPublicationPublication" -> task.mustRunAfter("javadocJar")
+            }
+        }
+    }
+
+    private fun Project.getProperty(propertyName: String): String =
+        if (project.hasProperty(propertyName)) project.property(propertyName) as String else ""
+}

@@ -37,7 +37,7 @@ script:
 
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -Z -f ./kpermissions/build/jacocoReport/testDebugUnitTestCoverage
+  - bash <(curl -s https://codecov.io/bash) -Z -f ./kpermissions/build/jacocoReport/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

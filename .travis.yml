@@ -35,7 +35,7 @@ script:
   - ./gradlew :kpermissions:check :kpermissions:build :kpermissions:testDebugUnitTestCoverage :sample:assembleLocal -s
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -Z
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

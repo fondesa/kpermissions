@@ -8,8 +8,6 @@ env:
     - BUILD_TOOLS_VERSION=29.0.2
     # Android API level used in this project.
     - API=29
-    # Codecov.io token.
-    - secure: "mXYz/TorS25GtRO5R2zRmt47Gs8UyrdcvywZWVT3xaiowQDNgaFy5SN3Yiwl5OyN1DzKZu8mIt+kddPrKQVDgNpCvr31cf9xw5e98S45zTLAGrR73UKPJzLZtKcxelrk8Cfi/UuisnCMHwirdCLjiDPnaRLn4ilTcsSb9U5NW/3J8jvYXPMZPe8pP9GFQeF3fF52Bq+zut0rN2ZJ0BnDhRDxsuobMj+KHTqtlJRoilm/23yjXwY6Mch4rf3KEKamePbcRtGryZbFaSq/ywi5EyHwEA6+4QQOBQAEFawc62IrpyAPFMpnpLGY1c5GM9p35oIppN4QTMKlEIBzQ4ywRO+2hUU+sl+WE176xrhDHH0/h6xL11SmoZyLN9ZdBITeHkRfdNobY578FWfCPE0zvl11aPCoQXtSziJB9Ef0xRS7UawtK5Zg6adFRm4KMY+6VLxU/vDRDmw+8nnCcpgm6ns2vVlK27n45+nGh0NPHQk3/z/0yj0Klpe/cI/A6vgSAQ06F6fZzXsM9T+ZDCK/Vjl6YFYIRCVp8+zXY7kNmV/uToUduzn82B9kHvb00QHUExFBwc2n8GdIHCN8eeaP3QSxBv+zcBE0haHVE5uV5xLgTnB/DXk1VC+rcwlIkriyX+1YheYsLgt/9HDTEd9s0sF9hKjAt7tXvQig3pFXIy0="
 
 before_install:
   - yes | sdkmanager "platforms;android-${API}"

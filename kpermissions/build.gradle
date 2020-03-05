@@ -16,6 +16,7 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kpermissions-android'
+apply plugin: 'kpermissions-android-coverage'
 apply plugin: 'kpermissions-deploy'
 
 dependencies {

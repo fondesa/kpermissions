@@ -49,7 +49,7 @@ class AndroidModulePlugin : Plugin<Project> {
                 // Adds the Kotlin source set for each Java source set.
                 sourceSets { sourceSetContainer ->
                     sourceSetContainer.all { sourceSet ->
-                        sourceSet.java.srcDir("src/${sourceSet.name}/kotlin")
+                        sourceSet.java.srcDirs("src/${sourceSet.name}/kotlin")
                     }
                 }
             }

@@ -32,10 +32,12 @@ branches:
 script:
   # Builds the library project, runs all its JVM tests and calculates the coverage.
   # It also assembles the sample with the local libs.
-  - ./gradlew :kpermissions:check :kpermissions:build :kpermissions:testDebugUnitTestCoverage :sample:assembleLocal -s
+  #- ./gradlew :kpermissions:check :kpermissions:build :kpermissions:testDebugUnitTestCoverage :sample:assembleLocal -s
+  - ./gradlew :kpermissions:testDebugUnitTestCoverage -s
+
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -Z
+  - bash <(curl -s https://codecov.io/bash) -v -Z
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

@@ -72,7 +72,7 @@ class AndroidCoveragePlugin : Plugin<Project> {
             @Suppress("UnstableApiUsage")
             task.reports.apply {
                 html.isEnabled = true
-                xml.isEnabled = false
+                xml.isEnabled = true
                 csv.isEnabled = false
             }
             val javaClassDirectories = fileTreeOf(

@@ -1,7 +1,6 @@
+os: linux
 language: android
 jdk: oraclejdk8
-# Uses the Travis container-based infrastructure.
-sudo: false
 
 env:
   global:
@@ -35,10 +34,7 @@ branches:
 script:
   # Builds the library project, runs all its JVM tests and calculates the coverage.
   # It also assembles the sample with the local libs.
-  - ./gradlew :kpermissions:check \
-              :kpermissions:build \
-              :kpermissions:testDebugUnitTestCoverage \
-              :sample:assembleLocal -s
+  - ./gradlew :kpermissions:check :kpermissions:build :kpermissions:testDebugUnitTestCoverage :sample:assembleLocal -s
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

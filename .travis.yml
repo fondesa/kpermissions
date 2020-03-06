@@ -1,7 +1,6 @@
+os: linux
 language: android
 jdk: oraclejdk8
-# Use the Travis container-based infrastructure.
-sudo: false
 
 env:
   global:
@@ -11,8 +10,8 @@ env:
     - API=29
 
 before_install:
-- yes | sdkmanager "platforms;android-${API}"
-- yes | sdkmanager "build-tools;${BUILD_TOOLS_VERSION}"
+  - yes | sdkmanager "platforms;android-${API}"
+  - yes | sdkmanager "build-tools;${BUILD_TOOLS_VERSION}"
 
 android:
   components:
@@ -31,10 +30,13 @@ branches:
     - master
 
 script:
-    # Build the library project.
-    - ./gradlew :kpermissions:build --continue -s
-    # Assemble the sample with the local libs.
-    - ./gradlew :sample:assembleLocal --continue -s
+  # Builds the library project, runs all its JVM tests and calculates the coverage.
+  # It also assembles the sample with the local libs.
+  - ./gradlew :kpermissions:check :kpermissions:build :kpermissions:testDebugUnitTestCoverage :sample:assembleLocal -s
+
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -Z -f ./kpermissions/build/jacocoReport/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

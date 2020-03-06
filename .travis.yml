@@ -34,8 +34,9 @@ script:
   # It also assembles the sample with the local libs.
   - ./gradlew :kpermissions:check :kpermissions:build :kpermissions:testDebugUnitTestCoverage :sample:assembleLocal -s
 
+
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -Z -f ./kpermissions/build/jacocoReport/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

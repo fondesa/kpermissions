@@ -27,7 +27,6 @@ import com.fondesa.test.grantPermissions
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -45,14 +44,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
     private val listener = mock<RuntimePermissionHandler.Listener>()
     private val fragment = createFragment<DefaultFragmentRuntimePermissionHandler>()
 
-    @Before
-    fun attachListenersToFragment() {
-        // Attach the listener for the permissions.
-        fragment.attachListener(permissions, listener)
-    }
-
     @Test
     fun fragmentCreationSuccessful() {
+        fragment.attachListener(permissions, listener)
         // The Fragment must retain the instance.
         assertTrue(fragment.retainInstance)
         // It mustn't have a layout.
@@ -61,6 +55,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun permissionsRequested() {
+        fragment.attachListener(permissions, listener)
         val permissions =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
         val spiedFragment = spy(fragment)
@@ -74,6 +69,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun permissionsHandledByDefault() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         // Handle the permissions.
         spiedFragment.handleRuntimePermissions(permissions)
@@ -83,8 +79,15 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         verifyZeroInteractions(listener)
     }
 
+    @Test(expected = IllegalArgumentException::class)
+    fun `When listener is not attached and permissions status should be notified, an exception is thrown`() {
+        context.grantPermissions(*permissions)
+        fragment.handleRuntimePermissions(permissions)
+    }
+
     @Test
     fun permissionsAcceptedNotifyListener() {
+        fragment.attachListener(permissions, listener)
         // Grant the permissions.
         context.grantPermissions(*permissions)
         fragment.handleRuntimePermissions(permissions)
@@ -100,6 +103,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun permissionsNotifyRationaleListener() {
+        fragment.attachListener(permissions, listener)
         val mockActivity = mock<FragmentActivity> {
             on(it.checkPermission(any(), any(), any())) doReturn PackageManager.PERMISSION_DENIED
         }
@@ -139,6 +143,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun processingPermissions() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
 
         spiedFragment.requestRuntimePermissions(permissions)
@@ -150,6 +155,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun processingPermissionsUnlocked() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         val reqCodeCaptor = argumentCaptor<Int>()
 
@@ -178,6 +184,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithAcceptedPermissions() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
@@ -210,6 +217,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithRationalePermissions() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
@@ -284,6 +292,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithRationalePermissionsSolvedByUser() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
@@ -329,6 +338,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithDeniedPermissions() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
@@ -403,6 +413,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithDeniedPermissionsSolvedByUser() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
@@ -448,6 +459,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithPermanentlyDeniedPermissionsSolvedByUser() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
@@ -493,6 +505,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun `When rationale permissions are not handled and there aren't permanently denied permissions, listeners are not notified`() {
+        fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
@@ -522,6 +535,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun `When Fragment is not added yet, the permissions are handled when it will be attached`() {
+        fragment.attachListener(permissions, listener)
         context.grantPermissions(*permissions)
         val spiedFragment = spy(fragment) {
             on(it.isAdded) doReturn false

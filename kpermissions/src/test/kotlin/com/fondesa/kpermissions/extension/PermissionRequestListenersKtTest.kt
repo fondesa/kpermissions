@@ -17,9 +17,11 @@
 package com.fondesa.kpermissions.extension
 
 import android.Manifest
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 import com.nhaarman.mockitokotlin2.*
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,6 +35,25 @@ class PermissionRequestListenersKtTest {
     private val request = mock<PermissionRequest>()
 
     @Test
+    fun `When addListener() is invoked, a new listener is created and the lambda is invoked when the listener is notified`() {
+        val expectedResult =
+            listOf(PermissionStatus.Granted(Manifest.permission.ACCESS_FINE_LOCATION))
+        var result: List<PermissionStatus>? = null
+        val listenerCaptor = argumentCaptor<PermissionRequest.Listener>()
+
+        // The result will be assigned to the variable if the method is notified.
+        request.addListener { result = it }
+        // Captures the listener.
+        verify(request).addListener(listenerCaptor.capture())
+        verifyNoMoreInteractions(request)
+
+        // Invokes the method on the captured listener.
+        listenerCaptor.lastValue.onPermissionsResult(expectedResult)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
     fun onAcceptedInvoked() {
         val expectedPermissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
         var executedPermissions: Array<out String>? = null
@@ -40,14 +61,14 @@ class PermissionRequestListenersKtTest {
 
         // The permissions will be assigned to the variable if the method is notified.
         request.onAccepted { executedPermissions = it }
-        // Capture the listener.
+        // Captures the listener.
         verify(request).acceptedListener(acceptedCaptor.capture())
         verifyNoMoreInteractions(request)
 
-        // Invoke the method on the captured listener.
+        // Invokes the method on the captured listener.
         acceptedCaptor.lastValue.onPermissionsAccepted(expectedPermissions)
 
-        assertEquals(expectedPermissions, executedPermissions)
+        assertArrayEquals(expectedPermissions, executedPermissions)
     }
 
     @Test
@@ -58,14 +79,14 @@ class PermissionRequestListenersKtTest {
 
         // The permissions will be assigned to the variable if the method is notified.
         request.onDenied { executedPermissions = it }
-        // Capture the listener.
+        // Captures the listener.
         verify(request).deniedListener(deniedCaptor.capture())
         verifyNoMoreInteractions(request)
 
-        // Invoke the method on the captured listener.
+        // Invokes the method on the captured listener.
         deniedCaptor.lastValue.onPermissionsDenied(expectedPermissions)
 
-        assertEquals(expectedPermissions, executedPermissions)
+        assertArrayEquals(expectedPermissions, executedPermissions)
     }
 
     @Test
@@ -80,10 +101,10 @@ class PermissionRequestListenersKtTest {
         verify(request).permanentlyDeniedListener(permDeniedCaptor.capture())
         verifyNoMoreInteractions(request)
 
-        // Invoke the method on the captured listener.
+        // Invokes the method on the captured listener.
         permDeniedCaptor.lastValue.onPermissionsPermanentlyDenied(expectedPermissions)
 
-        assertEquals(expectedPermissions, executedPermissions)
+        assertArrayEquals(expectedPermissions, executedPermissions)
     }
 
     @Test
@@ -101,23 +122,23 @@ class PermissionRequestListenersKtTest {
             executedPermissions = permissions
             executedNonce = nonce
         }
-        // Capture the listener.
+        // Captures the listener.
         verify(request).rationaleListener(rationaleCaptor.capture())
         verifyNoMoreInteractions(request)
 
-        // Invoke the method on the captured listener.
+        // Invokes the method on the captured listener.
         rationaleCaptor.lastValue.onPermissionsShouldShowRationale(
             expectedPermissions,
             expectedNonce
         )
 
-        assertEquals(expectedPermissions, executedPermissions)
+        assertArrayEquals(expectedPermissions, executedPermissions)
         assertEquals(expectedNonce, executedNonce)
     }
 
     @Test
     fun listenersAddedWithDSL() {
-        // Add the listeners with the DSL.
+        // Adds the listeners with the DSL.
         request.listeners {
             onAccepted { }
             onDenied { }
@@ -125,7 +146,7 @@ class PermissionRequestListenersKtTest {
             onShouldShowRationale { _, _ -> }
         }
 
-        // Verify that all listeners are added.
+        // Verifies that all listeners are added.
         verify(request).acceptedListener(any())
         verify(request).deniedListener(any())
         verify(request).permanentlyDeniedListener(any())

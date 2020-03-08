@@ -44,7 +44,7 @@ class CompatPermissionRequestBuilder internal constructor(private val activity: 
         runtimeHandlerProvider: RuntimePermissionHandlerProvider
     ): PermissionRequest {
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        return if (Build.VERSION.SDK_INT >= 23) {
             // Provide the handler.
             val handler = runtimeHandlerProvider.provideHandler()
             // Create the runtime request.

@@ -17,21 +17,28 @@
 package com.fondesa.kpermissions.request.runtime
 
 import android.Manifest
+import android.app.Activity
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
+import com.fondesa.test.createActivity
+import com.fondesa.test.denyPermissions
+import com.fondesa.test.grantPermissions
 import com.nhaarman.mockitokotlin2.*
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * Tests for [RuntimePermissionRequest].
  */
 @RunWith(RobolectricTestRunner::class)
+@Config(minSdk = 23)
 class RuntimePermissionRequestTest {
+    private val activity = spy(createActivity<Activity>())
     private val handler = mock<RuntimePermissionHandler>()
     private val nonce = mock<PermissionNonce>()
     private val nonceGenerator = mock<PermissionNonceGenerator> {
@@ -46,7 +53,7 @@ class RuntimePermissionRequestTest {
     @Test
     fun onePermissionHandled() {
         val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = requestOf(*permission)
+        val request = RuntimePermissionRequest(permission, nonceGenerator, handler)
 
         verify(handler).attachListener(permission, request)
 
@@ -60,7 +67,7 @@ class RuntimePermissionRequestTest {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.SEND_SMS
         )
-        val request = requestOf(*permissions)
+        val request = RuntimePermissionRequest(permissions, nonceGenerator, handler)
 
         verify(handler).attachListener(permissions, request)
 
@@ -73,7 +80,9 @@ class RuntimePermissionRequestTest {
         val first = Manifest.permission.ACCESS_FINE_LOCATION
         val second = Manifest.permission.SEND_SMS
         val permissions = arrayOf(first, second)
-        val request = requestOf(*permissions)
+        val request = RuntimePermissionRequest(permissions, nonceGenerator, handler).apply {
+            acceptedListener(acceptedListener)
+        }
 
         val acceptedPermissions = arrayOf(first)
         val handled = request.permissionsAccepted(acceptedPermissions)
@@ -87,7 +96,9 @@ class RuntimePermissionRequestTest {
         val first = Manifest.permission.ACCESS_FINE_LOCATION
         val second = Manifest.permission.SEND_SMS
         val permissions = arrayOf(first, second)
-        val request = requestOf(*permissions)
+        val request = RuntimePermissionRequest(permissions, nonceGenerator, handler).apply {
+            deniedListener(deniedListener)
+        }
 
         val deniedPermissions = arrayOf(first)
         val handled = request.permissionsDenied(deniedPermissions)
@@ -101,7 +112,9 @@ class RuntimePermissionRequestTest {
         val first = Manifest.permission.ACCESS_FINE_LOCATION
         val second = Manifest.permission.SEND_SMS
         val permissions = arrayOf(first, second)
-        val request = requestOf(*permissions)
+        val request = RuntimePermissionRequest(permissions, nonceGenerator, handler).apply {
+            permanentlyDeniedListener(permDeniedListener)
+        }
 
         val permDeniedPermissions = arrayOf(first)
         val handled = request.permissionsPermanentlyDenied(permDeniedPermissions)
@@ -115,7 +128,9 @@ class RuntimePermissionRequestTest {
         val first = Manifest.permission.ACCESS_FINE_LOCATION
         val second = Manifest.permission.SEND_SMS
         val permissions = arrayOf(first, second)
-        val request = requestOf(*permissions)
+        val request = RuntimePermissionRequest(permissions, nonceGenerator, handler).apply {
+            rationaleListener(rationaleListener)
+        }
 
         val rationalePermissions = arrayOf(first)
         val handled = request.permissionsShouldShowRationale(rationalePermissions)
@@ -129,7 +144,9 @@ class RuntimePermissionRequestTest {
     @Test
     fun detachAcceptedListener() {
         val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = requestOf(*permission)
+        val request = RuntimePermissionRequest(permission, nonceGenerator, handler).apply {
+            acceptedListener(acceptedListener)
+        }
 
         var handled = request.permissionsAccepted(permission)
         assertTrue(handled)
@@ -154,7 +171,9 @@ class RuntimePermissionRequestTest {
     @Test
     fun detachDeniedListener() {
         val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = requestOf(*permission)
+        val request = RuntimePermissionRequest(permission, nonceGenerator, handler).apply {
+            deniedListener(deniedListener)
+        }
 
         var handled = request.permissionsDenied(permission)
         assertTrue(handled)
@@ -179,7 +198,9 @@ class RuntimePermissionRequestTest {
     @Test
     fun detachPermanentlyDeniedListener() {
         val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = requestOf(*permission)
+        val request = RuntimePermissionRequest(permission, nonceGenerator, handler).apply {
+            permanentlyDeniedListener(permDeniedListener)
+        }
 
         var handled = request.permissionsPermanentlyDenied(permission)
         assertTrue(handled)
@@ -204,7 +225,9 @@ class RuntimePermissionRequestTest {
     @Test
     fun detachRationaleListener() {
         val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = requestOf(*permission)
+        val request = RuntimePermissionRequest(permission, nonceGenerator, handler).apply {
+            rationaleListener(rationaleListener)
+        }
 
         var handled = request.permissionsShouldShowRationale(permission)
         assertTrue(handled)
@@ -226,11 +249,138 @@ class RuntimePermissionRequestTest {
         verify(rationaleListener, times(2)).onPermissionsShouldShowRationale(permission, nonce)
     }
 
-    private fun requestOf(vararg permissions: String) =
-        RuntimePermissionRequest(permissions, nonceGenerator, handler).apply {
-            acceptedListener(acceptedListener)
-            deniedListener(deniedListener)
-            permanentlyDeniedListener(permDeniedListener)
+    @Test(expected = IllegalStateException::class)
+    fun `When rationale listener is attached but the RuntimePermissionRequest is created without nonce, an exception is thrown`() {
+        val first = Manifest.permission.ACCESS_FINE_LOCATION
+        val second = Manifest.permission.SEND_SMS
+        val permissions = arrayOf(first, second)
+        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
             rationaleListener(rationaleListener)
         }
+
+        val rationalePermissions = arrayOf(first)
+        request.permissionsShouldShowRationale(rationalePermissions)
+    }
+
+    @Test
+    fun `When onPermissionsResult is invoked, the result is sent to the notified listeners`() {
+        val firstListener = mock<PermissionRequest.Listener>()
+        val secondListener = mock<PermissionRequest.Listener>()
+        val permissions =
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
+        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
+            addListener(firstListener)
+            addListener(secondListener)
+        }
+
+        val result = listOf(
+            PermissionStatus.Granted(Manifest.permission.ACCESS_FINE_LOCATION),
+            PermissionStatus.Denied.Permanently(Manifest.permission.SEND_SMS)
+        )
+        request.onPermissionsResult(result)
+
+        verify(firstListener).onPermissionsResult(result)
+        verify(secondListener).onPermissionsResult(result)
+        verifyNoMoreInteractions(firstListener, secondListener)
+    }
+
+    @Test
+    fun `When one listener is detached and onPermissionsResult is invoked, the detached listener is not notified anymore`() {
+        val firstListener = mock<PermissionRequest.Listener>()
+        val secondListener = mock<PermissionRequest.Listener>()
+        val permissions =
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
+        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
+            addListener(firstListener)
+            addListener(secondListener)
+        }
+
+        val result = listOf(
+            PermissionStatus.Granted(Manifest.permission.ACCESS_FINE_LOCATION),
+            PermissionStatus.Denied.Permanently(Manifest.permission.SEND_SMS)
+        )
+        request.onPermissionsResult(result)
+
+        verify(firstListener).onPermissionsResult(result)
+        verify(secondListener).onPermissionsResult(result)
+        verifyNoMoreInteractions(firstListener, secondListener)
+
+        request.removeListener(firstListener)
+        request.onPermissionsResult(result)
+
+        verify(firstListener).onPermissionsResult(result)
+        verify(secondListener, times(2)).onPermissionsResult(result)
+        verifyNoMoreInteractions(firstListener, secondListener)
+    }
+
+    @Test
+    fun `When all listeners are detached and onPermissionsResult is invoked, they are not notified anymore`() {
+        val firstListener = mock<PermissionRequest.Listener>()
+        val secondListener = mock<PermissionRequest.Listener>()
+        val permissions =
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
+        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
+            addListener(firstListener)
+            addListener(secondListener)
+        }
+
+        val result = listOf(
+            PermissionStatus.Granted(Manifest.permission.ACCESS_FINE_LOCATION),
+            PermissionStatus.Denied.Permanently(Manifest.permission.SEND_SMS)
+        )
+        request.onPermissionsResult(result)
+
+        verify(firstListener).onPermissionsResult(result)
+        verify(secondListener).onPermissionsResult(result)
+        verifyNoMoreInteractions(firstListener, secondListener)
+
+        request.removeAllListeners()
+        request.onPermissionsResult(result)
+
+        verify(firstListener).onPermissionsResult(result)
+        verify(secondListener).onPermissionsResult(result)
+        verifyNoMoreInteractions(firstListener, secondListener)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `When checkStatus() is invoked without an Activity, an exception is thrown`() {
+        val request = RuntimePermissionRequest(
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            nonceGenerator,
+            handler
+        )
+
+        request.checkStatus()
+    }
+
+    @Test
+    fun `When checkStatus() is invoked with an Activity, the runtime permissions status is retrieved`() {
+        activity.grantPermissions(Manifest.permission.SEND_SMS)
+        activity.denyPermissions(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.CALL_PHONE
+        )
+        whenever(activity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
+            .thenReturn(true)
+        whenever(activity.shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE))
+            .thenReturn(false)
+        val expected = listOf(
+            PermissionStatus.Granted(Manifest.permission.SEND_SMS),
+            PermissionStatus.Denied.ShouldShowRationale(Manifest.permission.ACCESS_FINE_LOCATION),
+            PermissionStatus.RequestRequired(Manifest.permission.CALL_PHONE)
+        )
+        val request = RuntimePermissionRequest(
+            activity,
+            arrayOf(
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CALL_PHONE
+            ),
+            nonceGenerator,
+            handler
+        )
+
+        val actual = request.checkStatus()
+        assertEquals(expected, actual)
+    }
 }

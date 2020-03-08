@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -30,7 +29,7 @@ import androidx.fragment.app.Fragment
  * The runtime permissions are requested through [requestPermissions] and the result
  * will be notified to [onRequestPermissionsResult].
  */
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(23)
 abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
 
     private val listeners = mutableMapOf<String, RuntimePermissionHandler.Listener>()

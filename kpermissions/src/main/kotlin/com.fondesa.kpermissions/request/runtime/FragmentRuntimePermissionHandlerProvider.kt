@@ -17,7 +17,6 @@
 package com.fondesa.kpermissions.request.runtime
 
 import android.app.Activity
-import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -36,7 +35,7 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
 open class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
     RuntimePermissionHandlerProvider {
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(23)
     final override fun provideHandler(): RuntimePermissionHandler {
         // Obtain the current Fragment if possible, otherwise create it.
         var fragment = manager.findFragmentByTag(FRAGMENT_TAG) as? RuntimePermissionHandler
@@ -50,7 +49,7 @@ open class FragmentRuntimePermissionHandlerProvider(private val manager: Fragmen
         return fragment
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(23)
     protected open fun createPermissionHandlerFragment(): FragmentRuntimePermissionHandler =
         DefaultFragmentRuntimePermissionHandler()
 

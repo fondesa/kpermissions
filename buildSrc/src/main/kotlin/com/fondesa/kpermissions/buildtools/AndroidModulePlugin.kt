@@ -60,6 +60,10 @@ class AndroidModulePlugin : Plugin<Project> {
         }
         tasks.withType(KotlinCompile::class.java) {
             it.kotlinOptions.jvmTarget = "1.8"
+            it.kotlinOptions {
+                jvmTarget = "1.8"
+                freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            }
         }
         Unit
     }

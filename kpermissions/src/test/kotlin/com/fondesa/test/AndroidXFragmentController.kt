@@ -28,7 +28,7 @@ import org.robolectric.android.controller.ComponentController
 /**
  * Version of Robolectric's FragmentController which supports AndroidX fragments.
  */
-class AndroidXFragmentController<F : Fragment> @JvmOverloads constructor(
+internal class AndroidXFragmentController<F : Fragment> @JvmOverloads constructor(
     private val fragment: F,
     activityClass: Class<out FragmentActivity>,
     intent: Intent? = null

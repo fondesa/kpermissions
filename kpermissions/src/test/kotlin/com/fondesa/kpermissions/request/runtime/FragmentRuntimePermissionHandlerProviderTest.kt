@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import android.os.Build
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.fondesa.test.createActivity
@@ -32,7 +31,7 @@ import org.robolectric.annotation.Config
  * Tests for [FragmentRuntimePermissionHandlerProvider].
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(minSdk = Build.VERSION_CODES.M)
+@Config(minSdk = 23)
 class FragmentRuntimePermissionHandlerProviderTest {
     private val activity = createActivity<FragmentActivity>()
     private val provider = FragmentRuntimePermissionHandlerProvider(activity.supportFragmentManager)

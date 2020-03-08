@@ -520,6 +520,24 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         verify(listener, never()).permissionsPermanentlyDenied(any())
     }
 
+    @Test
+    fun `When Fragment is not added yet, the permissions are handled when it will be attached`() {
+        context.grantPermissions(*permissions)
+        val spiedFragment = spy(fragment) {
+            on(it.isAdded) doReturn false
+        }
+
+        spiedFragment.handleRuntimePermissions(permissions)
+
+        verify(listener, never()).permissionsAccepted(any())
+        verify(listener, never()).onPermissionsResult(any())
+
+        spiedFragment.onAttach(context)
+
+        verify(listener).permissionsAccepted(permissions)
+        verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
+    }
+
     private fun grantResults(firstGranted: Boolean, secondGranted: Boolean): IntArray {
         val transform = { granted: Boolean ->
             if (granted) PackageManager.PERMISSION_GRANTED else PackageManager.PERMISSION_DENIED

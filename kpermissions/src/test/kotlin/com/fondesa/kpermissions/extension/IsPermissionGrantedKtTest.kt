@@ -18,11 +18,12 @@ package com.fondesa.kpermissions.extension
 
 import android.Manifest
 import com.fondesa.test.context
+import com.fondesa.test.denyPermissions
+import com.fondesa.test.grantPermissions
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 
 /**
  * Tests for IsPermissionGranted.kt file.
@@ -35,10 +36,8 @@ class IsPermissionGrantedKtTest {
         val grantedPermission = Manifest.permission.SEND_SMS
         val deniedPermission = Manifest.permission.ACCESS_FINE_LOCATION
 
-        shadowOf(context).apply {
-            grantPermissions(grantedPermission)
-            denyPermissions(deniedPermission)
-        }
+        context.grantPermissions(grantedPermission)
+        context.denyPermissions(deniedPermission)
 
         val grantedResult = context.isPermissionGranted(grantedPermission)
         assertEquals(true, grantedResult)

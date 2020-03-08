@@ -18,11 +18,12 @@ package com.fondesa.kpermissions.request.runtime
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.fragment.app.FragmentActivity
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.test.context
 import com.fondesa.test.createFragment
+import com.fondesa.test.denyPermissions
+import com.fondesa.test.grantPermissions
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -30,14 +31,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 /**
  * Tests for [DefaultFragmentRuntimePermissionHandler].
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(minSdk = Build.VERSION_CODES.M)
+@Config(minSdk = 23)
 class DefaultFragmentRuntimePermissionHandlerTest {
     private val firstPermission = Manifest.permission.ACCESS_FINE_LOCATION
     private val secondPermission = Manifest.permission.SEND_SMS
@@ -85,16 +85,15 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun permissionsAcceptedNotifyListener() {
-        val shadowApp = shadowOf(context)
         // Grant the permissions.
-        shadowApp.grantPermissions(*permissions)
+        context.grantPermissions(*permissions)
         fragment.handleRuntimePermissions(permissions)
 
         verify(listener).permissionsAccepted(permissions)
         verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
         verifyNoMoreInteractions(listener)
 
-        shadowApp.denyPermissions(firstPermission)
+        context.denyPermissions(firstPermission)
         // The listener mustn't be invoked anymore.
         fragment.handleRuntimePermissions(permissions)
     }

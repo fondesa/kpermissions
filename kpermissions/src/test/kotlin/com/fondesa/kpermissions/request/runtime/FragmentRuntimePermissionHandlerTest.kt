@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.request.runtime
 
-import android.os.Build
 import com.fondesa.test.createFragment
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -29,7 +28,7 @@ import org.robolectric.annotation.Config
  * Tests for [FragmentRuntimePermissionHandler].
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(minSdk = Build.VERSION_CODES.M)
+@Config(minSdk = 23)
 class FragmentRuntimePermissionHandlerTest {
     private val fragment: FragmentRuntimePermissionHandler = createFragment<MockFragment>()
 

@@ -38,6 +38,7 @@ releasesHub {
     headBranchPrefix = "update-dependency/"
     gitHubRepositoryOwner = "Fondesa"
     gitHubRepositoryName = "KPermissions"
+    excludes = ["gradle"]
 }
 
 allprojects {

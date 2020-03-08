@@ -1,0 +1,11 @@
+coverage:
+  range: 80..100
+  round: down
+  status:
+    project:
+      default:
+        target: 90%
+        threshold: 0%
+
+comment:
+  require_changes: true

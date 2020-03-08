@@ -206,6 +206,22 @@ class DefaultFragmentRuntimePermissionHandlerTest {
     }
 
     @Test
+    fun `When onRequestPermissionsResult is invoked without permissions, the listeners aren't notified`() {
+        fragment.attachListener(permissions, listener)
+        val spiedFragment = spy(fragment)
+        val reqCodeCaptor = argumentCaptor<Int>()
+        spiedFragment.requestRuntimePermissions(permissions)
+        // Captures the request code used by the Fragment.
+        verify(spiedFragment).requestPermissions(eq(permissions), reqCodeCaptor.capture())
+
+        val reqCode = reqCodeCaptor.lastValue
+        // Calls the result with the captured code.
+        spiedFragment.onRequestPermissionsResult(reqCode, emptyArray(), intArrayOf())
+
+        verifyZeroInteractions(listener)
+    }
+
+    @Test
     fun manageResultWithAcceptedPermissions() {
         fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)

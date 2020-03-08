@@ -139,10 +139,16 @@ class PermissionStatusKtTest {
                 PermissionStatus.Denied.ShouldShowRationale(Manifest.permission.CALL_PHONE)
             ).allPermanentlyDenied()
         )
+        assertFalse(
+            listOf(
+                PermissionStatus.Denied.Permanently(Manifest.permission.SEND_SMS),
+                PermissionStatus.Granted(Manifest.permission.CALL_PHONE)
+            ).allPermanentlyDenied()
+        )
     }
 
     @Test
-    fun `The extension allShouldShowRationale() returns true if all the permissions should show rationale `() {
+    fun `The extension allShouldShowRationale() returns true if all the permissions should show rationale`() {
         assertTrue(
             listOf(
                 PermissionStatus.Denied.ShouldShowRationale(Manifest.permission.SEND_SMS),
@@ -156,6 +162,12 @@ class PermissionStatusKtTest {
         assertFalse(
             listOf(
                 PermissionStatus.Denied.Permanently(Manifest.permission.SEND_SMS),
+                PermissionStatus.Denied.ShouldShowRationale(Manifest.permission.CALL_PHONE)
+            ).allShouldShowRationale()
+        )
+        assertFalse(
+            listOf(
+                PermissionStatus.Granted(Manifest.permission.SEND_SMS),
                 PermissionStatus.Denied.ShouldShowRationale(Manifest.permission.CALL_PHONE)
             ).allShouldShowRationale()
         )

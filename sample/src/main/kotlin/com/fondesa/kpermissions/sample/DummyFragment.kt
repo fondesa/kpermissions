@@ -35,7 +35,8 @@ import com.fondesa.kpermissions.shouldShowRationale
 /**
  * An simple [Fragment] used to request the permissions.
  */
-class DummyFragment : Fragment(),
+class DummyFragment :
+    Fragment(),
     PermissionRequest.AcceptedListener,
     PermissionRequest.DeniedListener,
     PermissionRequest.PermanentlyDeniedListener,

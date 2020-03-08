@@ -31,13 +31,12 @@ class RationalePermissionNonce(
     private val handler: RuntimePermissionHandler,
     private val permissions: Array<out String>
 ) : PermissionNonce {
-
     private var used: Boolean = false
 
     override fun use() {
-        if (used)
+        if (used) {
             throw PermissionNonceUsedException("This nonce was used before.")
-
+        }
         // The nonce is now considered as "used"
         used = true
         // The checks must be avoided to not show the rationale explanation again.

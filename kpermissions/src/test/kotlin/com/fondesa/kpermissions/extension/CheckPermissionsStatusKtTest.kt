@@ -58,7 +58,10 @@ class CheckPermissionsStatusKtTest {
     @Test
     fun `With SDK since 23, the status returned with checkPermissionsStatus() is on the runtime status`() {
         activity.grantPermissions(Manifest.permission.SEND_SMS)
-        activity.denyPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE)
+        activity.denyPermissions(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.CALL_PHONE
+        )
         whenever(activity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
             .thenReturn(true)
         whenever(activity.shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE))

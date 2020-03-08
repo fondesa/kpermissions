@@ -30,7 +30,8 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 /**
  * The main screen of this application that requires some permissions.
  */
-class MainActivity : AppCompatActivity(),
+class MainActivity :
+    AppCompatActivity(),
     PermissionRequest.AcceptedListener,
     PermissionRequest.DeniedListener,
     PermissionRequest.PermanentlyDeniedListener,
@@ -91,4 +92,3 @@ class MainActivity : AppCompatActivity(),
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }
-

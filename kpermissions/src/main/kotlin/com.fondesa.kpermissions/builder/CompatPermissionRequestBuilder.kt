@@ -42,16 +42,13 @@ class CompatPermissionRequestBuilder internal constructor(private val activity: 
         permissions: Array<out String>,
         nonceGenerator: PermissionNonceGenerator,
         runtimeHandlerProvider: RuntimePermissionHandlerProvider
-    ): PermissionRequest {
-
-        return if (Build.VERSION.SDK_INT >= 23) {
-            // Provide the handler.
-            val handler = runtimeHandlerProvider.provideHandler()
-            // Create the runtime request.
-            RuntimePermissionRequest(activity, permissions, nonceGenerator, handler)
-        } else {
-            // Create the manifest request.
-            ManifestPermissionRequest(activity, permissions)
-        }
+    ): PermissionRequest = if (Build.VERSION.SDK_INT >= 23) {
+        // Provide the handler.
+        val handler = runtimeHandlerProvider.provideHandler()
+        // Create the runtime request.
+        RuntimePermissionRequest(activity, permissions, nonceGenerator, handler)
+    } else {
+        // Create the manifest request.
+        ManifestPermissionRequest(activity, permissions)
     }
 }

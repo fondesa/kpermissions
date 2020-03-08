@@ -43,29 +43,17 @@ internal class AndroidXFragmentController<F : Fragment> @JvmOverloads constructo
         }
     }
 
-    /**
-     * Creates the activity with [Bundle] and adds the fragment to the view with ID
-     * `contentViewId`.
-     */
-    private fun create(contentViewId: Int, bundle: Bundle?): AndroidXFragmentController<F> = apply {
+    override fun create(): AndroidXFragmentController<F> = apply {
         shadowMainLooper.runPaused {
             activityController
-                .create(bundle)
+                .create()
                 .get()
                 .supportFragmentManager
                 .beginTransaction()
-                .add(contentViewId, fragment)
+                .add(1, fragment)
                 .commitNow()
         }
     }
-
-    /**
-     * Creates the activity with [Bundle] and adds the fragment to it. Note that the fragment
-     * will be added to the view with ID 1.
-     */
-    private fun create(bundle: Bundle?): AndroidXFragmentController<F> = create(1, bundle)
-
-    override fun create(): AndroidXFragmentController<F> = create(null)
 
     private class FragmentControllerActivity : FragmentActivity() {
 
@@ -88,7 +76,9 @@ internal class AndroidXFragmentController<F : Fragment> @JvmOverloads constructo
         ): AndroidXFragmentController<F> = AndroidXFragmentController(fragment, activityClass)
 
         fun <F : Fragment> of(
-            fragment: F, activityClass: Class<out FragmentActivity>, intent: Intent
+            fragment: F,
+            activityClass: Class<out FragmentActivity>,
+            intent: Intent
         ): AndroidXFragmentController<F> =
             AndroidXFragmentController(fragment, activityClass, intent)
     }

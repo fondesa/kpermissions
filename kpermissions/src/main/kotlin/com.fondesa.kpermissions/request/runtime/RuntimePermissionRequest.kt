@@ -142,5 +142,5 @@ class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler
         }
 
     private inline fun <T> invokeOn(instance: T?, block: T.() -> Unit): Boolean =
-        instance?.block() == null
+        instance?.block() != null
 }

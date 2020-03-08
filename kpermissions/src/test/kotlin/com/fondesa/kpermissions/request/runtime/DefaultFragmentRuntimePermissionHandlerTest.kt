@@ -117,6 +117,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         spiedFragment.handleRuntimePermissions(permissions)
         verify(listener).permissionsShouldShowRationale(permissions)
+        verify(listener, never()).onPermissionsResult(any())
 
         whenever(mockActivity.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
             false
@@ -124,6 +125,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         spiedFragment.handleRuntimePermissions(permissions)
         verify(listener).permissionsShouldShowRationale(arrayOf(secondPermission))
+        verify(listener, never()).onPermissionsResult(any())
 
         whenever(mockActivity.shouldShowRequestPermissionRationale(secondPermission)).thenReturn(
             false
@@ -192,6 +194,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsAccepted(permissions)
+        verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
 
         spiedFragment.onRequestPermissionsResult(
             reqCode, permissions, grantResults(
@@ -202,6 +205,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         // The listener mustn't be called with a denied permission.
         verify(listener).permissionsAccepted(permissions)
+        verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
     }
 
     @Test
@@ -231,6 +235,11 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsShouldShowRationale(permissions)
+        verify(listener).onPermissionsResult(permissions.map {
+            PermissionStatus.Denied.ShouldShowRationale(
+                it
+            )
+        })
         verify(listener, never()).permissionsPermanentlyDenied(any())
 
         whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
@@ -245,6 +254,12 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsShouldShowRationale(arrayOf(secondPermission))
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Denied.Permanently(firstPermission),
+                PermissionStatus.Denied.ShouldShowRationale(secondPermission)
+            )
+        )
         // The listener mustn't be notified about permanently denied permissions if there's at least
         // one rationale to show to the user.
         verify(listener, never()).permissionsPermanentlyDenied(any())
@@ -263,6 +278,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         // Now the listener can be notified about the permanently denied permissions because
         // all rationales are solved.
         verify(listener).permissionsPermanentlyDenied(permissions)
+        verify(listener)
+            .onPermissionsResult(permissions.map { PermissionStatus.Denied.Permanently(it) })
     }
 
     @Test
@@ -291,6 +308,12 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsShouldShowRationale(arrayOf(secondPermission))
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Granted(firstPermission),
+                PermissionStatus.Denied.ShouldShowRationale(secondPermission)
+            )
+        )
         verify(listener, never()).permissionsAccepted(any())
 
         spiedFragment.onRequestPermissionsResult(
@@ -301,6 +324,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsAccepted(permissions)
+        verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
     }
 
     @Test
@@ -330,6 +354,11 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsDenied(permissions)
+        verify(listener).onPermissionsResult(permissions.map {
+            PermissionStatus.Denied.ShouldShowRationale(
+                it
+            )
+        })
         verify(listener, never()).permissionsPermanentlyDenied(any())
 
         whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
@@ -344,6 +373,12 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsDenied(arrayOf(secondPermission))
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Denied.Permanently(firstPermission),
+                PermissionStatus.Denied.ShouldShowRationale(secondPermission)
+            )
+        )
         // The listener mustn't be notified about permanently denied permissions if there's at least
         // one rationale to show to the user.
         verify(listener, never()).permissionsPermanentlyDenied(any())
@@ -362,6 +397,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         // Now the listener can be notified about the permanently denied permissions because
         // all rationales are solved.
         verify(listener).permissionsPermanentlyDenied(permissions)
+        verify(listener)
+            .onPermissionsResult(permissions.map { PermissionStatus.Denied.Permanently(it) })
     }
 
     @Test
@@ -390,6 +427,12 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsDenied(arrayOf(secondPermission))
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Granted(firstPermission),
+                PermissionStatus.Denied.ShouldShowRationale(secondPermission)
+            )
+        )
         verify(listener, never()).permissionsAccepted(any())
 
         spiedFragment.onRequestPermissionsResult(
@@ -400,6 +443,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsAccepted(permissions)
+        verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
     }
 
     @Test
@@ -428,6 +472,12 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsPermanentlyDenied(arrayOf(secondPermission))
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Granted(firstPermission),
+                PermissionStatus.Denied.Permanently(secondPermission)
+            )
+        )
         verify(listener, never()).permissionsAccepted(any())
 
         spiedFragment.onRequestPermissionsResult(
@@ -438,8 +488,37 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         verify(listener).permissionsAccepted(permissions)
+        verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
     }
 
+    @Test
+    fun `When rationale permissions are not handled and there aren't permanently denied permissions, listeners are not notified`() {
+        val spiedFragment = spy(fragment)
+        val reqCodeCaptor = argumentCaptor<Int>()
+        spiedFragment.requestRuntimePermissions(permissions)
+        // Capture the request code used by the Fragment.
+        verify(spiedFragment).requestPermissions(eq(permissions), reqCodeCaptor.capture())
+
+        val reqCode = reqCodeCaptor.lastValue
+
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission))
+            .thenReturn(true)
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(secondPermission))
+            .thenReturn(true)
+        whenever(listener.permissionsShouldShowRationale(any())).thenReturn(false)
+
+        spiedFragment.onRequestPermissionsResult(
+            reqCode, permissions, grantResults(
+                firstGranted = false,
+                secondGranted = false
+            )
+        )
+
+        verify(listener).permissionsShouldShowRationale(permissions)
+        verify(listener)
+            .onPermissionsResult(permissions.map { PermissionStatus.Denied.ShouldShowRationale(it) })
+        verify(listener, never()).permissionsPermanentlyDenied(any())
+    }
 
     private fun grantResults(firstGranted: Boolean, secondGranted: Boolean): IntArray {
         val transform = { granted: Boolean ->

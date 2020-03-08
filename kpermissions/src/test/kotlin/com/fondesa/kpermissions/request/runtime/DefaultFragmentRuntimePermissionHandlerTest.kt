@@ -183,6 +183,29 @@ class DefaultFragmentRuntimePermissionHandlerTest {
     }
 
     @Test
+    fun `When onRequestPermissionsResult is invoked with a different request code, the listeners aren't notified`() {
+        fragment.attachListener(permissions, listener)
+        val spiedFragment = spy(fragment)
+        val reqCodeCaptor = argumentCaptor<Int>()
+        spiedFragment.requestRuntimePermissions(permissions)
+        // Captures the request code used by the Fragment.
+        verify(spiedFragment).requestPermissions(eq(permissions), reqCodeCaptor.capture())
+
+        val reqCode = reqCodeCaptor.lastValue
+        // Calls the result with another request code.
+        spiedFragment.onRequestPermissionsResult(
+            reqCode + 1,
+            permissions,
+            grantResults(
+                firstGranted = true,
+                secondGranted = true
+            )
+        )
+
+        verifyZeroInteractions(listener)
+    }
+
+    @Test
     fun manageResultWithAcceptedPermissions() {
         fragment.attachListener(permissions, listener)
         val spiedFragment = spy(fragment)

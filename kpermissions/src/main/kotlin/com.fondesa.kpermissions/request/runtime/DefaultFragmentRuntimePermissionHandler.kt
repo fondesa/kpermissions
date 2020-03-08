@@ -18,7 +18,6 @@ package com.fondesa.kpermissions.request.runtime
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.fondesa.kpermissions.PermissionStatus
@@ -70,7 +69,7 @@ import com.fondesa.kpermissions.shouldShowRationale
  * - accepted: happens when the user accepts ALL the permissions. It can be notified before
  * the request is sent or after the result is received.
  */
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(23)
 class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler() {
 
     private var isProcessingPermissions = false

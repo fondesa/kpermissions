@@ -9,6 +9,7 @@ Usage
 ------
 
 To discover all the APIs of this library, check the [wiki](https://github.com/Fondesa/KPermissions/wiki). It contains some useful notes and advanced features not explained in the ```README```.
+For further samples, check the [sample](https://github.com/Fondesa/KPermissions/tree/master/sample) provided by this library. It shows how to integrate this library and request the permissions from an Activity or a Fragment.
 
 ### Basic usage
 You can create a ```PermissionRequest``` either from an ```Activity``` or a ```Fragment``` using the extension method ```permissionsBuilder()```:

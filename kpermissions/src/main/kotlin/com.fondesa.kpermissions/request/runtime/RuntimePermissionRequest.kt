@@ -141,10 +141,6 @@ class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler
             onPermissionsShouldShowRationale(permissions, nonce)
         }
 
-    private inline fun <T> invokeOn(instance: T?, block: T.() -> Unit): Boolean {
-        if (instance == null)
-            return false
-        block(instance)
-        return true
-    }
+    private inline fun <T> invokeOn(instance: T?, block: T.() -> Unit): Boolean =
+        instance?.block() != null
 }

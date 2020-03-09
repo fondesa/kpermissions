@@ -24,7 +24,18 @@ import com.fondesa.test.context
 import com.fondesa.test.createFragment
 import com.fondesa.test.denyPermissions
 import com.fondesa.test.grantPermissions
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -170,7 +181,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         val reqCode = reqCodeCaptor.lastValue
         // Call the result with the captured code.
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = true
             )
@@ -194,9 +207,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         val reqCode = reqCodeCaptor.lastValue
         // Calls the result with another request code.
         spiedFragment.onRequestPermissionsResult(
-            reqCode + 1,
-            permissions,
-            grantResults(
+            requestCode = reqCode + 1,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = true
             )
@@ -233,7 +246,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         val reqCode = reqCodeCaptor.lastValue
         // Call the result with the captured code.
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = true
             )
@@ -243,7 +258,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = false
             )
@@ -275,26 +292,27 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         whenever(listener.permissionsPermanentlyDenied(any())).thenReturn(true)
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = false,
                 secondGranted = false
             )
         )
 
         verify(listener).permissionsShouldShowRationale(permissions)
-        verify(listener).onPermissionsResult(permissions.map {
-            PermissionStatus.Denied.ShouldShowRationale(
-                it
-            )
-        })
+        verify(listener).onPermissionsResult(
+            permissions.map { PermissionStatus.Denied.ShouldShowRationale(it) }
+        )
         verify(listener, never()).permissionsPermanentlyDenied(any())
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
-            false
-        )
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission))
+            .thenReturn(false)
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = false,
                 secondGranted = false
             )
@@ -316,7 +334,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = false,
                 secondGranted = false
             )
@@ -349,7 +369,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         whenever(listener.permissionsShouldShowRationale(any())).thenReturn(true)
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = false
             )
@@ -365,7 +387,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         verify(listener, never()).permissionsAccepted(any())
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = true
             )
@@ -396,26 +420,27 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         whenever(listener.permissionsPermanentlyDenied(any())).thenReturn(true)
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = false,
                 secondGranted = false
             )
         )
 
         verify(listener).permissionsDenied(permissions)
-        verify(listener).onPermissionsResult(permissions.map {
-            PermissionStatus.Denied.ShouldShowRationale(
-                it
-            )
-        })
+        verify(listener).onPermissionsResult(
+            permissions.map { PermissionStatus.Denied.ShouldShowRationale(it) }
+        )
         verify(listener, never()).permissionsPermanentlyDenied(any())
 
-        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission)).thenReturn(
-            false
-        )
+        whenever(spiedFragment.shouldShowRequestPermissionRationale(firstPermission))
+            .thenReturn(false)
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = false,
                 secondGranted = false
             )
@@ -437,7 +462,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         )
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = false,
                 secondGranted = false
             )
@@ -470,7 +497,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         whenever(listener.permissionsDenied(any())).thenReturn(true)
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = false
             )
@@ -486,7 +515,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         verify(listener, never()).permissionsAccepted(any())
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = true
             )
@@ -516,7 +547,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         whenever(listener.permissionsPermanentlyDenied(any())).thenReturn(true)
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = false
             )
@@ -532,7 +565,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         verify(listener, never()).permissionsAccepted(any())
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = true,
                 secondGranted = true
             )
@@ -560,7 +595,9 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         whenever(listener.permissionsShouldShowRationale(any())).thenReturn(false)
 
         spiedFragment.onRequestPermissionsResult(
-            reqCode, permissions, grantResults(
+            requestCode = reqCode,
+            permissions = permissions,
+            grantResults = grantResults(
                 firstGranted = false,
                 secondGranted = false
             )

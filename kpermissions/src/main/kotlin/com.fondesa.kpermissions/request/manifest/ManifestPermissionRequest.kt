@@ -58,7 +58,5 @@ class ManifestPermissionRequest(
             // If there aren't denied permissions, it means that are all accepted.
             acceptedListener?.onPermissionsAccepted(permissions)
         }
-
-
     }
 }

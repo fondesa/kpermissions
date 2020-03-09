@@ -18,12 +18,14 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath Deps.androidPlugin
         classpath Deps.bintrayPlugin
         classpath Deps.dokkaPlugin
         classpath Deps.kotlinPlugin
+        classpath Deps.ktlint
         classpath Deps.releasesHubPlugin
     }
 }

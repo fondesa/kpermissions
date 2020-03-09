@@ -3,4 +3,4 @@
 indent_size = 4
 continuation_indent_size = 4
 insert_final_newline = true
-max_line_length = off
+max_line_length = 140

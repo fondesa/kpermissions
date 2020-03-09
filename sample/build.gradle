@@ -23,7 +23,10 @@ android {
     flavorDimensions "app"
 
     productFlavors {
-        local.dimension "app"
+        local {
+            dimension "app"
+            isDefault.set(true)
+        }
         remote.dimension "app"
     }
 }

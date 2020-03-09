@@ -51,7 +51,7 @@ sealed class PermissionStatus(open val permission: String) {
         data class Permanently(override val permission: String) : Denied(permission)
 
         /**
-         * Identifies a denied permission which could need a rationale explaing why the permission is needed.
+         * Identifies a denied permission which could need a rationale explaining why the permission is needed.
          * This status can't be returned below API 23.
          *
          * @param permission the permission related to this status.

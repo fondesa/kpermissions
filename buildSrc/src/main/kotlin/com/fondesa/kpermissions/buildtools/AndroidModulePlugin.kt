@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.buildtools
 
-import com.android.build.gradle.BasePlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -34,25 +33,23 @@ class AndroidModulePlugin : Plugin<Project> {
         plugins.apply("org.jetbrains.dokka")
         plugins.apply("org.jlleitschuh.gradle.ktlint")
 
-        plugins.withType(BasePlugin::class.java) { androidPlugin ->
-            androidPlugin.extension.apply {
-                val androidProperties = readPropertiesOf("android-config.properties")
-                compileSdkVersion(androidProperties.getProperty("android.config.compileSdk").toInt())
-                defaultConfig.apply {
-                    minSdkVersion(androidProperties.getProperty("android.config.minSdk").toInt())
-                    targetSdkVersion(androidProperties.getProperty("android.config.targetSdk").toInt())
-                }
-                compileOptions {
-                    it.sourceCompatibility = JavaVersion.VERSION_1_8
-                    it.targetCompatibility = JavaVersion.VERSION_1_8
-                }
-                // Used by Robolectric since Android resources can be used in unit tests.
-                testOptions.unitTests.isIncludeAndroidResources = true
-                // Adds the Kotlin source set for each Java source set.
-                sourceSets { sourceSetContainer ->
-                    sourceSetContainer.all { sourceSet ->
-                        sourceSet.java.srcDirs("src/${sourceSet.name}/kotlin")
-                    }
+        withAndroidPlugin {
+            val androidProperties = readPropertiesOf("android-config.properties")
+            compileSdkVersion(androidProperties.getProperty("android.config.compileSdk").toInt())
+            defaultConfig.apply {
+                minSdkVersion(androidProperties.getProperty("android.config.minSdk").toInt())
+                targetSdkVersion(androidProperties.getProperty("android.config.targetSdk").toInt())
+            }
+            compileOptions {
+                it.sourceCompatibility = JavaVersion.VERSION_1_8
+                it.targetCompatibility = JavaVersion.VERSION_1_8
+            }
+            // Used by Robolectric since Android resources can be used in unit tests.
+            testOptions.unitTests.isIncludeAndroidResources = true
+            // Adds the Kotlin source set for each Java source set.
+            sourceSets { sourceSetContainer ->
+                sourceSetContainer.all { sourceSet ->
+                    sourceSet.java.srcDirs("src/${sourceSet.name}/kotlin")
                 }
             }
         }

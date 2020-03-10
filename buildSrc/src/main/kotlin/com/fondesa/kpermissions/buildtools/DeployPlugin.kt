@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.buildtools
 
-import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.api.GradleException
@@ -58,8 +57,8 @@ class DeployPlugin : Plugin<Project> {
 
     private fun Project.registerSourcesJarTask(): TaskProvider<out Task> {
         val sourcesJarTask = tasks.register("sourcesJar", Jar::class.java)
-        plugins.withType(BasePlugin::class.java) { androidPlugin ->
-            androidPlugin.extension.sourceSets.named("main") { sourceSet ->
+        withAndroidPlugin {
+            sourceSets.named("main") { sourceSet ->
                 sourcesJarTask.configure { task ->
                     task.archiveClassifier.set("sources")
                     task.from(sourceSet.java.srcDirs)

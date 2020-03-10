@@ -36,7 +36,7 @@ releasesHub {
     dependenciesBasePath = "buildSrc/src/main/kotlin/"
     dependenciesClassNames = ["Deps.kt"]
     pullRequestEnabled = true
-    pullRequestLabels = ["dependency"]
+    pullRequestLabels = ["dependencies"]
     headBranchPrefix = "update-dependency/"
     gitHubRepositoryOwner = "Fondesa"
     gitHubRepositoryName = "KPermissions"

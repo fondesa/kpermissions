@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.buildtools
 
-import com.android.build.gradle.BasePlugin
 import com.android.build.gradle.api.AndroidSourceSet
 import com.android.builder.model.BuildType
 import groovy.lang.Closure
@@ -45,15 +44,13 @@ class AndroidCoveragePlugin : Plugin<Project> {
             it.toolVersion = "0.8.5"
             it.reportsDir = file("$buildDir/jacocoReport")
         }
-        plugins.withType(BasePlugin::class.java) { androidPlugin ->
-            androidPlugin.extension.apply {
-                testOptions.unitTests.all(closureOf {
-                    extensions.configure(JacocoTaskExtension::class.java) {
-                        it.isIncludeNoLocationClasses = true
-                    }
-                })
-                buildTypes.all { configureCoverageTask(it, sourceSets) }
-            }
+        withAndroidPlugin {
+            testOptions.unitTests.all(closureOf {
+                extensions.configure(JacocoTaskExtension::class.java) {
+                    it.isIncludeNoLocationClasses = true
+                }
+            })
+            buildTypes.all { configureCoverageTask(it, sourceSets) }
         }
         Unit
     }

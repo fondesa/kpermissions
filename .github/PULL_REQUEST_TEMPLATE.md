@@ -1,7 +1,4 @@
-<!-- 
-Make sure you've read the file `CONTRIBUTING.md` before submit the PR. 
-Any HTML comment will be stripped when the markdown is rendered, so you don't need to delete them.
--->
+<!-- Make sure you've read the file `CONTRIBUTING.md` before submit the PR. -->
 
 ### Description
 <!--

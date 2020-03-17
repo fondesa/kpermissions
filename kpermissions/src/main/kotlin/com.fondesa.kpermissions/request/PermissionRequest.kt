@@ -152,7 +152,7 @@ interface PermissionRequest {
 
         /**
          * Notifies when the status of each permission can be established.
-         * Below API 23, this method and [checkStatus] should have the same behavior since the permissions status
+         * Below API 23, this method and [checkStatus] have the same behavior since the permissions status
          * can be checked without sending a runtime request.
          * Below API 23, the possible status are:
          * - [PermissionStatus.Granted] -> the permission is present in the manifest.

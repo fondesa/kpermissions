@@ -30,9 +30,8 @@ branches:
     - master
 
 script:
-  # Builds the library project, runs all its JVM tests and calculates the coverage.
-  # It also assembles the sample with the local libs.
-  - ./gradlew :kpermissions:check :kpermissions:build :kpermissions:testDebugUnitTestCoverage :kpermissions-rx2:testDebugUnitTestCoverage :sample:assembleLocal -s
+  # The tests are skipped from the build task since they will be run directly with the coverage calculation.
+  - ./gradlew build -x test testCoverage -s
 
 
 after_success:

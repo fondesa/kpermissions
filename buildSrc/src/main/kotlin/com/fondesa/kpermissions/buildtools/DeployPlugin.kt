@@ -18,7 +18,6 @@ package com.fondesa.kpermissions.buildtools
 
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.jfrog.bintray.gradle.BintrayExtension
-import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -30,7 +29,8 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.dokka.gradle.DokkaTask
-import java.util.*
+import java.util.Date
+import java.util.Properties
 import java.util.regex.Pattern
 
 /**
@@ -126,10 +126,10 @@ class DeployPlugin : Plugin<Project> {
             scmSpec.developerConnection.set(deployProperties.getProperty("git.url"))
             scmSpec.url.set(deployProperties.getProperty("site.url"))
         }
-        configureMavenPomDependencies(pom)
+        configureMavenPomDependencies(pom, deployProperties)
     }
 
-    private fun Project.configureMavenPomDependencies(pom: MavenPom) {
+    private fun Project.configureMavenPomDependencies(pom: MavenPom, deployProperties: Properties) {
         pom.withXml { xmlProvider ->
             val dependenciesNode = xmlProvider.asNode().appendNode("dependencies")
             val exportedConfigurationsNames = setOf("compile", "implementation", "api")
@@ -144,17 +144,19 @@ class DeployPlugin : Plugin<Project> {
                     .map { dependency -> dependency.name to dependency }
                     .toMap()
 
-                val localDependencies = configDependencies
-                    .filter { (_, dependency) -> dependency.version == "unspecified" }
-
-                if (localDependencies.isNotEmpty()) {
-                    throw GradleException("Can't publish artifacts depending on local dependencies: ${localDependencies.keys.joinToString()}")
-                }
                 configDependencies.values.forEach { dependency ->
                     val dependencyNode = dependenciesNode.appendNode("dependency")
-                    dependencyNode.appendNode("groupId", dependency.group)
-                    dependencyNode.appendNode("artifactId", dependency.name)
-                    dependencyNode.appendNode("version", dependency.version)
+                    if (dependency.isLocal) {
+                        val dependencyProject = rootProject.project(dependency.name)
+                        val dependencyDeployProperties = dependencyProject.readPropertiesOf("deploy.properties")
+                        dependencyNode.appendNode("groupId", deployProperties.getProperty("group.id"))
+                        dependencyNode.appendNode("artifactId", dependencyDeployProperties.getProperty("artifact.id"))
+                        dependencyNode.appendNode("version", deployProperties.getProperty("version.name"))
+                    } else {
+                        dependencyNode.appendNode("groupId", dependency.group)
+                        dependencyNode.appendNode("artifactId", dependency.name)
+                        dependencyNode.appendNode("version", dependency.version)
+                    }
                 }
                 addedDependencies += configDependencies
             }
@@ -216,6 +218,8 @@ class DeployPlugin : Plugin<Project> {
             }
         }
     }
+
+    private val Dependency.isLocal: Boolean get() = version == "unspecified"
 
     private fun Project.getProperty(propertyName: String): String =
         if (project.hasProperty(propertyName)) project.property(propertyName) as String else ""

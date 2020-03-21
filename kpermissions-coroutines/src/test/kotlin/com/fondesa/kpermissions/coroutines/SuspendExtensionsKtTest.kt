@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.rx2
+package com.fondesa.kpermissions.coroutines
 
 import android.Manifest
 import com.fondesa.kpermissions.PermissionStatus
@@ -24,18 +24,25 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 /**
- * Tests for RxExtensions.kt file.
+ * Tests for SuspendExtensions.kt file.
  */
-class RxExtensionsKtTest {
+@ExperimentalCoroutinesApi
+class SuspendExtensionsKtTest {
     private val request = mock<PermissionRequest>()
     private val listenerCaptor = argumentCaptor<PermissionRequest.Listener>()
 
     @Test
-    fun `When request listener is notified, the observer is notified too`() {
-        val observer = request.observe().test()
+    fun `When sendSuspend is invoked, the result is received when listener is notified`() = runBlockingTest {
+        var result: List<PermissionStatus>? = null
+        val job = launch { result = request.sendSuspend() }
 
         verify(request).addListener(listenerCaptor.capture())
 
@@ -47,63 +54,46 @@ class RxExtensionsKtTest {
             )
         )
 
-        observer.assertValueCount(1)
-        observer.assertValues(
+        assertNotNull(result)
+        assertEquals(
+            result,
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
                 PermissionStatus.Denied.Permanently(Manifest.permission.CALL_PHONE)
             )
         )
 
+        job.cancel()
+    }
+
+    @Test
+    fun `When sendSuspend is invoked and the result is received, the listener is removed`() = runBlockingTest {
+        val job = launch { request.sendSuspend() }
+
+        verify(request).addListener(listenerCaptor.capture())
+        verify(request, never()).removeListener(any())
+
+        val listener = listenerCaptor.lastValue
         listener.onPermissionsResult(
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
-                PermissionStatus.Granted(Manifest.permission.CALL_PHONE)
-            )
-        )
-
-        observer.assertValueCount(2)
-        observer.assertValues(
-            listOf(
-                PermissionStatus.Granted(Manifest.permission.SEND_SMS),
                 PermissionStatus.Denied.Permanently(Manifest.permission.CALL_PHONE)
-            ),
-            listOf(
-                PermissionStatus.Granted(Manifest.permission.SEND_SMS),
-                PermissionStatus.Granted(Manifest.permission.CALL_PHONE)
             )
         )
+
+        verify(request).removeListener(listener)
+
+        job.cancel()
     }
 
     @Test
-    fun `When observer is subscribed, the request listener is added`() {
-        val observable = request.observe()
-
-        verify(request, never()).addListener(any())
-
-        observable.test()
-
-        verify(request).addListener(any())
-
-        observable.test()
-
-        // The method addListener() is not invoked again.
-        verify(request).addListener(any())
-    }
-
-    @Test
-    fun `When observer is disposed, the request listener is removed`() {
-        val observable = request.observe()
-        val observer1 = observable.test()
-        val observer2 = observable.test()
+    fun `When sendSuspend is invoked and the job is canceled, the listener is removed`() = runBlockingTest {
+        val job = launch { request.sendSuspend() }
 
         verify(request).addListener(listenerCaptor.capture())
-
-        observer1.dispose()
-
         verify(request, never()).removeListener(any())
 
-        observer2.dispose()
+        job.cancel()
 
         verify(request).removeListener(listenerCaptor.lastValue)
     }

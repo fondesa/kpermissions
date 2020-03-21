@@ -19,8 +19,10 @@ package com.fondesa.kpermissions.rx3
 import android.Manifest
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Test
 
@@ -74,30 +76,34 @@ class RxExtensionsKtTest {
     }
 
     @Test
-    fun `When request listener is notified before the observer has been added, the observer does not receive the item on subscription`() {
+    fun `When observer is subscribed, the request listener is added`() {
         val observable = request.observe()
 
-        verify(request).addListener(listenerCaptor.capture())
+        verify(request, never()).addListener(any())
 
-        val listener = listenerCaptor.lastValue
-        listener.onPermissionsResult(
-            listOf(
-                PermissionStatus.Granted(Manifest.permission.SEND_SMS),
-                PermissionStatus.Denied.Permanently(Manifest.permission.CALL_PHONE)
-            )
-        )
+        observable.test()
 
-        val observer = observable.test()
-        observer.assertEmpty()
+        verify(request).addListener(any())
+
+        observable.test()
+
+        // The method addListener() is not invoked again.
+        verify(request).addListener(any())
     }
 
     @Test
     fun `When observer is disposed, the request listener is removed`() {
-        val observer = request.observe().test()
+        val observable = request.observe()
+        val observer1 = observable.test()
+        val observer2 = observable.test()
 
         verify(request).addListener(listenerCaptor.capture())
 
-        observer.dispose()
+        observer1.dispose()
+
+        verify(request, never()).removeListener(any())
+
+        observer2.dispose()
 
         verify(request).removeListener(listenerCaptor.lastValue)
     }

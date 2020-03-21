@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.rx3
+package com.fondesa.kpermissions.coroutines
 
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 /**
- * Observes the [PermissionRequest]'s status.
- * The returned [Observable] emits the list of [PermissionStatus] when the result of [PermissionRequest.send] is received.
+ * Collects the [PermissionRequest]'s status list.
+ * The returned [Flow] emits the list of [PermissionStatus] when the result of [PermissionRequest.send] is received.
  * The documentation of the possible values of [PermissionStatus] can be found at [PermissionRequest.Listener.onPermissionsResult].
  *
- * @return a new [Observable] which emits a new item to the observers every time the result of [PermissionRequest.send] is received.
+ * @return a new [Flow] which notifies the collector with a new item every time the result of [PermissionRequest.send] is received.
  * @see PermissionRequest.Listener.onPermissionsResult
  */
-fun PermissionRequest.observe(): Observable<List<PermissionStatus>> = PublishSubject.create<List<PermissionStatus>>().apply {
+@ExperimentalCoroutinesApi
+fun PermissionRequest.flow(): Flow<List<PermissionStatus>> = callbackFlow {
     val listener = object : PermissionRequest.Listener {
         override fun onPermissionsResult(result: List<PermissionStatus>) {
-            onNext(result)
+            offer(result)
         }
     }
-    return doOnSubscribe {
-        if (!hasObservers()) {
-            addListener(listener)
-        }
-    }.doFinally {
-        if (!hasObservers()) {
-            removeListener(listener)
-        }
-    }
+    addListener(listener)
+    awaitClose { removeListener(listener) }
 }

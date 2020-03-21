@@ -25,7 +25,5 @@ dependencies {
 
     testImplementation Deps.junit
     testImplementation Deps.mockitoKotlin
-    testImplementation Deps.mockitoInLine
-    testImplementation Deps.robolectric
     testImplementation Deps.coroutinesTest
 }

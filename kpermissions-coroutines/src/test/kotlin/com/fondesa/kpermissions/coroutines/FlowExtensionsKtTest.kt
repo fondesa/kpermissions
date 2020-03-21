@@ -78,7 +78,6 @@ class FlowExtensionsKtTest {
 
         assertEquals(2, values.size)
         assertEquals(
-            values,
             listOf(
                 listOf(
                     PermissionStatus.Granted(Manifest.permission.SEND_SMS),
@@ -88,7 +87,8 @@ class FlowExtensionsKtTest {
                     PermissionStatus.Granted(Manifest.permission.SEND_SMS),
                     PermissionStatus.Granted(Manifest.permission.CALL_PHONE)
                 )
-            )
+            ),
+            values
         )
 
         job.cancel()

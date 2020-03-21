@@ -35,6 +35,13 @@ fun PermissionRequest.observe(): Observable<List<PermissionStatus>> = PublishSub
             onNext(result)
         }
     }
-    addListener(listener)
-    return doFinally { removeListener(listener) }
+    return doOnSubscribe {
+        if (!hasObservers()) {
+            addListener(listener)
+        }
+    }.doFinally {
+        if (!hasObservers()) {
+            removeListener(listener)
+        }
+    }
 }

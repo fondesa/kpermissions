@@ -14,34 +14,29 @@
  * limitations under the License.
  */
 
-package com.fondesa.kpermissions.rx3
+package com.fondesa.kpermissions.coroutines
 
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 /**
- * Observes the [PermissionRequest]'s status.
- * The returned [Observable] emits the list of [PermissionStatus] when the result of [PermissionRequest.send] is received.
+ * Sends the permission request suspending until its result isn't received.
+ * The list of [PermissionStatus] is the result received from the call to [PermissionRequest.send].
  * The documentation of the possible values of [PermissionStatus] can be found at [PermissionRequest.Listener.onPermissionsResult].
  *
- * @return a new [Observable] which emits a new item to the observers every time the result of [PermissionRequest.send] is received.
+ * @return the list of [PermissionStatus] received from the call to [PermissionRequest.send].
  * @see PermissionRequest.Listener.onPermissionsResult
  */
-fun PermissionRequest.observe(): Observable<List<PermissionStatus>> = PublishSubject.create<List<PermissionStatus>>().apply {
+suspend fun PermissionRequest.sendSuspend(): List<PermissionStatus> = suspendCancellableCoroutine { continuation ->
     val listener = object : PermissionRequest.Listener {
         override fun onPermissionsResult(result: List<PermissionStatus>) {
-            onNext(result)
+            continuation.resume(result)
+            removeListener(this)
         }
     }
-    return doOnSubscribe {
-        if (!hasObservers()) {
-            addListener(listener)
-        }
-    }.doFinally {
-        if (!hasObservers()) {
-            removeListener(listener)
-        }
-    }
+    addListener(listener)
+    continuation.invokeOnCancellation { removeListener(listener) }
+    send()
 }

@@ -56,11 +56,11 @@ class SuspendExtensionsKtTest {
 
         assertNotNull(result)
         assertEquals(
-            result,
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
                 PermissionStatus.Denied.Permanently(Manifest.permission.CALL_PHONE)
-            )
+            ),
+            result
         )
 
         job.cancel()

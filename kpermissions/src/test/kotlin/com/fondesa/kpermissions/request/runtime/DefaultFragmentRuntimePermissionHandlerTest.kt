@@ -96,7 +96,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         fragment.handleRuntimePermissions(permissions)
         // It shouldn't throw an exception.
         fragment.onRequestPermissionsResult(
-            requestCode = 0,
+            // Since we can't get the real request code, just hardcode it.
+            requestCode = 986,
             permissions = permissions,
             grantResults = grantResults(
                 firstGranted = true,

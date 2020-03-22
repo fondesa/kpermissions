@@ -104,11 +104,9 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
      * @throws IllegalArgumentException if a [RuntimePermissionHandler.Listener] for the given [permissions]
      * wasn't found.
      */
-    protected fun listenerOf(permissions: Array<out String>): RuntimePermissionHandler.Listener {
+    protected fun listenerOf(permissions: Array<out String>): RuntimePermissionHandler.Listener? {
         val key = keyOf(permissions)
-        return listeners.getOrElse(key) {
-            throw IllegalArgumentException("You need a listener for the key $key.")
-        }
+        return listeners[key]
     }
 
     companion object {

@@ -84,9 +84,9 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
     override fun managePermissionsResult(permissions: Array<out String>, grantResults: IntArray) {
         // Now the Fragment is not processing the permissions anymore.
         isProcessingPermissions = false
-
         // Get the listener for this set of permissions.
-        val listener = listenerOf(permissions)
+        // If it's null, the permissions can't be notified.
+        val listener = listenerOf(permissions) ?: return
 
         val result = permissions.mapIndexed { index, permission ->
             val isGranted = grantResults[index] == PackageManager.PERMISSION_GRANTED
@@ -151,6 +151,9 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
     }
 
     private fun handleRuntimePermissionsWhenAdded(permissions: Array<out String>) {
+        // Get the listener for this set of permissions.
+        // If it's null, the permissions can't be notified.
+        val listener = listenerOf(permissions) ?: return
         val activity = requireActivity()
         val currentStatus = activity.checkRuntimePermissionsStatus(permissions.toList())
         val areAllGranted = currentStatus.allGranted()
@@ -165,7 +168,6 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
                 .toTypedArray()
 
             val rationaleHandled = if (permissionsWithRationale.isNotEmpty()) {
-                val listener = listenerOf(permissions)
                 // Show rationale of permissions.
                 listener.permissionsShouldShowRationale(permissionsWithRationale)
             } else false
@@ -175,7 +177,6 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
                 requestRuntimePermissions(permissions)
             }
         } else {
-            val listener = listenerOf(permissions)
             // All permissions are accepted.
             listener.permissionsAccepted(permissions)
             listener.onPermissionsResult(currentStatus)

@@ -4,7 +4,7 @@ Considering that this library is actively maintained, contributions of all types
 
 Asking Questions
 -------
-Before asking any question, read the [wiki](https://github.com/Fondesa/RecyclerViewDivider/wiki).
+Before asking any question, read the [wiki](https://github.com/fondesa/RecyclerViewDivider/wiki).
 It may contains the answer to your questions.
 If not, or if the wiki isn't clear, open a new issue. The issue will be labeled with _question_.
 

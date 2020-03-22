@@ -90,10 +90,20 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         verifyZeroInteractions(listener)
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun `When listener is not attached and permissions status should be notified, an exception is thrown`() {
-        context.grantPermissions(*permissions)
+    @Test
+    fun `When listener is not attached and permissions status should be notified, nothing happens`() {
+        // It shouldn't throw an exception.
         fragment.handleRuntimePermissions(permissions)
+        // It shouldn't throw an exception.
+        fragment.onRequestPermissionsResult(
+            // Since we can't get the real request code, just hardcode it.
+            requestCode = 986,
+            permissions = permissions,
+            grantResults = grantResults(
+                firstGranted = true,
+                secondGranted = true
+            )
+        )
     }
 
     @Test

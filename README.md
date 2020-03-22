@@ -80,19 +80,15 @@ You can download a jar from GitHub's [releases page](https://github.com/fondesa/
 
 ```gradle
 dependencies {
-    compile 'com.github.fondesa:kpermissions:3.1.0'
+    // The core artifact.
+    implementation 'com.github.fondesa:kpermissions:3.1.0'
+    // If you want the extensions for RxJava 2.
+    implementation 'com.github.fondesa:kpermissions-rx2:3.1.0'
+    // If you want the extensions for RxJava 3.
+    implementation 'com.github.fondesa:kpermissions-rx3:3.1.0'
+    // If you want the extensions for the Kotlin coroutines.
+    implementation 'com.github.fondesa:kpermissions-coroutines:3.1.0'
 }
-```
-
-### Maven ###
-
-```xml
-<dependency>
-  <groupId>com.github.fondesa</groupId>
-  <artifactId>kpermissions</artifactId>
-  <version>3.1.0</version>
-  <type>pom</type>
-</dependency>
 ```
 
 ### Contributing ###

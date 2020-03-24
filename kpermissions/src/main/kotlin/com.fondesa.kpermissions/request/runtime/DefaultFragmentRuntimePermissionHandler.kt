@@ -73,12 +73,12 @@ import com.fondesa.kpermissions.shouldShowRationale
 class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler() {
 
     private var isProcessingPermissions = false
-    private var dispatchableHandleRuntimePermissions: (() -> Unit)? = null
+    private var pendingHandleRuntimePermissions: (() -> Unit)? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        dispatchableHandleRuntimePermissions?.invoke()
-        dispatchableHandleRuntimePermissions = null
+        pendingHandleRuntimePermissions?.invoke()
+        pendingHandleRuntimePermissions = null
     }
 
     override fun managePermissionsResult(permissions: Array<out String>, grantResults: IntArray) {
@@ -144,7 +144,7 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
         if (isAdded) {
             handleRuntimePermissionsWhenAdded(permissions)
         } else {
-            dispatchableHandleRuntimePermissions = {
+            pendingHandleRuntimePermissions = {
                 handleRuntimePermissionsWhenAdded(permissions)
             }
         }

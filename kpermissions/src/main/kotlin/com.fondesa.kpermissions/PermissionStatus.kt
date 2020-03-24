@@ -73,7 +73,7 @@ sealed class PermissionStatus(open val permission: String) {
  *
  * @return true if the given status is an instance of [PermissionStatus.Granted].
  */
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun PermissionStatus.isGranted(): Boolean {
     contract {
         returns(true) implies (this@isGranted is PermissionStatus.Granted)
@@ -86,7 +86,7 @@ fun PermissionStatus.isGranted(): Boolean {
  *
  * @return true if the given status is an instance of [PermissionStatus.Denied].
  */
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun PermissionStatus.isDenied(): Boolean {
     contract {
         returns(true) implies (this@isDenied is PermissionStatus.Denied)
@@ -99,7 +99,7 @@ fun PermissionStatus.isDenied(): Boolean {
  *
  * @return true if the given status is an instance of [PermissionStatus.Denied.Permanently].
  */
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun PermissionStatus.isPermanentlyDenied(): Boolean {
     contract {
         returns(true) implies (this@isPermanentlyDenied is PermissionStatus.Denied.Permanently)
@@ -112,7 +112,7 @@ fun PermissionStatus.isPermanentlyDenied(): Boolean {
  *
  * @return true if the given status is an instance of [PermissionStatus.Denied.ShouldShowRationale].
  */
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun PermissionStatus.shouldShowRationale(): Boolean {
     contract {
         returns(true) implies (this@shouldShowRationale is PermissionStatus.Denied.ShouldShowRationale)
@@ -125,7 +125,7 @@ fun PermissionStatus.shouldShowRationale(): Boolean {
  *
  * @return true if the given status is an instance of [PermissionStatus.RequestRequired].
  */
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun PermissionStatus.isRequestRequired(): Boolean {
     contract {
         returns(true) implies (this@isRequestRequired is PermissionStatus.RequestRequired)

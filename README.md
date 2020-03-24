@@ -1,6 +1,6 @@
 KPermissions
 ===============
-[![Build Status](https://travis-ci.org/fondesa/KPermissions.svg?branch=master)](https://travis-ci.org/fondesa/KPermissions)
+[![Build Status](https://travis-ci.org/fondesa/kpermissions.svg?branch=master)](https://travis-ci.org/fondesa/kpermissions)
 
 An Android library totally written in Kotlin that helps to request runtime permissions.
 This library is compatible also below Android M (API 23) where runtime permissions doesn't exist, so you haven't to handle them separately. 
@@ -8,8 +8,8 @@ This library is compatible also below Android M (API 23) where runtime permissio
 Usage
 ------
 
-To discover all the APIs of this library, check the [wiki](https://github.com/fondesa/KPermissions/wiki). It contains some useful notes and advanced features not explained in the ```README```.
-For further samples, check the [sample](https://github.com/fondesa/KPermissions/tree/master/sample) provided by this library. It shows how to integrate this library and request the permissions from an Activity or a Fragment.
+To discover all the APIs of this library, check the [wiki](https://github.com/fondesa/kpermissions/wiki). It contains some useful notes and advanced features not explained in the ```README```.
+For further samples, check the [sample](https://github.com/fondesa/kpermissions/tree/master/sample) provided by this library. It shows how to integrate this library and request the permissions from an Activity or a Fragment.
 
 ### Basic usage
 You can create a ```PermissionRequest``` either from an ```Activity``` or a ```Fragment``` using the extension method ```permissionsBuilder()```:
@@ -74,7 +74,7 @@ Compatibility
 Integration
 ------
 
-You can download a jar from GitHub's [releases page](https://github.com/fondesa/KPermissions/releases) or grab it from ```jcenter()``` or ```mavenCentral()```.
+You can download a jar from GitHub's [releases page](https://github.com/fondesa/kpermissions/releases) or grab it from ```jcenter()``` or ```mavenCentral()```.
 
 ### Gradle ###
 
@@ -92,4 +92,4 @@ dependencies {
 ```
 
 ### Contributing ###
-Feel free to contribute to this project following the [contributing guidelines](https://github.com/fondesa/KPermissions/blob/master/.github/CONTRIBUTING.md).
+Feel free to contribute to this project following the [contributing guidelines](https://github.com/fondesa/kpermissions/blob/master/.github/CONTRIBUTING.md).

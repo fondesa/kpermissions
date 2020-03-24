@@ -39,7 +39,7 @@ releasesHub {
     pullRequestLabels = ["dependencies"]
     headBranchPrefix = "update-dependency/"
     gitHubRepositoryOwner = "fondesa"
-    gitHubRepositoryName = "KPermissions"
+    gitHubRepositoryName = "kpermissions"
     excludes = ["gradle"]
 }
 

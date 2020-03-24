@@ -1,6 +1,6 @@
 KPermissions
 ===============
-[![Build Status](https://travis-ci.org/fondesa/kpermissions.svg?branch=master)](https://travis-ci.org/fondesa/kpermissions)
+[![Build Status](https://travis-ci.com/fondesa/kpermissions.svg?branch=master)](https://travis-ci.com/fondesa/kpermissions)
 
 An Android library totally written in Kotlin that helps to request runtime permissions.
 This library is compatible also below Android M (API 23) where runtime permissions doesn't exist, so you haven't to handle them separately. 

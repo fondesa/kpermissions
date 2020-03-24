@@ -35,7 +35,12 @@ script:
 
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -Z -f '*.xml' -X gcov -X coveragepy -X xcode -X gcovout
+  # Uploads all the coverage reports to Codecov.io:
+  # -Z -> if the upload of a report fails, the build fails too
+  # -s -> searches in the paths in which CoveragePlugin generates the coverage reports
+  # -f -> uploads the XML files found in the search paths (specified with -s)
+  # -X -> excludes the tools not needed by this project
+  - bash <(curl -s https://codecov.io/bash) -Z -s "**/build/coverageReport/test*Coverage/test*Coverage.xml" -f "*.xml" -X gcov -X coveragepy -X xcode -X gcovout
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

@@ -1,11 +1,12 @@
 coverage:
+  precision: 1
   range: 80..100
   round: down
   status:
     project:
       default:
         target: 90%
-        threshold: 0%
+        threshold: 1%
 
 comment:
   require_changes: true

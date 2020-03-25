@@ -32,8 +32,8 @@ import kotlin.coroutines.resume
 suspend fun PermissionRequest.sendSuspend(): List<PermissionStatus> = suspendCancellableCoroutine { continuation ->
     val listener = object : PermissionRequest.Listener {
         override fun onPermissionsResult(result: List<PermissionStatus>) {
-            continuation.resume(result)
             removeListener(this)
+            continuation.resume(result)
         }
     }
     addListener(listener)

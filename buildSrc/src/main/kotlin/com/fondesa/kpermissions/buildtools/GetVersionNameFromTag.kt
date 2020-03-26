@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kpermissions-android'
+package com.fondesa.kpermissions.buildtools
 
-android.defaultConfig.applicationId "com.fondesa.kpermissions.sample"
+import org.gradle.api.Project
+import java.io.ByteArrayOutputStream
 
-dependencies {
-    implementation project(':kpermissions')
-    implementation Deps.androidxAppCompat
-    implementation Deps.kotlinStdLib
-
-    debugImplementation Deps.leakCanary
+internal fun Project.getVersionNameFromTag(): String {
+    val stdOut = ByteArrayOutputStream()
+    // Gets the latest tag in the Git repo.
+    exec {
+        it.commandLine = listOf("git", "describe", "--tags", "--abbrev=0")
+        it.standardOutput = stdOut
+    }
+    return stdOut.toString().trim()
 }

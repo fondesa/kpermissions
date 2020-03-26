@@ -37,6 +37,10 @@ import java.util.regex.Pattern
  * Deploys this library to jCenter and Maven Central through Bintray.
  * The public deploy properties are defined in the file "deploy.properties".
  * The private deploy properties aren't versioned.
+ * The version which should be deployed will be automatically the name of the last tag on Git.
+ * To specify manually the version which should be deployed use the argument "version.name".
+ * E.g.
+ * ./gradlew publishLibrary -Pversion.name=1.0.0
  */
 class DeployPlugin : Plugin<Project> {
 
@@ -44,13 +48,14 @@ class DeployPlugin : Plugin<Project> {
         plugins.apply("maven-publish")
         plugins.apply("com.jfrog.bintray")
 
+        val versionName = getPropertyOrElse("version.name") { getVersionNameFromTag() }
         val deployProperties = readPropertiesOf("deploy.properties")
         val sourcesJarTask = registerSourcesJarTask()
         val javadocJarTask = registerJavadocJarTask()
         val sourcesJarArchive = artifacts.add("archives", sourcesJarTask)
         val javadocJarArchive = artifacts.add("archives", javadocJarTask)
-        configureMavenPublication(deployProperties, javadocJarArchive, sourcesJarArchive)
-        configureBintrayUpload(deployProperties)
+        configureMavenPublication(deployProperties, javadocJarArchive, sourcesJarArchive, versionName)
+        configureBintrayUpload(deployProperties, versionName)
         registerPublishLibraryTask()
         Unit
     }
@@ -83,11 +88,12 @@ class DeployPlugin : Plugin<Project> {
     private fun Project.configureMavenPublication(
         deployProperties: Properties,
         javadocJarArchive: PublishArtifact,
-        sourcesJarArchive: PublishArtifact
+        sourcesJarArchive: PublishArtifact,
+        versionName: String
     ) {
         extensions.configure(PublishingExtension::class.java) { publishingExtension ->
             publishingExtension.publications { publicationContainer ->
-                publicationContainer.create(
+                publicationContainer.register(
                     "libraryPublication",
                     MavenPublication::class.java
                 ) { publication ->
@@ -96,15 +102,15 @@ class DeployPlugin : Plugin<Project> {
                     publication.artifact("$buildDir/outputs/aar/$name-release.aar")
                     publication.groupId = deployProperties.getProperty("group.id")
                     publication.artifactId = deployProperties.getProperty("artifact.id")
-                    publication.version = deployProperties.getProperty("version.name")
-                    publication.pom { pom -> configureMavenPom(pom, deployProperties) }
+                    publication.version = versionName
+                    publication.pom { pom -> configureMavenPom(pom, deployProperties, versionName) }
                 }
             }
         }
     }
 
     @Suppress("UnstableApiUsage")
-    private fun Project.configureMavenPom(pom: MavenPom, deployProperties: Properties) {
+    private fun Project.configureMavenPom(pom: MavenPom, deployProperties: Properties, versionName: String) {
         pom.name.set(deployProperties.getProperty("lib.name"))
         pom.description.set(deployProperties.getProperty("lib.description"))
         pom.url.set(deployProperties.getProperty("site.url"))
@@ -126,10 +132,10 @@ class DeployPlugin : Plugin<Project> {
             scmSpec.developerConnection.set(deployProperties.getProperty("git.url"))
             scmSpec.url.set(deployProperties.getProperty("site.url"))
         }
-        configureMavenPomDependencies(pom, deployProperties)
+        configureMavenPomDependencies(pom, deployProperties, versionName)
     }
 
-    private fun Project.configureMavenPomDependencies(pom: MavenPom, deployProperties: Properties) {
+    private fun Project.configureMavenPomDependencies(pom: MavenPom, deployProperties: Properties, versionName: String) {
         pom.withXml { xmlProvider ->
             val dependenciesNode = xmlProvider.asNode().appendNode("dependencies")
             val exportedConfigurationsNames = setOf("compile", "implementation", "api")
@@ -151,7 +157,7 @@ class DeployPlugin : Plugin<Project> {
                         val dependencyDeployProperties = dependencyProject.readPropertiesOf("deploy.properties")
                         dependencyNode.appendNode("groupId", deployProperties.getProperty("group.id"))
                         dependencyNode.appendNode("artifactId", dependencyDeployProperties.getProperty("artifact.id"))
-                        dependencyNode.appendNode("version", deployProperties.getProperty("version.name"))
+                        dependencyNode.appendNode("version", versionName)
                     } else {
                         dependencyNode.appendNode("groupId", dependency.group)
                         dependencyNode.appendNode("artifactId", dependency.name)
@@ -163,7 +169,7 @@ class DeployPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.configureBintrayUpload(deployProperties: Properties) {
+    private fun Project.configureBintrayUpload(deployProperties: Properties, versionName: String) {
         extensions.configure(BintrayExtension::class.java) { bintray ->
             bintray.user = getProperty("bintray.username")
             bintray.key = getProperty("bintray.api.key")
@@ -182,7 +188,7 @@ class DeployPlugin : Plugin<Project> {
                 bintrayPkg.setLabels(*tags.split(Pattern.quote("|")).toTypedArray())
                 bintrayPkg.githubRepo = deployProperties.getProperty("github.repo")
                 bintrayPkg.version.also { version ->
-                    version.name = deployProperties.getProperty("version.name")
+                    version.name = versionName
                     version.released = Date().toString()
                     version.desc = deployProperties.getProperty("version.description")
                     version.gpg.also { gpg ->
@@ -221,6 +227,9 @@ class DeployPlugin : Plugin<Project> {
 
     private val Dependency.isLocal: Boolean get() = version == "unspecified"
 
-    private fun Project.getProperty(propertyName: String): String =
-        if (project.hasProperty(propertyName)) project.property(propertyName) as String else ""
+    private inline fun Project.getPropertyOrElse(propertyName: String, default: () -> String): String =
+        if (project.hasProperty(propertyName)) project.property(propertyName) as String else default()
+
+    private fun Project.getProperty(propertyName: String): String? =
+        if (project.hasProperty(propertyName)) project.property(propertyName) as String else null
 }

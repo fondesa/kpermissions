@@ -74,20 +74,23 @@ Compatibility
 Integration
 ------
 
+
 You can download a jar from GitHub's [releases page](https://github.com/fondesa/kpermissions/releases) or grab it from ```jcenter()``` or ```mavenCentral()```.
 
-### Gradle ###
+### Gradle ### 
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.fondesa/kpermissions/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.fondesa/kpermissions) 
 
 ```gradle
 dependencies {
     // The core artifact.
-    implementation 'com.github.fondesa:kpermissions:3.1.0'
+    implementation 'com.github.fondesa:kpermissions:x.x.x'
     // If you want the extensions for RxJava 2.
-    implementation 'com.github.fondesa:kpermissions-rx2:3.1.0'
+    implementation 'com.github.fondesa:kpermissions-rx2:x.x.x'
     // If you want the extensions for RxJava 3.
-    implementation 'com.github.fondesa:kpermissions-rx3:3.1.0'
+    implementation 'com.github.fondesa:kpermissions-rx3:x.x.x'
     // If you want the extensions for the Kotlin coroutines.
-    implementation 'com.github.fondesa:kpermissions-coroutines:3.1.0'
+    implementation 'com.github.fondesa:kpermissions-coroutines:x.x.x'
 }
 ```
 

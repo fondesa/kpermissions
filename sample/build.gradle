@@ -17,26 +17,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kpermissions-android'
 
-android {
-    defaultConfig.applicationId "com.fondesa.kpermissions.sample"
-
-    flavorDimensions "app"
-
-    productFlavors {
-        local {
-            dimension "app"
-            isDefault.set(true)
-        }
-        remote.dimension "app"
-    }
-}
+android.defaultConfig.applicationId "com.fondesa.kpermissions.sample"
 
 dependencies {
+    implementation project(':kpermissions')
     implementation Deps.androidxAppCompat
     implementation Deps.kotlinStdLib
-
-    localImplementation project(':kpermissions')
-    remoteImplementation Deps.kPermissions
 
     debugImplementation Deps.leakCanary
 }

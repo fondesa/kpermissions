@@ -28,6 +28,8 @@ notifications:
 branches:
   only:
     - master
+    # Matches all the tags in the format major.minor.patch (e.g. 1.12.3).
+    - ^(\d+)\.(\d+)\.(\d+)$
 
 script:
   # The tests are skipped from the build task since they will be run directly with the coverage calculation.

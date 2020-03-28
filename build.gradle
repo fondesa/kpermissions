@@ -57,7 +57,7 @@ apply plugin: "com.github.breadmoirai.github-release"
 
 // The release assets will be configured through kpermissions-deploy.
 githubRelease {
-    token project.properties["github.token"].toString() ?: System.getenv("GITHUB_TOKEN")
+    token project.properties["github.token"]?.toString() ?: System.getenv("GITHUB_TOKEN")
     owner "fondesa"
     repo "kpermissions"
     tagName version

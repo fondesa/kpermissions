@@ -50,12 +50,7 @@ class DeployPlugin : Plugin<Project> {
         plugins.apply("maven-publish")
         plugins.apply("com.jfrog.bintray")
 
-        versionName = getPropertyOrElse("version.name") {
-            logger.quiet("LYRA TAG NOT FOUND")
-            getVersionNameFromTag()
-        }
-        logger.quiet("LYRA VERSION: $versionName")
-
+        versionName = getPropertyOrElse("version.name") { getVersionNameFromTag() }
         changeAarFileName()
         val deployProperties = readPropertiesOf("deploy.properties")
         val sourcesJarTask = registerSourcesJarTask()

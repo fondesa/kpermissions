@@ -43,3 +43,12 @@ dependencies {
     implementation deps.kotlinStdLib
     implementation deps.ktlint
 }
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == "com.squareup.okhttp3" && details.requested.name == "okhttp") {
+            details.useVersion "4.0.0"
+            details.because "Fixes \"com.github.breadmoirai:github-release\" since it doesn't depend on OkHttp 4."
+        }
+    }
+}

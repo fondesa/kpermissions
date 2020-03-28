@@ -192,7 +192,7 @@ class DeployPlugin : Plugin<Project> {
 
     private fun Project.configureBintrayUpload(deployProperties: Properties) {
         extensions.configure(BintrayExtension::class.java) { bintray ->
-            bintray.user = getProperty("bintray.username")
+            bintray.user = deployProperties.getProperty("bintray.username")
             bintray.key = getProperty("bintray.api.key")
             bintray.publish = true
             bintray.dryRun = true
@@ -253,5 +253,5 @@ class DeployPlugin : Plugin<Project> {
         if (project.hasProperty(propertyName)) project.property(propertyName) as String else default()
 
     private fun Project.getProperty(propertyName: String): String? =
-        if (project.hasProperty(propertyName)) project.property(propertyName) as String else null
+        if (project.hasProperty(propertyName)) project.property(propertyName) as String else System.getenv(propertyName)
 }

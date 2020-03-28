@@ -24,6 +24,7 @@ buildscript {
         classpath Deps.androidPlugin
         classpath Deps.bintrayPlugin
         classpath Deps.dokkaPlugin
+        classpath Deps.gitHubReleasePlugin
         classpath Deps.kotlinPlugin
         classpath Deps.ktlint
         classpath Deps.releasesHubPlugin

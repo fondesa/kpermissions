@@ -33,6 +33,12 @@ script:
   # The tests are skipped from the build task since they will be run directly with the coverage calculation.
   - ./gradlew build -x test testCoverage -s
 
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: ./gradlew publishLibrary -Pversion.name=$TRAVIS_TAG --dry-run
+  on:
+    tags: true
 
 after_success:
   # Uploads all the coverage reports to Codecov.io:

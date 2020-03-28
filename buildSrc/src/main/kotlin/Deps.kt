@@ -22,6 +22,7 @@ object Deps {
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5"
     const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5"
     const val dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:0.9.18"
+    const val gitHubReleasePlugin = "com.github.breadmoirai:github-release:2.2.12"
     const val junit = "junit:junit:4.13"
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.71"

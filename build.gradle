@@ -30,6 +30,15 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
+    // Adds the version of this library to all the projects, including the root project.
+    apply plugin: "kpermissions-version"
+}
+
 apply plugin: "com.releaseshub.gradle.plugin"
 
 releasesHub {
@@ -43,11 +52,16 @@ releasesHub {
     excludes = ["gradle"]
 }
 
-allprojects {
-    repositories {
-        jcenter()
-        google()
-    }
+apply plugin: "com.github.breadmoirai.github-release"
+
+// The release assets will be configured through kpermissions-deploy.
+githubRelease {
+    token project.properties["github.token"].toString() ?: System.getenv("GITHUB_TOKEN")
+    owner "fondesa"
+    repo "kpermissions"
+    tagName version
+    releaseName "KPermissions $version"
+    dryRun true
 }
 
 task clean(type: Delete) {

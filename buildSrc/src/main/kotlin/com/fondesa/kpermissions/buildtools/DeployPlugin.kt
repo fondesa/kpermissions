@@ -19,6 +19,7 @@ package com.fondesa.kpermissions.buildtools
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.github.breadmoirai.githubreleaseplugin.GithubReleaseExtension
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -39,22 +40,13 @@ import java.util.regex.Pattern
  * Deploys this library to jCenter and Maven Central through Bintray.
  * The public deploy properties are defined in the file "deploy.properties".
  * The private deploy properties aren't versioned.
- * The version which should be deployed will be automatically the name of the last tag on Git.
- * To specify manually the version which should be deployed use the argument "version.name".
- * E.g.
- * ./gradlew publishLibrary -Pversion.name=1.0.0
+ * The version which should be deployed is defined through [VersionPlugin].
  */
 class DeployPlugin : Plugin<Project> {
 
     override fun apply(project: Project) = with(project) {
         plugins.apply("maven-publish")
         plugins.apply("com.jfrog.bintray")
-
-        versionName = getPropertyOrElse("version.name") {
-            logger.quiet("LYRA TAG NOT FOUND")
-            getVersionNameFromTag()
-        }
-        logger.quiet("LYRA VERSION: $versionName")
 
         changeAarFileName()
         val deployProperties = readPropertiesOf("deploy.properties")
@@ -64,6 +56,7 @@ class DeployPlugin : Plugin<Project> {
         val javadocJarArchive = artifacts.add("archives", javadocJarTask)
         configureMavenPublication(deployProperties, javadocJarArchive, sourcesJarArchive)
         configureBintrayUpload(deployProperties)
+        configureGitHubReleaseExtension()
         registerPublishLibraryTask()
         Unit
     }
@@ -227,6 +220,16 @@ class DeployPlugin : Plugin<Project> {
         }
     }
 
+    private fun Project.configureGitHubReleaseExtension() {
+        rootProject.extensions.configure(GithubReleaseExtension::class.java) { gitHubRelease ->
+            gitHubRelease.releaseAssets.from(
+                "$buildDir/outputs/aar/$aarFileName",
+                "$buildDir/libs/$name-$versionName-javadoc.jar",
+                "$buildDir/libs/$name-$versionName-sources.jar"
+            )
+        }
+    }
+
     private fun Project.registerPublishLibraryTask() {
         tasks.register("publishLibrary").configure { task ->
             task.dependsOn("clean")
@@ -235,6 +238,7 @@ class DeployPlugin : Plugin<Project> {
             task.dependsOn("javadocJar")
             task.dependsOn("generatePomFileForLibraryPublicationPublication")
             task.finalizedBy("bintrayUpload")
+            task.finalizedBy(rootProject.tasks.named("githubRelease"))
         }
 
         tasks.configureEach { task ->
@@ -249,8 +253,7 @@ class DeployPlugin : Plugin<Project> {
 
     private val Dependency.isLocal: Boolean get() = version == "unspecified"
 
-    private inline fun Project.getPropertyOrElse(propertyName: String, default: () -> String): String =
-        if (project.hasProperty(propertyName)) project.property(propertyName) as String else default()
+    private val Project.versionName: String get() = version as String
 
     private fun Project.getProperty(propertyName: String): String? =
         if (project.hasProperty(propertyName)) project.property(propertyName) as String else null

@@ -38,6 +38,7 @@ dependencies {
     implementation deps.androidPlugin
     implementation deps.bintrayPlugin
     implementation deps.dokkaPlugin
+    implementation deps.gitHubReleasePlugin
     implementation deps.kotlinPlugin
     implementation deps.kotlinStdLib
     implementation deps.ktlint

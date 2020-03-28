@@ -192,8 +192,8 @@ class DeployPlugin : Plugin<Project> {
 
     private fun Project.configureBintrayUpload(deployProperties: Properties) {
         extensions.configure(BintrayExtension::class.java) { bintray ->
-            bintray.user = getProperty("bintray.username")
-            bintray.key = getProperty("bintray.api.key")
+            bintray.user = deployProperties.getProperty("bintray.username")
+            bintray.key = getProperty("bintray.api.key") ?: System.getenv("BINTRAY_API_KEY")
             bintray.publish = true
             bintray.dryRun = true
             bintray.setPublications("libraryPublication")
@@ -215,12 +215,12 @@ class DeployPlugin : Plugin<Project> {
                     version.desc = deployProperties.getProperty("version.description")
                     version.gpg.also { gpg ->
                         gpg.sign = true
-                        gpg.passphrase = getProperty("bintray.gpg.password")
+                        gpg.passphrase = getProperty("bintray.gpg.password") ?: System.getenv("BINTRAY_GPG_PASSWORD")
                     }
                     version.mavenCentralSync.also { mavenCentral ->
                         mavenCentral.sync = false
-                        mavenCentral.user = getProperty("maven.central.username")
-                        mavenCentral.password = getProperty("maven.central.password")
+                        mavenCentral.user = getProperty("maven.central.username") ?: System.getenv("MAVEN_CENTRAL_USERNAME")
+                        mavenCentral.password = getProperty("maven.central.password") ?: System.getenv("MAVEN_CENTRAL_PASSWORD")
                     }
                 }
             }

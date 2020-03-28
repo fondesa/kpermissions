@@ -61,6 +61,7 @@ githubRelease {
     repo "kpermissions"
     tagName version
     releaseName "KPermissions $version"
+    body "TBD"
 }
 def gitHubToken = project.properties["github.token"] ?: System.getenv("GITHUB_TOKEN")
 if (gitHubToken != null) {

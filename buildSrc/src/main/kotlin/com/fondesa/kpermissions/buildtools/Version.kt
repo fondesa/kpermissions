@@ -28,3 +28,9 @@ internal fun Project.getVersionNameFromTag(): String {
     }
     return stdOut.toString().trim()
 }
+
+internal var Project.versionName: String
+    get() = version as String
+    set(value) {
+        version = value
+    }

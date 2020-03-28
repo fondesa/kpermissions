@@ -16,6 +16,8 @@
 
 package com.fondesa.kpermissions.buildtools
 
+import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.api.Plugin
@@ -48,20 +50,36 @@ class DeployPlugin : Plugin<Project> {
         plugins.apply("maven-publish")
         plugins.apply("com.jfrog.bintray")
 
-        val versionName = getPropertyOrElse("version.name") {
+        versionName = getPropertyOrElse("version.name") {
             logger.quiet("LYRA TAG NOT FOUND")
             getVersionNameFromTag()
         }
         logger.quiet("LYRA VERSION: $versionName")
+
+        changeAarFileName()
         val deployProperties = readPropertiesOf("deploy.properties")
         val sourcesJarTask = registerSourcesJarTask()
         val javadocJarTask = registerJavadocJarTask()
         val sourcesJarArchive = artifacts.add("archives", sourcesJarTask)
         val javadocJarArchive = artifacts.add("archives", javadocJarTask)
-        configureMavenPublication(deployProperties, javadocJarArchive, sourcesJarArchive, versionName)
-        configureBintrayUpload(deployProperties, versionName)
+        configureMavenPublication(deployProperties, javadocJarArchive, sourcesJarArchive)
+        configureBintrayUpload(deployProperties)
         registerPublishLibraryTask()
         Unit
+    }
+
+    private val Project.aarFileName: String get() = "$name-$versionName.aar"
+
+    private fun Project.changeAarFileName() {
+        withAndroidPlugin {
+            (this as? LibraryExtension)?.run {
+                libraryVariants.all { variant ->
+                    variant.outputs.all { output ->
+                        (output as BaseVariantOutputImpl).outputFileName = aarFileName
+                    }
+                }
+            }
+        }
     }
 
     private fun Project.registerSourcesJarTask(): TaskProvider<out Task> {
@@ -92,8 +110,7 @@ class DeployPlugin : Plugin<Project> {
     private fun Project.configureMavenPublication(
         deployProperties: Properties,
         javadocJarArchive: PublishArtifact,
-        sourcesJarArchive: PublishArtifact,
-        versionName: String
+        sourcesJarArchive: PublishArtifact
     ) {
         extensions.configure(PublishingExtension::class.java) { publishingExtension ->
             publishingExtension.publications { publicationContainer ->
@@ -103,18 +120,18 @@ class DeployPlugin : Plugin<Project> {
                 ) { publication ->
                     publication.artifact(javadocJarArchive)
                     publication.artifact(sourcesJarArchive)
-                    publication.artifact("$buildDir/outputs/aar/$name-release.aar")
+                    publication.artifact("$buildDir/outputs/aar/$aarFileName")
                     publication.groupId = deployProperties.getProperty("group.id")
                     publication.artifactId = deployProperties.getProperty("artifact.id")
                     publication.version = versionName
-                    publication.pom { pom -> configureMavenPom(pom, deployProperties, versionName) }
+                    publication.pom { pom -> configureMavenPom(pom, deployProperties) }
                 }
             }
         }
     }
 
     @Suppress("UnstableApiUsage")
-    private fun Project.configureMavenPom(pom: MavenPom, deployProperties: Properties, versionName: String) {
+    private fun Project.configureMavenPom(pom: MavenPom, deployProperties: Properties) {
         pom.name.set(deployProperties.getProperty("lib.name"))
         pom.description.set(deployProperties.getProperty("lib.description"))
         pom.url.set(deployProperties.getProperty("site.url"))
@@ -136,10 +153,10 @@ class DeployPlugin : Plugin<Project> {
             scmSpec.developerConnection.set(deployProperties.getProperty("git.url"))
             scmSpec.url.set(deployProperties.getProperty("site.url"))
         }
-        configureMavenPomDependencies(pom, deployProperties, versionName)
+        configureMavenPomDependencies(pom, deployProperties)
     }
 
-    private fun Project.configureMavenPomDependencies(pom: MavenPom, deployProperties: Properties, versionName: String) {
+    private fun Project.configureMavenPomDependencies(pom: MavenPom, deployProperties: Properties) {
         pom.withXml { xmlProvider ->
             val dependenciesNode = xmlProvider.asNode().appendNode("dependencies")
             val exportedConfigurationsNames = setOf("compile", "implementation", "api")
@@ -161,7 +178,7 @@ class DeployPlugin : Plugin<Project> {
                         val dependencyDeployProperties = dependencyProject.readPropertiesOf("deploy.properties")
                         dependencyNode.appendNode("groupId", deployProperties.getProperty("group.id"))
                         dependencyNode.appendNode("artifactId", dependencyDeployProperties.getProperty("artifact.id"))
-                        dependencyNode.appendNode("version", versionName)
+                        dependencyNode.appendNode("version", version)
                     } else {
                         dependencyNode.appendNode("groupId", dependency.group)
                         dependencyNode.appendNode("artifactId", dependency.name)
@@ -173,11 +190,12 @@ class DeployPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.configureBintrayUpload(deployProperties: Properties, versionName: String) {
+    private fun Project.configureBintrayUpload(deployProperties: Properties) {
         extensions.configure(BintrayExtension::class.java) { bintray ->
             bintray.user = getProperty("bintray.username")
             bintray.key = getProperty("bintray.api.key")
             bintray.publish = true
+            bintray.dryRun = true
             bintray.setPublications("libraryPublication")
             bintray.pkg.also { bintrayPkg ->
                 bintrayPkg.repo = deployProperties.getProperty("bintray.repo")
@@ -200,7 +218,7 @@ class DeployPlugin : Plugin<Project> {
                         gpg.passphrase = getProperty("bintray.gpg.password")
                     }
                     version.mavenCentralSync.also { mavenCentral ->
-                        mavenCentral.sync = true
+                        mavenCentral.sync = false
                         mavenCentral.user = getProperty("maven.central.username")
                         mavenCentral.password = getProperty("maven.central.password")
                     }

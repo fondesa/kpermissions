@@ -35,8 +35,7 @@ script:
 
 deploy:
   provider: script
-  skip_cleanup: true
-  script: ./gradlew publishLibrary -Pversion.name=$TRAVIS_TAG --dry-run
+  script: ./gradlew publishLibrary -Pversion.name=$TRAVIS_TAG
   on:
     tags: true
 

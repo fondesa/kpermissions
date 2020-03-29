@@ -166,7 +166,7 @@ class DeployPlugin : Plugin<Project> {
 
                 configDependencies.values.forEach { dependency ->
                     val dependencyNode = dependenciesNode.appendNode("dependency")
-                    if (dependency.isLocal) {
+                    if (project.isDependencyLocal(dependency)) {
                         val dependencyProject = rootProject.project(dependency.name)
                         val dependencyDeployProperties = dependencyProject.readPropertiesOf("deploy.properties")
                         dependencyNode.appendNode("groupId", deployProperties.getProperty("group.id"))
@@ -250,7 +250,7 @@ class DeployPlugin : Plugin<Project> {
         }
     }
 
-    private val Dependency.isLocal: Boolean get() = version == "unspecified"
+    private fun Project.isDependencyLocal(dependency: Dependency): Boolean = dependency.group == rootProject.name
 
     private val Project.versionName: String get() = version as String
 

@@ -15,9 +15,9 @@
  */
 
 object Deps {
-    const val androidPlugin = "com.android.tools.build:gradle:3.6.1"
+    const val androidPlugin = "com.android.tools.build:gradle:3.6.2"
     const val androidxAppCompat = "androidx.appcompat:appcompat:1.1.0"
-    const val androidxFragment = "androidx.fragment:fragment:1.2.3"
+    const val androidxFragment = "androidx.fragment:fragment:1.2.4"
     const val bintrayPlugin = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5"
     const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5"

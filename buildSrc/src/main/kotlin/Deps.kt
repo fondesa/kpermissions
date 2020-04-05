@@ -15,7 +15,7 @@
  */
 
 object Deps {
-    const val androidPlugin = "com.android.tools.build:gradle:3.6.1"
+    const val androidPlugin = "com.android.tools.build:gradle:3.6.2"
     const val androidxAppCompat = "androidx.appcompat:appcompat:1.1.0"
     const val androidxFragment = "androidx.fragment:fragment:1.2.4"
     const val bintrayPlugin = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
@@ -31,7 +31,7 @@ object Deps {
     const val mockitoCore = "org.mockito:mockito-core:3.3.3"
     const val mockitoInLine = "org.mockito:mockito-inline:3.3.3"
     const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    const val releasesHubPlugin = "com.releaseshub:releases-hub-gradle-plugin:1.4.0"
+    const val releasesHubPlugin = "com.releaseshub:releases-hub-gradle-plugin:1.4.1"
     const val robolectric = "org.robolectric:robolectric:4.3.1"
     const val rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.19"
     const val rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.1"

@@ -20,7 +20,7 @@ object Deps {
     const val androidxFragment = "androidx.fragment:fragment:1.2.4"
     const val bintrayPlugin = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6"
-    const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.5"
+    const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.6"
     const val dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:0.9.18"
     const val gitHubReleasePlugin = "com.github.breadmoirai:github-release:2.2.12"
     const val junit = "junit:junit:4.13"

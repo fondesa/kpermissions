@@ -20,3 +20,14 @@ ktlint {
     version = "0.35.0"
     enableExperimentalRules = true
 }
+
+tasks.configureEach {
+    // Matches the compile*Kotlin tasks regardless of the applied plugins.
+    it.name.eachMatch("^compile.*Kotlin\$") {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            allWarningsAsErrors = true
+            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+        }
+    }
+}

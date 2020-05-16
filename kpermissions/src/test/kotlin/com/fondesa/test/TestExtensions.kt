@@ -27,6 +27,7 @@ import org.robolectric.util.ReflectionHelpers
 /**
  * Get the application's instance returned by Robolectric.
  */
+@Suppress("DEPRECATION")
 internal val context: Application get() = RuntimeEnvironment.application
 
 /**

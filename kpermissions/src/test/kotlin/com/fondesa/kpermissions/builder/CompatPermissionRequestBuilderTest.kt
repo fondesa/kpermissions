@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
+
 package com.fondesa.kpermissions.builder
 
 import android.app.Activity

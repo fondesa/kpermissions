@@ -34,7 +34,6 @@ import java.util.Locale
  */
 @ExperimentalStdlibApi
 class AndroidCoveragePlugin : Plugin<Project> {
-    private val excludedPatterns = setOf("**/BuildConfig.*")
 
     override fun apply(project: Project) = with(project) {
         plugins.apply("jacoco")
@@ -51,8 +50,9 @@ class AndroidCoveragePlugin : Plugin<Project> {
     }
 
     private fun Project.configureCoverageTasks(extension: BaseExtension) {
-        configureUnifiedCoverageTask()
-        extension.buildTypes.all { configureCoverageTask(it, extension.sourceSets) }
+        afterEvaluate {
+            extension.buildTypes.all { configureCoverageTask(it, extension.sourceSets) }
+        }
     }
 
     private fun Project.configureCoverageTask(
@@ -61,11 +61,12 @@ class AndroidCoveragePlugin : Plugin<Project> {
     ) {
         val buildTypeName = buildType.name
         val testTaskName = "test${buildTypeName.capitalize(Locale.getDefault())}UnitTest"
+        // Avoids the creation of the coverage task if the test task does not exist.
+        val testTaskProvider = tasks.namedOrNull(testTaskName) ?: return
         val coverageTaskName = "${testTaskName}Coverage"
         tasks.register(coverageTaskName, JacocoReport::class.java).configure { coverageTask ->
             coverageTask.group = COVERAGE_TASKS_GROUP
             coverageTask.description = "Calculates the coverage and generates the reports for the \"$buildTypeName\" build."
-            coverageTask.dependsOn(testTaskName)
             coverageTask.reports.apply {
                 html.isEnabled = true
                 xml.isEnabled = true
@@ -81,15 +82,8 @@ class AndroidCoveragePlugin : Plugin<Project> {
                 }
             }
         }
-        tasks.named("testCoverage").configure { unifiedCoverageTask ->
-            unifiedCoverageTask.dependsOn(coverageTaskName)
-        }
-    }
-
-    private fun Project.configureUnifiedCoverageTask() {
-        tasks.register("testCoverage").configure { task ->
-            task.group = COVERAGE_TASKS_GROUP
-            task.description = "Calculates the coverage and generates the reports for all the variants."
+        testTaskProvider.configure { task ->
+            task.finalizedBy(coverageTaskName)
         }
     }
 
@@ -102,7 +96,7 @@ class AndroidCoveragePlugin : Plugin<Project> {
         })
     }
 
-    private fun Project.fileTreeOf(dir: String): FileTree = fileTree(mapOf("dir" to dir, "excludes" to excludedPatterns))
+    private fun Project.fileTreeOf(dir: String): FileTree = fileTree(mapOf("dir" to dir, "excludes" to COVERAGE_EXCLUSIONS))
 
     private inline fun <T> Project.closureOf(crossinline closure: T.() -> Unit): Closure<T> =
         object : Closure<T>(this) {
@@ -117,4 +111,3 @@ class AndroidCoveragePlugin : Plugin<Project> {
         private const val COVERAGE_TASKS_GROUP = "Coverage"
     }
 }
-

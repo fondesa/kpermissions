@@ -43,8 +43,7 @@ branches:
     - /^(\d+)\.(\d+)\.(\d+)$/
 
 script:
-  # The tests are skipped from the build task since they will be run directly with the coverage calculation.
-  - ./gradlew build -x test testCoverage -s
+  - ./gradlew build -s
 
 deploy:
   provider: script

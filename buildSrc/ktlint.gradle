@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-rootProject.name = "kpermissions-root"
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
-include ":kpermissions"
-include ":kpermissions-coroutines"
-include ":kpermissions-rx2"
-include ":kpermissions-rx3"
-include ":sample"
+ktlint {
+    version = "0.35.0"
+    enableExperimentalRules = true
+}

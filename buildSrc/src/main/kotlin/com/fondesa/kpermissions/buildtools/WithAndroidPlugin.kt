@@ -20,6 +20,11 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
 import org.gradle.api.Project
 
+/**
+ * Applies the given [block] to the Android's extension.
+ *
+ * @param block the Android configuration which should be applied.
+ */
 internal inline fun Project.withAndroidPlugin(crossinline block: BaseExtension.() -> Unit) {
     plugins.withType(BasePlugin::class.java) {
         androidExtension.apply(block)

@@ -18,8 +18,16 @@ package com.fondesa.kpermissions.buildtools
 
 import org.gradle.api.Project
 import java.io.File
-import java.util.*
+import java.util.Properties
 
+/**
+ * Reads the properties file with the given name in one of the two paths with this precedence:
+ * 1. the root of the module
+ * 2. the root of the root project
+ *
+ * @param fileName the name of the file.
+ * @return the [Properties] defined in the given file.
+ */
 internal fun Project.readPropertiesOf(fileName: String): Properties {
     val rootPropsFile = rootProject.file(fileName)
     val propsFile = file(fileName)

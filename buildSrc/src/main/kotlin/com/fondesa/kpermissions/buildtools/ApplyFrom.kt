@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-rootProject.name = "kpermissions-root"
+package com.fondesa.kpermissions.buildtools
 
-include ":kpermissions"
-include ":kpermissions-coroutines"
-include ":kpermissions-rx2"
-include ":kpermissions-rx3"
-include ":sample"
+import org.gradle.api.Project
+
+/**
+ * Applies a script defined in [scriptRootProjectPath].
+ *
+ * @param scriptRootProjectPath the path relative to the root project in which the script is defined.
+ */
+internal fun Project.applyFrom(scriptRootProjectPath: String) {
+    apply(mapOf("from" to rootProject.file(scriptRootProjectPath)))
+}

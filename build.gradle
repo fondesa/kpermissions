@@ -44,7 +44,6 @@ releasesHub {
     headBranchPrefix = "update-dependency/"
     gitHubRepositoryOwner = "fondesa"
     gitHubRepositoryName = "kpermissions"
-    excludes = ["gradle"]
 }
 
 apply plugin: "com.github.breadmoirai.github-release"

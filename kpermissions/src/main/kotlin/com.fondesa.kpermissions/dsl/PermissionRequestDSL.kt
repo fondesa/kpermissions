@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION", "OverridingDeprecatedMember", "TYPEALIAS_EXPANSION_DEPRECATION")
+
 package com.fondesa.kpermissions.dsl
 
 import com.fondesa.kpermissions.alias.AcceptedCallback

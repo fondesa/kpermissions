@@ -20,7 +20,6 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.dokka.gradle.DokkaTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
  * Applies the base configuration to all the Android modules of this project.
@@ -30,7 +29,7 @@ class AndroidModulePlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
         plugins.apply("kotlin-android")
         plugins.apply("org.jetbrains.dokka")
-        applyFrom("buildSrc/ktlint.gradle")
+        applyFrom("buildSrc/kotlin.gradle")
 
         withAndroidPlugin {
             val androidProperties = readPropertiesOf("android-config.properties")
@@ -55,12 +54,6 @@ class AndroidModulePlugin : Plugin<Project> {
         tasks.withType(DokkaTask::class.java) {
             it.outputFormat = "html"
             it.skipEmptyPackages = true
-        }
-        tasks.withType(KotlinCompile::class.java) {
-            it.kotlinOptions {
-                jvmTarget = "1.8"
-                freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-            }
         }
         Unit
     }

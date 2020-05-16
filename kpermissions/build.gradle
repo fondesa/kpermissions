@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kpermissions-android'
-apply plugin: 'kpermissions-android-coverage'
-apply plugin: 'kpermissions-deploy'
+apply plugin: "com.android.library"
+apply plugin: "kpermissions-android"
+apply plugin: "kpermissions-android-coverage"
+apply plugin: "kpermissions-deploy"
 
 dependencies {
     api Deps.androidxFragment

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 ktlint {
     version = "0.35.0"

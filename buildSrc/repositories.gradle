@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-rootProject.name = "kpermissions-root"
-
-include ":kpermissions"
-include ":kpermissions-coroutines"
-include ":kpermissions-rx2"
-include ":kpermissions-rx3"
-include ":sample"
+repositories {
+    jcenter()
+    google()
+    maven { url "https://plugins.gradle.org/m2/" }
+}

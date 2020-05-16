@@ -15,11 +15,8 @@
  */
 
 buildscript {
-    repositories {
-        jcenter()
-        google()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
+    apply from: rootProject.file("buildSrc/repositories.gradle"), to: buildscript
+
     dependencies {
         classpath Deps.androidPlugin
         classpath Deps.bintrayPlugin
@@ -32,10 +29,7 @@ buildscript {
 }
 
 allprojects {
-    repositories {
-        jcenter()
-        google()
-    }
+    apply from: rootProject.file("buildSrc/repositories.gradle")
     // Adds the version of this library to all the projects, including the root project.
     apply plugin: "kpermissions-version"
 }

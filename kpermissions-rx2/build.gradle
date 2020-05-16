@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kpermissions-android'
-apply plugin: 'kpermissions-android-coverage'
-apply plugin: 'kpermissions-deploy'
+apply plugin: "com.android.library"
+apply plugin: "kpermissions-android"
+apply plugin: "kpermissions-android-coverage"
+apply plugin: "kpermissions-deploy"
 
 dependencies {
-    api project(':kpermissions')
+    api project(":kpermissions")
     api Deps.rxJava2
 
     testImplementation Deps.junit

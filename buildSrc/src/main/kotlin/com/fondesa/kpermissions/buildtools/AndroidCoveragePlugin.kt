@@ -19,7 +19,6 @@ package com.fondesa.kpermissions.buildtools
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.AndroidSourceSet
 import com.android.builder.model.BuildType
-import groovy.lang.Closure
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -99,14 +98,6 @@ class AndroidCoveragePlugin : Plugin<Project> {
     }
 
     private fun Project.fileTreeOf(dir: String): FileTree = fileTree(mapOf("dir" to dir, "excludes" to COVERAGE_EXCLUSIONS))
-
-    private inline fun <T> Project.closureOf(crossinline closure: T.() -> Unit): Closure<T> =
-        object : Closure<T>(this) {
-            @Suppress("unused") // This function will be invoked dynamically by Groovy.
-            fun doCall(obj: T) {
-                obj.closure()
-            }
-        }
 
     companion object {
         private const val JACOCO_VERSION = "0.8.5"

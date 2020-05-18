@@ -43,8 +43,16 @@ class AndroidModulePlugin : Plugin<Project> {
                 it.targetCompatibility = JavaVersion.VERSION_1_8
             }
             lintOptions.isWarningsAsErrors = true
-            // Used by Robolectric since Android resources can be used in unit tests.
-            testOptions.unitTests.isIncludeAndroidResources = true
+            testOptions.unitTests.apply {
+                // Used by Robolectric since Android resources can be used in unit tests.
+                isIncludeAndroidResources = true
+                all(
+                    closureOf {
+                        testLogging.events("passed", "skipped", "failed")
+                        systemProperty("robolectric.logging.enabled", true)
+                    }
+                )
+            }
             // Adds the Kotlin source set for each Java source set.
             sourceSets { sourceSetContainer ->
                 sourceSetContainer.all { sourceSet ->

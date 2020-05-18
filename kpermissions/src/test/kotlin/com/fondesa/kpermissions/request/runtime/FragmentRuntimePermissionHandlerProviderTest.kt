@@ -17,15 +17,19 @@
 package com.fondesa.kpermissions.request.runtime
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.fondesa.test.createActivity
+import com.fondesa.test.TestActivity
+import com.fondesa.test.launchTestActivity
+import com.fondesa.test.letActivity
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -36,8 +40,21 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
 class FragmentRuntimePermissionHandlerProviderTest {
-    private val activity = createActivity<FragmentActivity>()
-    private val provider = FragmentRuntimePermissionHandlerProvider(activity.supportFragmentManager)
+    private lateinit var provider: FragmentRuntimePermissionHandlerProvider
+    private lateinit var scenario: ActivityScenario<TestActivity>
+
+    @Before
+    fun createProvider() {
+        scenario = launchTestActivity()
+        provider = scenario.letActivity { FragmentRuntimePermissionHandlerProvider(it.supportFragmentManager) }
+    }
+
+    @After
+    fun destroyScenario() {
+        if (::scenario.isInitialized) {
+            scenario.close()
+        }
+    }
 
     @Test
     fun handlerProvided() {

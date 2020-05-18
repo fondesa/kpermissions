@@ -19,16 +19,19 @@
 package com.fondesa.kpermissions.request.runtime
 
 import android.Manifest
-import android.app.Activity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
-import com.fondesa.test.createActivity
+import com.fondesa.test.TestActivity
 import com.fondesa.test.denyPermissions
 import com.fondesa.test.grantPermissions
+import com.fondesa.test.launchTestActivity
+import com.fondesa.test.letActivity
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
@@ -36,9 +39,11 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -49,17 +54,30 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
 class RuntimePermissionRequestTest {
-    private val activity = spy(createActivity<Activity>())
     private val handler = mock<RuntimePermissionHandler>()
     private val nonce = mock<PermissionNonce>()
     private val nonceGenerator = mock<PermissionNonceGenerator> {
         on(it.generateNonce(eq(handler), any())).thenReturn(nonce)
     }
-
     private val acceptedListener = mock<PermissionRequest.AcceptedListener>()
     private val deniedListener = mock<PermissionRequest.DeniedListener>()
     private val permDeniedListener = mock<PermissionRequest.PermanentlyDeniedListener>()
     private val rationaleListener = mock<PermissionRequest.RationaleListener>()
+    private lateinit var scenario: ActivityScenario<TestActivity>
+    private lateinit var spiedActivity: TestActivity
+
+    @Before
+    fun spyActivity() {
+        scenario = launchTestActivity()
+        spiedActivity = scenario.letActivity { spy(it) }
+    }
+
+    @After
+    fun destroyScenario() {
+        if (::scenario.isInitialized) {
+            scenario.close()
+        }
+    }
 
     @Test
     fun onePermissionHandled() {
@@ -265,7 +283,7 @@ class RuntimePermissionRequestTest {
         val first = Manifest.permission.ACCESS_FINE_LOCATION
         val second = Manifest.permission.SEND_SMS
         val permissions = arrayOf(first, second)
-        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
+        val request = RuntimePermissionRequest(spiedActivity, permissions, handler).apply {
             rationaleListener(rationaleListener)
         }
 
@@ -279,7 +297,7 @@ class RuntimePermissionRequestTest {
         val secondListener = mock<PermissionRequest.Listener>()
         val permissions =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
-        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
+        val request = RuntimePermissionRequest(spiedActivity, permissions, handler).apply {
             addListener(firstListener)
             addListener(secondListener)
         }
@@ -301,7 +319,7 @@ class RuntimePermissionRequestTest {
         val secondListener = mock<PermissionRequest.Listener>()
         val permissions =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
-        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
+        val request = RuntimePermissionRequest(spiedActivity, permissions, handler).apply {
             addListener(firstListener)
             addListener(secondListener)
         }
@@ -330,7 +348,7 @@ class RuntimePermissionRequestTest {
         val secondListener = mock<PermissionRequest.Listener>()
         val permissions =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
-        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
+        val request = RuntimePermissionRequest(spiedActivity, permissions, handler).apply {
             addListener(firstListener)
             addListener(secondListener)
         }
@@ -366,22 +384,20 @@ class RuntimePermissionRequestTest {
 
     @Test
     fun `When checkStatus() is invoked with an Activity, the runtime permissions status is retrieved`() {
-        activity.grantPermissions(Manifest.permission.SEND_SMS)
-        activity.denyPermissions(
+        spiedActivity.grantPermissions(Manifest.permission.SEND_SMS)
+        spiedActivity.denyPermissions(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CALL_PHONE
         )
-        whenever(activity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
-            .thenReturn(true)
-        whenever(activity.shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE))
-            .thenReturn(false)
+        whenever(spiedActivity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) doReturn true
+        whenever(spiedActivity.shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) doReturn false
         val expected = listOf(
             PermissionStatus.Granted(Manifest.permission.SEND_SMS),
             PermissionStatus.Denied.ShouldShowRationale(Manifest.permission.ACCESS_FINE_LOCATION),
             PermissionStatus.RequestRequired(Manifest.permission.CALL_PHONE)
         )
         val request = RuntimePermissionRequest(
-            activity,
+            spiedActivity,
             arrayOf(
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.ACCESS_FINE_LOCATION,

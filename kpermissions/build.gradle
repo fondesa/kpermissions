@@ -23,6 +23,7 @@ dependencies {
     api Deps.androidxFragment
     api Deps.kotlinStdLib
 
+    testImplementation Deps.androidxJUnit
     testImplementation Deps.junit
     testImplementation Deps.mockitoKotlin
     testImplementation Deps.mockitoInLine

@@ -18,6 +18,7 @@ package com.fondesa.kpermissions.extension
 
 import android.Manifest
 import android.app.Activity
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.test.createActivity
 import com.fondesa.test.denyPermissions
@@ -27,13 +28,12 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
  * Tests for CheckPermissionsStatus.kt file.
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 class CheckPermissionsStatusKtTest {
     private val activity = spy(createActivity<Activity>())
 

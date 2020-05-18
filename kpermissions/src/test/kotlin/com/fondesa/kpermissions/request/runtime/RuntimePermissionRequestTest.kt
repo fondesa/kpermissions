@@ -20,6 +20,7 @@ package com.fondesa.kpermissions.request.runtime
 
 import android.Manifest
 import android.app.Activity
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
@@ -40,13 +41,12 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
  * Tests for [RuntimePermissionRequest].
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
 class RuntimePermissionRequestTest {
     private val activity = spy(createActivity<Activity>())

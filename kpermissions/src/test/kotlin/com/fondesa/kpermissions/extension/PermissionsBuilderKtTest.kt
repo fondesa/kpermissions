@@ -19,6 +19,7 @@ package com.fondesa.kpermissions.extension
 import android.Manifest
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.test.createActivity
@@ -28,12 +29,11 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
 /**
  * Tests for PermissionsBuilder.kt file.
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 class PermissionsBuilderKtTest {
 
     @Test

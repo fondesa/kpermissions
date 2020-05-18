@@ -17,18 +17,18 @@
 package com.fondesa.kpermissions.extension
 
 import android.Manifest
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.test.context
 import com.fondesa.test.denyPermissions
 import com.fondesa.test.grantPermissions
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
 /**
  * Tests for IsPermissionGranted.kt file.
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 class IsPermissionGrantedKtTest {
 
     @Test

@@ -18,6 +18,7 @@ package com.fondesa.kpermissions.extension
 
 import android.Manifest
 import androidx.lifecycle.Observer
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.nhaarman.mockitokotlin2.any
@@ -28,12 +29,11 @@ import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
 /**
  * Tests for LiveData.kt file.
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 class LiveDataKtTest {
     private val request = mock<PermissionRequest>()
     private val listenerCaptor = argumentCaptor<PermissionRequest.Listener>()

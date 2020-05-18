@@ -21,6 +21,7 @@ package com.fondesa.kpermissions.request.runtime
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.fragment.app.FragmentActivity
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.test.context
 import com.fondesa.test.createFragment
@@ -42,13 +43,12 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
  * Tests for [DefaultFragmentRuntimePermissionHandler].
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
 class DefaultFragmentRuntimePermissionHandlerTest {
     private val firstPermission = Manifest.permission.ACCESS_FINE_LOCATION

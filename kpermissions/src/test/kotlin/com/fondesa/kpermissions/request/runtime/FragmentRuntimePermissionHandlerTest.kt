@@ -16,8 +16,8 @@
 
 package com.fondesa.kpermissions.request.runtime
 
+import androidx.fragment.app.testing.launchFragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.fondesa.test.createFragment
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -30,18 +30,18 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
 class FragmentRuntimePermissionHandlerTest {
-    private val fragment: FragmentRuntimePermissionHandler = createFragment<MockFragment>()
 
     @Test
     fun fragmentCreationSuccessful() {
-        // The Fragment must retain the instance.
-        assertTrue(fragment.retainInstance)
-        // It mustn't have a layout.
-        assertNull(fragment.view)
+        launchFragment<MockFragment>().onFragment {
+            // The Fragment must retain the instance.
+            assertTrue(it.retainInstance)
+            // It mustn't have a layout.
+            assertNull(it.view)
+        }
     }
 
     class MockFragment : FragmentRuntimePermissionHandler() {
-
         override fun handleRuntimePermissions(permissions: Array<out String>) = Unit
         override fun requestRuntimePermissions(permissions: Array<out String>) = Unit
         override fun managePermissionsResult(

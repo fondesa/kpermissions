@@ -21,12 +21,14 @@ package com.fondesa.kpermissions.request.runtime
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.testing.FragmentScenario
+import androidx.fragment.app.testing.launchFragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.test.context
-import com.fondesa.test.createFragment
 import com.fondesa.test.denyPermissions
 import com.fondesa.test.grantPermissions
+import com.fondesa.test.letFragment
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.doReturn
@@ -41,6 +43,7 @@ import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -55,23 +58,30 @@ class DefaultFragmentRuntimePermissionHandlerTest {
     private val secondPermission = Manifest.permission.SEND_SMS
     private val permissions = arrayOf(firstPermission, secondPermission)
     private val listener = mock<RuntimePermissionHandler.Listener>()
-    private val fragment = createFragment<DefaultFragmentRuntimePermissionHandler>()
+    private lateinit var scenario: FragmentScenario<DefaultFragmentRuntimePermissionHandler>
+
+    @Before
+    fun launchScenario() {
+        scenario = launchFragment<DefaultFragmentRuntimePermissionHandler>()
+    }
 
     @Test
     fun fragmentCreationSuccessful() {
-        fragment.attachListener(permissions, listener)
-        // The Fragment must retain the instance.
-        assertTrue(fragment.retainInstance)
-        // It mustn't have a layout.
-        assertNull(fragment.view)
+        scenario.onFragment { fragment ->
+            fragment.attachListener(permissions, listener)
+            // The Fragment must retain the instance.
+            assertTrue(fragment.retainInstance)
+            // It mustn't have a layout.
+            assertNull(fragment.view)
+        }
     }
 
     @Test
     fun permissionsRequested() {
-        fragment.attachListener(permissions, listener)
+        scenario.onFragment { it.attachListener(permissions, listener) }
         val permissions =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
-        val spiedFragment = spy(fragment)
+        val spiedFragment = scenario.letFragment { spy(it) }
 
         // Request the permissions.
         spiedFragment.requestRuntimePermissions(permissions)
@@ -82,8 +92,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun permissionsHandledByDefault() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         // Handle the permissions.
         spiedFragment.handleRuntimePermissions(permissions)
         // The Fragment must request the runtime permissions at first, because they are denied.
@@ -94,26 +104,28 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun `When listener is not attached and permissions status should be notified, nothing happens`() {
-        // It shouldn't throw an exception.
-        fragment.handleRuntimePermissions(permissions)
-        // It shouldn't throw an exception.
-        fragment.onRequestPermissionsResult(
-            // Since we can't get the real request code, just hardcode it.
-            requestCode = 986,
-            permissions = permissions,
-            grantResults = grantResults(
-                firstGranted = true,
-                secondGranted = true
+        scenario.onFragment {
+            // It shouldn't throw an exception.
+            it.handleRuntimePermissions(permissions)
+            // It shouldn't throw an exception.
+            it.onRequestPermissionsResult(
+                // Since we can't get the real request code, just hardcode it.
+                requestCode = 986,
+                permissions = permissions,
+                grantResults = grantResults(
+                    firstGranted = true,
+                    secondGranted = true
+                )
             )
-        )
+        }
     }
 
     @Test
     fun permissionsAcceptedNotifyListener() {
-        fragment.attachListener(permissions, listener)
+        scenario.onFragment { it.attachListener(permissions, listener) }
         // Grant the permissions.
         context.grantPermissions(*permissions)
-        fragment.handleRuntimePermissions(permissions)
+        scenario.onFragment { it.handleRuntimePermissions(permissions) }
 
         verify(listener).permissionsAccepted(permissions)
         verify(listener).onPermissionsResult(permissions.map { PermissionStatus.Granted(it) })
@@ -121,17 +133,19 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
         context.denyPermissions(firstPermission)
         // The listener mustn't be invoked anymore.
-        fragment.handleRuntimePermissions(permissions)
+        scenario.onFragment { it.handleRuntimePermissions(permissions) }
     }
 
     @Test
     fun permissionsNotifyRationaleListener() {
-        fragment.attachListener(permissions, listener)
+        scenario.onFragment { it.attachListener(permissions, listener) }
         val mockActivity = mock<FragmentActivity> {
             on(it.checkPermission(any(), any(), any())) doReturn PackageManager.PERMISSION_DENIED
         }
-        val spiedFragment = spy(fragment) {
-            on(it.requireActivity()) doReturn mockActivity
+        val spiedFragment = scenario.letFragment { fragment ->
+            spy(fragment) {
+                on(it.requireActivity()) doReturn mockActivity
+            }
         }
 
         whenever(listener.permissionsShouldShowRationale(any())).thenReturn(true)
@@ -166,8 +180,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun processingPermissions() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
 
         spiedFragment.requestRuntimePermissions(permissions)
 
@@ -178,8 +192,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun processingPermissionsUnlocked() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
 
         spiedFragment.requestRuntimePermissions(permissions)
@@ -209,8 +223,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun `When onRequestPermissionsResult is invoked with a different request code, the listeners aren't notified`() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Captures the request code used by the Fragment.
@@ -232,8 +246,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun `When onRequestPermissionsResult is invoked without permissions, the listeners aren't notified`() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Captures the request code used by the Fragment.
@@ -248,8 +262,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithAcceptedPermissions() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Capture the request code used by the Fragment.
@@ -285,8 +299,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithRationalePermissions() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Capture the request code used by the Fragment.
@@ -363,8 +377,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithRationalePermissionsSolvedByUser() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Capture the request code used by the Fragment.
@@ -413,8 +427,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithDeniedPermissions() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Capture the request code used by the Fragment.
@@ -491,8 +505,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithDeniedPermissionsSolvedByUser() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Capture the request code used by the Fragment.
@@ -541,8 +555,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun manageResultWithPermanentlyDeniedPermissionsSolvedByUser() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Capture the request code used by the Fragment.
@@ -591,8 +605,8 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun `When rationale permissions are not handled and there aren't permanently denied permissions, listeners are not notified`() {
-        fragment.attachListener(permissions, listener)
-        val spiedFragment = spy(fragment)
+        scenario.onFragment { it.attachListener(permissions, listener) }
+        val spiedFragment = scenario.letFragment { spy(it) }
         val reqCodeCaptor = argumentCaptor<Int>()
         spiedFragment.requestRuntimePermissions(permissions)
         // Capture the request code used by the Fragment.
@@ -623,10 +637,12 @@ class DefaultFragmentRuntimePermissionHandlerTest {
 
     @Test
     fun `When Fragment is not added yet, the permissions are handled when it will be attached`() {
-        fragment.attachListener(permissions, listener)
+        scenario.onFragment { it.attachListener(permissions, listener) }
         context.grantPermissions(*permissions)
-        val spiedFragment = spy(fragment) {
-            on(it.isAdded) doReturn false
+        val spiedFragment = scenario.letFragment { fragment ->
+            spy(fragment) {
+                on(it.isAdded) doReturn false
+            }
         }
 
         spiedFragment.handleRuntimePermissions(permissions)

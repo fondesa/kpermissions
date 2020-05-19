@@ -19,6 +19,7 @@
 package com.fondesa.kpermissions.request.manifest
 
 import android.Manifest
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.test.context
@@ -30,13 +31,12 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
  * Tests for [ManifestPermissionRequest].
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 @Config(maxSdk = 22)
 class ManifestPermissionRequestTest {
     private val acceptedListener = mock<PermissionRequest.AcceptedListener>()

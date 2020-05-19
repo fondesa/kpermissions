@@ -18,33 +18,13 @@ package com.fondesa.test
 
 import android.app.Activity
 import android.app.Application
-import androidx.fragment.app.Fragment
-import org.robolectric.Robolectric
-import org.robolectric.RuntimeEnvironment
+import androidx.test.platform.app.InstrumentationRegistry
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.util.ReflectionHelpers
 
 /**
  * Get the application's instance returned by Robolectric.
  */
-@Suppress("DEPRECATION")
-internal val context: Application get() = RuntimeEnvironment.application
-
-/**
- * Create an [Activity] of type [T] using Robolectric.
- */
-internal inline fun <reified T : Activity> createActivity(): T =
-    Robolectric.buildActivity(T::class.java)
-        .create()
-        .get()
-
-/**
- * Create a [Fragment] of type [T] using Robolectric.
- */
-internal inline fun <reified T : Fragment> createFragment(): T =
-    AndroidXFragmentController.of(ReflectionHelpers.callConstructor(T::class.java))
-        .create()
-        .get()
+internal val context: Application get() = InstrumentationRegistry.getInstrumentation().targetContext as Application
 
 /**
  * Grants the given permissions.

@@ -18,30 +18,47 @@
 
 package com.fondesa.kpermissions.builder
 
-import android.app.Activity
+import androidx.test.core.app.ActivityScenario
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
-import com.fondesa.test.createActivity
+import com.fondesa.test.TestActivity
+import com.fondesa.test.launchTestActivity
+import com.fondesa.test.letActivity
 import com.nhaarman.mockitokotlin2.mock
 import junit.framework.Assert.assertNotNull
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
 /**
  * Tests for [CompatPermissionRequestBuilderTest].
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 class CompatPermissionRequestBuilderTest {
-    private val activity = createActivity<Activity>()
-    private val builder: CompatPermissionRequestBuilder = CompatPermissionRequestBuilder(activity)
     private val provider = mock<RuntimePermissionHandlerProvider> {
         on(it.provideHandler()).thenReturn(mock())
     }
     private val nonceGenerator = mock<PermissionNonceGenerator>()
+    private lateinit var builder: CompatPermissionRequestBuilder
+    private lateinit var scenario: ActivityScenario<TestActivity>
+
+    @Before
+    fun createBuilder() {
+        scenario = launchTestActivity()
+        builder = scenario.letActivity { CompatPermissionRequestBuilder(it) }
+    }
+
+    @After
+    fun destroyScenario() {
+        if (::scenario.isInitialized) {
+            scenario.close()
+        }
+    }
 
     @Test
     fun verifyMinimumBuildInstance() {

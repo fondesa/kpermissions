@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-apply plugin: "com.android.library"
-apply plugin: "kpermissions-android"
-apply plugin: "kpermissions-android-coverage"
-apply plugin: "kpermissions-deploy"
+package com.fondesa.test
 
-dependencies {
-    api Deps.androidxFragment
-    api Deps.kotlinStdLib
+import android.content.Intent
+import androidx.fragment.app.FragmentActivity
+import androidx.test.core.app.ActivityScenario
 
-    testImplementation Deps.androidxFragmentTesting
-    testImplementation Deps.androidxJUnit
-    testImplementation Deps.junit
-    testImplementation Deps.mockitoKotlin
-    testImplementation Deps.mockitoInLine
-    testImplementation Deps.robolectric
-}
+/**
+ * A [FragmentActivity] used in tests to test the permissions.
+ */
+internal class TestActivity : FragmentActivity()
+
+/**
+ * Launches a [TestActivity].
+ *
+ * @return the [ActivityScenario] of the [TestActivity] which will be launched.
+ */
+internal fun launchTestActivity(): ActivityScenario<TestActivity> =
+    ActivityScenario.launch(Intent(context, TestActivity::class.java))

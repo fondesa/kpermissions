@@ -64,3 +64,6 @@ if (gitHubToken != null) {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// Use "all" as the default distribution-type of the Gradle Wrapper.
+wrapper.distributionType = Wrapper.DistributionType.ALL

@@ -17,7 +17,6 @@
 package com.fondesa.kpermissions.buildtools
 
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.BasePlugin
 import org.gradle.api.Project
 
 /**
@@ -26,9 +25,8 @@ import org.gradle.api.Project
  * @param block the Android configuration which should be applied.
  */
 internal inline fun Project.withAndroidPlugin(crossinline block: BaseExtension.() -> Unit) {
-    plugins.withType(BasePlugin::class.java) {
-        androidExtension.apply(block)
-    }
+    pluginManager.withPlugin("com.android.application") { androidExtension.block() }
+    pluginManager.withPlugin("com.android.library") { androidExtension.block() }
 }
 
 private val Project.androidExtension: BaseExtension get() = extensions.getByName("android") as BaseExtension

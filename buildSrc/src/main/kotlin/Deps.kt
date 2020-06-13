@@ -15,7 +15,7 @@
  */
 
 object Deps {
-    const val androidPlugin = "com.android.tools.build:gradle:4.0.0"
+    const val androidPlugin = "com.android.tools.build:gradle:3.6.3"
     const val androidxAppCompat = "androidx.appcompat:appcompat:1.1.0"
     const val androidxFragment = "androidx.fragment:fragment:1.2.5"
     const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.2.5"
@@ -29,11 +29,11 @@ object Deps {
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:9.2.1"
-    const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.3"
+    const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.4"
     const val mockitoCore = "org.mockito:mockito-core:3.3.3"
     const val mockitoInLine = "org.mockito:mockito-inline:3.3.3"
     const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    const val releasesHubPlugin = "com.releaseshub:releases-hub-gradle-plugin:1.5.1"
+    const val releasesHubPlugin = "com.releaseshub:releases-hub-gradle-plugin:1.6.0"
     const val robolectric = "org.robolectric:robolectric:4.3.1"
     const val rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.19"
     const val rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.4"

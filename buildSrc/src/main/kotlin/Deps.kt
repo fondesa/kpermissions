@@ -16,7 +16,7 @@
 
 object Deps {
     const val androidPlugin = "com.android.tools.build:gradle:4.0.1"
-    const val androidxAppCompat = "androidx.appcompat:appcompat:1.1.0"
+    const val androidxAppCompat = "androidx.appcompat:appcompat:1.2.0"
     const val androidxFragment = "androidx.fragment:fragment:1.2.5"
     const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.2.5"
     const val androidxJUnit = "androidx.test.ext:junit:1.1.1"
@@ -36,5 +36,5 @@ object Deps {
     const val releasesHubPlugin = "com.releaseshub:releases-hub-gradle-plugin:1.6.0"
     const val robolectric = "org.robolectric:robolectric:4.3.1"
     const val rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.19"
-    const val rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.4"
+    const val rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.6"
 }

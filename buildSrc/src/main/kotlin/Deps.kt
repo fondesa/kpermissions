@@ -22,7 +22,7 @@ object Deps {
     const val androidxJUnit = "androidx.test.ext:junit:1.1.1"
     const val bintrayPlugin = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
-    const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.7"
+    const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9"
     const val dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:0.9.18"
     const val gitHubReleasePlugin = "com.github.breadmoirai:github-release:2.2.12"
     const val junit = "junit:junit:4.13"

@@ -5,9 +5,9 @@ jdk: oraclejdk8
 env:
   global:
     # The same build tools version in the project.
-    - BUILD_TOOLS_VERSION=29.0.3
+    - BUILD_TOOLS_VERSION=30.0.2
     # Android API level used in this project.
-    - API=29
+    - API=30
     # Variable "BINTRAY_API_KEY" (deploy).
     - secure: "irhvlWt1n13QfBWtnfWErxihlGYPq5fbSSzg0Ok0+hHi4R+SWITkWyZPAefdkx65KgN8ejZOzBa29HBuLS/JGzrymfbAh1G2kuVwkPQ5f6z7R2ELzWMlpb7nWmcJo/nJHKb8dOvt8fc/HQltGOdM1XaHrrM0m8u7hrDcUmlvbgh66MkcIJbZM17yyI4kWJpMEj8cIxuKGQa0gUbJdcJSApUaT9swxU2WhQisQQHajsbYUssFpmmmxA2FDG1pYpmJySa9oF9Fg+VucAkmh5qV96mElnqlALphrk7T00Lq/CE7jJqkHfhsPpGVo1mcKKhT9uwFwto+cFfEgFRyjH2G3o46NZsm1zH4dxwkrIHiZVspmmSZZISIaGttng1WGQGZ0Gdvcg1m1yGiRLLMhN6SGhvzDUAqNIy5GlZT9wpf5K2OGkZYM/FiemDo5YYZ1aySpN5GCwllPTVwVA91MHEVFP1TWbTUOBaKOlRZeOtBEhzB8+ijh7BmQozcSzPbkE1iq2u4Uyrp9JV235n4nwiXvDabwWGPaR3J6O5U2kLqcnMxtf4MVFe963yXB48EuhlwMoL03F9H25a4Z6Y/jhjETlIOY1QI8EaZcVpDjFzTElWd/GN2yry/tpjc9eKJTTvIcdTtxwS7JpBiVQ6G1hApe4syGN4yyKHthfUXTCeBr44="
     # Variable "BINTRAY_GPG_PASSWORD" (deploy).
@@ -20,8 +20,8 @@ env:
     - secure: "IHEiC4MO/ZU8s3GhEj7Iarl/Z9NOOzWOYrNkHoSgFymB79yj4r39PeKVxw9aP7xeJyFffNaRfXk7h7hLbQKVIWTbGJhFLyc6i+B7QC2eJICoQQfvCmYydgQsTh0+2dRBDiVd+4AxEZnq3GjP2vGOw2i6a78puxwlv+CHMU2TyqMXMQPCcKe6i5JD2MHeLcvWFZWXu9vrmDlbk3Fga71khaLD5lxclwqtLkJLD/4rdDNJxyKFI3SgHPoee0MZ/xft2PJ0BrauPbzuWcgrppkexwhntBcN4QaMN2q0yOjTk2xVFL9HbfH8nIG0qBMJAX/lHm2qp3xy6hXsLH9Yfa33ytBIcxn/IyBhAd5Ct0H2Mp9Pneqd00xYJ2xDI0E2qqQL1C+rpydDxAPl16N97IVyjaI9S5O4GN8Q2rHgoNTABP5Mq0audh5g+AfX6qhOFvKpBw+9EDxQz1lPr0hVzeaImJ1StMW4DfvI4Nod1jTY0jsWSfZvaAIdZZkawd+aiCF0tqdgEB22F16zp/D5j0mcGCyAe9TMLcuef3kNcphcelAU3/beUeHl6OJqIh1RoqQRZ6AUID76Cg7KDqCxYPmVJs9xT+x0tdliAtFTXv2+WkpTzXkXiijqPbteMhDuffaiUIZb8NvwVF06fg3dse8bfyP0MHs4OE4gQx1KUIyndXM="
 
 before_install:
-  # Just a fix using build-tools 29.0.3 on Travis, since it seems that the licenses of build-tools 29.0.2 are not accepted.
-  - yes | sdkmanager "build-tools;29.0.2"
+  # Accepts the licenses of the build tools.
+  - yes | sdkmanager "build-tools;30.0.2"
 
 android:
   components:

@@ -35,6 +35,7 @@ class AndroidModulePlugin : Plugin<Project> {
         withAndroidPlugin {
             val androidProperties = readPropertiesOf("android-config.properties")
             compileSdkVersion(androidProperties.getProperty("android.config.compileSdk").toInt())
+            buildToolsVersion(androidProperties.getProperty("android.config.buildTools"))
             defaultConfig.apply {
                 minSdkVersion(androidProperties.getProperty("android.config.minSdk").toInt())
                 targetSdkVersion(androidProperties.getProperty("android.config.targetSdk").toInt())

@@ -19,6 +19,7 @@ package com.fondesa.kpermissions.request.runtime
 import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.fondesa.test.TestActivity
 import com.fondesa.test.launchTestActivity
 import com.fondesa.test.letActivity
@@ -33,15 +34,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
 
 /**
  * Tests for [FragmentRuntimePermissionHandlerProvider].
  */
 @RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
-@Suppress("DEPRECATION")
-@LooperMode(LooperMode.Mode.LEGACY)
 class FragmentRuntimePermissionHandlerProviderTest {
     private lateinit var provider: FragmentRuntimePermissionHandlerProvider
     private lateinit var scenario: ActivityScenario<TestActivity>
@@ -63,6 +61,7 @@ class FragmentRuntimePermissionHandlerProviderTest {
     fun handlerProvided() {
         // Provide the handler.
         val handler = provider.provideHandler()
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
 
         assertNotNull(handler)
         assertThat(handler, instanceOf(RuntimePermissionHandler::class.java))
@@ -79,7 +78,9 @@ class FragmentRuntimePermissionHandlerProviderTest {
     fun sameFragmentProvidedMultipleTimes() {
         // Provide the handler.
         val fragment = provider.provideHandler()
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         val secondFragment = provider.provideHandler()
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         // They must point to the same Fragment.
         assertEquals(fragment, secondFragment)
     }

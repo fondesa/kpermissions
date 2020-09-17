@@ -33,12 +33,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 /**
  * Tests for [FragmentRuntimePermissionHandlerProvider].
  */
 @RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
+@Suppress("DEPRECATION")
+@LooperMode(LooperMode.Mode.LEGACY)
 class FragmentRuntimePermissionHandlerProviderTest {
     private lateinit var provider: FragmentRuntimePermissionHandlerProvider
     private lateinit var scenario: ActivityScenario<TestActivity>

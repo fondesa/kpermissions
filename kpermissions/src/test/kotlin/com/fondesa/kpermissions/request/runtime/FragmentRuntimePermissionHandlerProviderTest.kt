@@ -61,7 +61,7 @@ class FragmentRuntimePermissionHandlerProviderTest {
     fun handlerProvided() {
         // Provide the handler.
         val handler = provider.provideHandler()
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        waitForIdleSync()
 
         assertNotNull(handler)
         assertThat(handler, instanceOf(RuntimePermissionHandler::class.java))
@@ -78,10 +78,14 @@ class FragmentRuntimePermissionHandlerProviderTest {
     fun sameFragmentProvidedMultipleTimes() {
         // Provide the handler.
         val fragment = provider.provideHandler()
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        waitForIdleSync()
         val secondFragment = provider.provideHandler()
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        waitForIdleSync()
         // They must point to the same Fragment.
         assertEquals(fragment, secondFragment)
+    }
+
+    private fun waitForIdleSync() {
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
     }
 }

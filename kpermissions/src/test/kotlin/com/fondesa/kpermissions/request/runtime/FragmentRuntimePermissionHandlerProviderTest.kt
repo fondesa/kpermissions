@@ -19,6 +19,7 @@ package com.fondesa.kpermissions.request.runtime
 import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.fondesa.test.TestActivity
 import com.fondesa.test.launchTestActivity
 import com.fondesa.test.letActivity
@@ -60,6 +61,7 @@ class FragmentRuntimePermissionHandlerProviderTest {
     fun handlerProvided() {
         // Provide the handler.
         val handler = provider.provideHandler()
+        waitForIdleSync()
 
         assertNotNull(handler)
         assertThat(handler, instanceOf(RuntimePermissionHandler::class.java))
@@ -76,8 +78,14 @@ class FragmentRuntimePermissionHandlerProviderTest {
     fun sameFragmentProvidedMultipleTimes() {
         // Provide the handler.
         val fragment = provider.provideHandler()
+        waitForIdleSync()
         val secondFragment = provider.provideHandler()
+        waitForIdleSync()
         // They must point to the same Fragment.
         assertEquals(fragment, secondFragment)
+    }
+
+    private fun waitForIdleSync() {
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
     }
 }

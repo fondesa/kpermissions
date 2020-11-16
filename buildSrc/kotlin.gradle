@@ -21,6 +21,7 @@ tasks.configureEach {
             jvmTarget = "1.8"
             allWarningsAsErrors = true
             freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs += "-Xexplicit-api=strict"
         }
     }
 }

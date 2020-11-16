@@ -127,14 +127,7 @@ public class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermission
                 .toTypedArray()
             if (!rationaleHandled && permanentlyDeniedPermissions.isNotEmpty()) {
                 // Some permissions are permanently denied by the user.
-                Log.d(
-                    TAG,
-                    "permissions permanently denied: ${
-                        permanentlyDeniedPermissions.joinToString(
-                            separator = ","
-                        )
-                    }"
-                )
+                Log.d(TAG, "permissions permanently denied: ${permanentlyDeniedPermissions.joinToString(separator = ",")}")
                 listener.permissionsPermanentlyDenied(permanentlyDeniedPermissions)
             }
         } else {

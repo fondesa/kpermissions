@@ -150,7 +150,7 @@ interface PermissionRequest {
     /**
      * Listener notified when a permissions request ends.
      */
-    interface Listener {
+    fun interface Listener {
 
         /**
          * Notifies when the status of each permission can be established.
@@ -176,7 +176,7 @@ interface PermissionRequest {
      * Listener used to receive information about the accepted status of some permissions.
      */
     @Deprecated("Use the listener PermissionRequest.Listener instead.")
-    interface AcceptedListener {
+    fun interface AcceptedListener {
 
         /**
          * Notified when some permissions are accepted.
@@ -191,7 +191,7 @@ interface PermissionRequest {
      * Listener used to receive information about the denied status of some permissions.
      */
     @Deprecated("Use the listener PermissionRequest.Listener instead.")
-    interface DeniedListener {
+    fun interface DeniedListener {
 
         /**
          * Notified when some permissions are denied.
@@ -206,7 +206,7 @@ interface PermissionRequest {
      * Listener used to receive information about the permanently denied status of some permissions.
      */
     @Deprecated("Use the listener PermissionRequest.Listener instead.")
-    interface PermanentlyDeniedListener {
+    fun interface PermanentlyDeniedListener {
 
         /**
          * Notified when some permissions are permanently denied.
@@ -223,7 +223,7 @@ interface PermissionRequest {
      * Listener used to receive information about the rationale of some permissions.
      */
     @Deprecated("Use the listener PermissionRequest.Listener instead.")
-    interface RationaleListener {
+    fun interface RationaleListener {
 
         /**
          * Notified when some permissions needs a rationale that must be displayed to the user.

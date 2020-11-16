@@ -25,7 +25,6 @@ import com.fondesa.kpermissions.alias.PermanentlyDeniedCallback
 import com.fondesa.kpermissions.alias.RationaleCallback
 import com.fondesa.kpermissions.dsl.PermissionRequestDSL
 import com.fondesa.kpermissions.request.PermissionRequest
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
 
 /**
  * Adds a [PermissionRequest.Listener] using a convenience lambda.
@@ -34,12 +33,9 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
  * @param callback the lambda which must be executed when the listener is notified.
  */
 @JvmSynthetic
+@Deprecated("Use the fun interface PermissionRequest.Listener.")
 inline fun PermissionRequest.addListener(crossinline callback: (List<PermissionStatus>) -> Unit) {
-    addListener(object : PermissionRequest.Listener {
-        override fun onPermissionsResult(result: List<PermissionStatus>) {
-            callback(result)
-        }
-    })
+    addListener { result -> callback(result) }
 }
 
 /**
@@ -52,11 +48,7 @@ inline fun PermissionRequest.addListener(crossinline callback: (List<PermissionS
 @Deprecated("Use the PermissionStatus API instead.")
 inline fun PermissionRequest.onAccepted(crossinline callback: AcceptedCallback) = apply {
     // Attach the listener that will invoke the callback.
-    acceptedListener(object : PermissionRequest.AcceptedListener {
-        override fun onPermissionsAccepted(permissions: Array<out String>) {
-            callback(permissions)
-        }
-    })
+    acceptedListener { permissions -> callback(permissions) }
 }
 
 /**
@@ -69,11 +61,7 @@ inline fun PermissionRequest.onAccepted(crossinline callback: AcceptedCallback) 
 @Deprecated("Use the PermissionStatus API instead.")
 inline fun PermissionRequest.onDenied(crossinline callback: DeniedCallback) = apply {
     // Attach the listener that will invoke the callback.
-    deniedListener(object : PermissionRequest.DeniedListener {
-        override fun onPermissionsDenied(permissions: Array<out String>) {
-            callback(permissions)
-        }
-    })
+    deniedListener { permissions -> callback(permissions) }
 }
 
 /**
@@ -84,15 +72,10 @@ inline fun PermissionRequest.onDenied(crossinline callback: DeniedCallback) = ap
  * @return the [PermissionRequest] itself.
  */
 @Deprecated("Use the PermissionStatus API instead.")
-inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: PermanentlyDeniedCallback) =
-    apply {
-        // Attach the listener that will invoke the callback.
-        permanentlyDeniedListener(object : PermissionRequest.PermanentlyDeniedListener {
-            override fun onPermissionsPermanentlyDenied(permissions: Array<out String>) {
-                callback(permissions)
-            }
-        })
-    }
+inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: PermanentlyDeniedCallback) = apply {
+    // Attach the listener that will invoke the callback.
+    permanentlyDeniedListener { permissions -> callback(permissions) }
+}
 
 /**
  * Used to attach a [PermissionRequest.RationaleListener] to the request that will
@@ -102,18 +85,10 @@ inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: Permanent
  * @return the [PermissionRequest] itself.
  */
 @Deprecated("Use the PermissionStatus API instead.")
-inline fun PermissionRequest.onShouldShowRationale(crossinline callback: RationaleCallback) =
-    apply {
-        // Attach the listener that will invoke the callback.
-        rationaleListener(object : PermissionRequest.RationaleListener {
-            override fun onPermissionsShouldShowRationale(
-                permissions: Array<out String>,
-                nonce: PermissionNonce
-            ) {
-                callback(permissions, nonce)
-            }
-        })
-    }
+inline fun PermissionRequest.onShouldShowRationale(crossinline callback: RationaleCallback) = apply {
+    // Attach the listener that will invoke the callback.
+    rationaleListener { permissions, nonce -> callback(permissions, nonce) }
+}
 
 /**
  * Used to declare the listeners of a [PermissionRequest] with a DSL style.

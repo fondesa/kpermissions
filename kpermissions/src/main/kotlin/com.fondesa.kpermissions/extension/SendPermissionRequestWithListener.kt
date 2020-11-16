@@ -26,11 +26,13 @@ import com.fondesa.kpermissions.request.PermissionRequest
  * @param callback the callback which should be invoked when the result of the permissions' request is returned.
  */
 inline fun PermissionRequest.send(crossinline callback: (List<PermissionStatus>) -> Unit) {
-    addListener(object : PermissionRequest.Listener {
-        override fun onPermissionsResult(result: List<PermissionStatus>) {
-            callback(result)
-            removeListener(this)
+    addListener(
+        object : PermissionRequest.Listener {
+            override fun onPermissionsResult(result: List<PermissionStatus>) {
+                callback(result)
+                removeListener(this)
+            }
         }
-    })
+    )
     send()
 }

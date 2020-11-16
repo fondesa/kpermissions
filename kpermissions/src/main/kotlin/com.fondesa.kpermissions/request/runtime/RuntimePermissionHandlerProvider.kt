@@ -24,7 +24,7 @@ import androidx.fragment.app.Fragment
  * The [RuntimePermissionHandler] must be available instantly so, for example, if
  * it's a [Fragment], it must be committed synchronously.
  */
-interface RuntimePermissionHandlerProvider {
+fun interface RuntimePermissionHandlerProvider {
 
     /**
      * Provides an instance of [RuntimePermissionHandler] used to check permissions since Android M.

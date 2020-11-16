@@ -27,7 +27,6 @@ import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.anyPermanentlyDenied
 import com.fondesa.kpermissions.anyShouldShowRationale
-import com.fondesa.kpermissions.extension.addListener
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 

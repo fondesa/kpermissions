@@ -47,7 +47,6 @@ dependencies {
     implementation deps.bintrayPlugin
     implementation deps.dokkaPlugin
     implementation deps.gitHubReleasePlugin
-    implementation deps.kotlinStdLib
 }
 
 configurations.all {

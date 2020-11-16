@@ -22,7 +22,6 @@ android.defaultConfig.applicationId "com.fondesa.kpermissions.sample"
 dependencies {
     implementation project(":kpermissions")
     implementation Deps.androidxAppCompat
-    implementation Deps.kotlinStdLib
 
     debugImplementation Deps.leakCanary
 }

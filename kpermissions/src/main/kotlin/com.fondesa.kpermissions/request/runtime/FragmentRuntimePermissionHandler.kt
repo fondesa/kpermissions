@@ -31,8 +31,7 @@ import androidx.fragment.app.Fragment
  */
 @RequiresApi(23)
 abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
-
-    private val listeners = mutableMapOf<String, RuntimePermissionHandler.Listener>()
+    private val listeners = mutableMapOf<Set<String>, RuntimePermissionHandler.Listener>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +59,7 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
         permissions: Array<out String>,
         listener: RuntimePermissionHandler.Listener
     ) {
-        val key = keyOf(permissions)
+        val key = compatKeyOf(permissions)
         listeners[key] = listener
     }
 
@@ -84,8 +83,15 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
      * @param permissions the permissions that are used to generate the key.
      * @return unique key in [String] format generated from [permissions].
      */
-    protected open fun keyOf(permissions: Array<out String>): String =
-        permissions.joinToString(separator = ",")
+    @Deprecated("This API will be removed since the key will be the set of permissions instead.")
+    protected open fun keyOf(permissions: Array<out String>): String = internalKeyOf(permissions)
+
+    @Suppress("DEPRECATION")
+    private fun compatKeyOf(permissions: Array<out String>): Set<String> {
+        val legacyKey = keyOf(permissions)
+        val userSpecifiedCustomKey = legacyKey != internalKeyOf(permissions)
+        return if (userSpecifiedCustomKey) setOf(legacyKey) else permissions.toSet()
+    }
 
     /**
      * Request the permissions with a fixed request code.
@@ -104,10 +110,13 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
      * @throws IllegalArgumentException if a [RuntimePermissionHandler.Listener] for the given [permissions]
      * wasn't found.
      */
+    @Suppress("DEPRECATION")
     protected fun listenerOf(permissions: Array<out String>): RuntimePermissionHandler.Listener? {
-        val key = keyOf(permissions)
+        val key = compatKeyOf(permissions)
         return listeners[key]
     }
+
+    private fun internalKeyOf(permissions: Array<out String>): String = permissions.joinToString(separator = ",")
 
     companion object {
         val TAG: String = FragmentRuntimePermissionHandler::class.java.simpleName

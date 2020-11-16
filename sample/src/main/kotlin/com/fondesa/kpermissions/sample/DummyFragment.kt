@@ -33,8 +33,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
 /**
  * An simple [Fragment] used to request the permissions.
  */
-class DummyFragment : Fragment(), PermissionRequest.Listener {
-
+internal class DummyFragment : Fragment(), PermissionRequest.Listener {
     private val request by lazy {
         permissionsBuilder(
             Manifest.permission.ACCESS_FINE_LOCATION,

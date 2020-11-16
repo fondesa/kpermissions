@@ -28,7 +28,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
  * @return a new [LiveData] which emits a new item to the observers every time the result of [PermissionRequest.send] is received.
  * @see PermissionRequest.Listener.onPermissionsResult
  */
-fun PermissionRequest.liveData(): LiveData<List<PermissionStatus>> = PermissionsLiveData(this)
+public fun PermissionRequest.liveData(): LiveData<List<PermissionStatus>> = PermissionsLiveData(this)
 
 private class PermissionsLiveData(private val request: PermissionRequest) : LiveData<List<PermissionStatus>>() {
     private var listener: PermissionRequest.Listener? = null

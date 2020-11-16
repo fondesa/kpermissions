@@ -24,21 +24,21 @@ import kotlin.contracts.contract
  *
  * @param permission the permission related to this status.
  */
-sealed class PermissionStatus(open val permission: String) {
+public sealed class PermissionStatus(public open val permission: String) {
 
     /**
      * Identifies a granted permission.
      *
      * @param permission the permission related to this status.
      */
-    data class Granted(override val permission: String) : PermissionStatus(permission)
+    public data class Granted(override val permission: String) : PermissionStatus(permission)
 
     /**
      * Identifies a denied permission.
      *
      * @param permission the permission related to this status.
      */
-    sealed class Denied(permission: String) : PermissionStatus(permission) {
+    public sealed class Denied(permission: String) : PermissionStatus(permission) {
 
         /**
          * Identifies a permanently denied permission.
@@ -48,7 +48,7 @@ sealed class PermissionStatus(open val permission: String) {
          *
          * @param permission the permission related to this status.
          */
-        data class Permanently(override val permission: String) : Denied(permission)
+        public data class Permanently(override val permission: String) : Denied(permission)
 
         /**
          * Identifies a denied permission which could need a rationale explaining why the permission is needed.
@@ -56,7 +56,7 @@ sealed class PermissionStatus(open val permission: String) {
          *
          * @param permission the permission related to this status.
          */
-        data class ShouldShowRationale(override val permission: String) : Denied(permission)
+        public data class ShouldShowRationale(override val permission: String) : Denied(permission)
     }
 
     /**
@@ -65,7 +65,7 @@ sealed class PermissionStatus(open val permission: String) {
      *
      * @param permission the permission related to this status.
      */
-    data class RequestRequired(override val permission: String) : PermissionStatus(permission)
+    public data class RequestRequired(override val permission: String) : PermissionStatus(permission)
 }
 
 /**
@@ -74,7 +74,7 @@ sealed class PermissionStatus(open val permission: String) {
  * @return true if the given status is an instance of [PermissionStatus.Granted].
  */
 @OptIn(ExperimentalContracts::class)
-fun PermissionStatus.isGranted(): Boolean {
+public fun PermissionStatus.isGranted(): Boolean {
     contract {
         returns(true) implies (this@isGranted is PermissionStatus.Granted)
     }
@@ -87,7 +87,7 @@ fun PermissionStatus.isGranted(): Boolean {
  * @return true if the given status is an instance of [PermissionStatus.Denied].
  */
 @OptIn(ExperimentalContracts::class)
-fun PermissionStatus.isDenied(): Boolean {
+public fun PermissionStatus.isDenied(): Boolean {
     contract {
         returns(true) implies (this@isDenied is PermissionStatus.Denied)
     }
@@ -100,7 +100,7 @@ fun PermissionStatus.isDenied(): Boolean {
  * @return true if the given status is an instance of [PermissionStatus.Denied.Permanently].
  */
 @OptIn(ExperimentalContracts::class)
-fun PermissionStatus.isPermanentlyDenied(): Boolean {
+public fun PermissionStatus.isPermanentlyDenied(): Boolean {
     contract {
         returns(true) implies (this@isPermanentlyDenied is PermissionStatus.Denied.Permanently)
     }
@@ -113,7 +113,7 @@ fun PermissionStatus.isPermanentlyDenied(): Boolean {
  * @return true if the given status is an instance of [PermissionStatus.Denied.ShouldShowRationale].
  */
 @OptIn(ExperimentalContracts::class)
-fun PermissionStatus.shouldShowRationale(): Boolean {
+public fun PermissionStatus.shouldShowRationale(): Boolean {
     contract {
         returns(true) implies (this@shouldShowRationale is PermissionStatus.Denied.ShouldShowRationale)
     }
@@ -126,7 +126,7 @@ fun PermissionStatus.shouldShowRationale(): Boolean {
  * @return true if the given status is an instance of [PermissionStatus.RequestRequired].
  */
 @OptIn(ExperimentalContracts::class)
-fun PermissionStatus.isRequestRequired(): Boolean {
+public fun PermissionStatus.isRequestRequired(): Boolean {
     contract {
         returns(true) implies (this@isRequestRequired is PermissionStatus.RequestRequired)
     }
@@ -139,7 +139,7 @@ fun PermissionStatus.isRequestRequired(): Boolean {
  *
  * @return true if all the given status are instances of [PermissionStatus.Granted].
  */
-fun List<PermissionStatus>.allGranted(): Boolean = all { it.isGranted() }
+public fun List<PermissionStatus>.allGranted(): Boolean = all { it.isGranted() }
 
 /**
  * Checks if all the [PermissionStatus] in the given list are instances of [PermissionStatus.Denied].
@@ -147,7 +147,7 @@ fun List<PermissionStatus>.allGranted(): Boolean = all { it.isGranted() }
  *
  * @return true if all the given status are instances of [PermissionStatus.Denied].
  */
-fun List<PermissionStatus>.allDenied(): Boolean = all { it.isDenied() }
+public fun List<PermissionStatus>.allDenied(): Boolean = all { it.isDenied() }
 
 /**
  * Checks if all the [PermissionStatus] in the given list are instances of [PermissionStatus.Denied.ShouldShowRationale].
@@ -155,7 +155,7 @@ fun List<PermissionStatus>.allDenied(): Boolean = all { it.isDenied() }
  *
  * @return true if all the given status are instances of [PermissionStatus.Denied.ShouldShowRationale].
  */
-fun List<PermissionStatus>.allShouldShowRationale(): Boolean =
+public fun List<PermissionStatus>.allShouldShowRationale(): Boolean =
     all { it.isDenied() && it.shouldShowRationale() }
 
 /**
@@ -164,7 +164,7 @@ fun List<PermissionStatus>.allShouldShowRationale(): Boolean =
  *
  * @return true if all the given status are instances of [PermissionStatus.Denied.Permanently].
  */
-fun List<PermissionStatus>.allPermanentlyDenied(): Boolean =
+public fun List<PermissionStatus>.allPermanentlyDenied(): Boolean =
     all { it.isDenied() && it.isPermanentlyDenied() }
 
 /**
@@ -173,7 +173,7 @@ fun List<PermissionStatus>.allPermanentlyDenied(): Boolean =
  *
  * @return true if all the given status are instances of [PermissionStatus.RequestRequired].
  */
-fun List<PermissionStatus>.allRequestRequired(): Boolean =
+public fun List<PermissionStatus>.allRequestRequired(): Boolean =
     all { it.isRequestRequired() }
 
 /**
@@ -182,7 +182,7 @@ fun List<PermissionStatus>.allRequestRequired(): Boolean =
  *
  * @return true if at least one given status is an instance of [PermissionStatus.Granted].
  */
-fun List<PermissionStatus>.anyGranted(): Boolean = any { it.isGranted() }
+public fun List<PermissionStatus>.anyGranted(): Boolean = any { it.isGranted() }
 
 /**
  * Checks if at least one [PermissionStatus] in the given list is an instance of [PermissionStatus.Denied].
@@ -190,7 +190,7 @@ fun List<PermissionStatus>.anyGranted(): Boolean = any { it.isGranted() }
  *
  * @return true if at least one given status is an instance of [PermissionStatus.Denied].
  */
-fun List<PermissionStatus>.anyDenied(): Boolean = any { it.isDenied() }
+public fun List<PermissionStatus>.anyDenied(): Boolean = any { it.isDenied() }
 
 /**
  * Checks if at least one [PermissionStatus] in the given list is an instance of [PermissionStatus.Denied.ShouldShowRationale].
@@ -198,7 +198,7 @@ fun List<PermissionStatus>.anyDenied(): Boolean = any { it.isDenied() }
  *
  * @return true if at least one given status is an instance of [PermissionStatus.Denied.ShouldShowRationale].
  */
-fun List<PermissionStatus>.anyShouldShowRationale(): Boolean =
+public fun List<PermissionStatus>.anyShouldShowRationale(): Boolean =
     any { it.isDenied() && it.shouldShowRationale() }
 
 /**
@@ -207,7 +207,7 @@ fun List<PermissionStatus>.anyShouldShowRationale(): Boolean =
  *
  * @return true if at least one given status is an instance of [PermissionStatus.Denied.Permanently].
  */
-fun List<PermissionStatus>.anyPermanentlyDenied(): Boolean =
+public fun List<PermissionStatus>.anyPermanentlyDenied(): Boolean =
     any { it.isDenied() && it.isPermanentlyDenied() }
 
 /**
@@ -216,5 +216,5 @@ fun List<PermissionStatus>.anyPermanentlyDenied(): Boolean =
  *
  * @return true if at least one given status is an instance of [PermissionStatus.RequestRequired].
  */
-fun List<PermissionStatus>.anyRequestRequired(): Boolean =
+public fun List<PermissionStatus>.anyRequestRequired(): Boolean =
     any { it.isRequestRequired() }

@@ -35,26 +35,26 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
  * and send it when the action is done instead of build and send it at the same moment.
  * This could avoid a potential memory leak when the [Activity] is rotated.
  */
-interface PermissionRequest {
+public interface PermissionRequest {
 
     /**
      * Adds a [Listener] which will be notified when the permissions request sent with [send] ends.
      *
      * @param listener the [Listener] which should be added.
      */
-    fun addListener(listener: Listener)
+    public fun addListener(listener: Listener)
 
     /**
      * Removes a [Listener] added with [addListener] which should not be notified anymore.
      *
      * @param listener the [Listener] which should be removed.
      */
-    fun removeListener(listener: Listener)
+    public fun removeListener(listener: Listener)
 
     /**
      * Removes all the listeners added to this request.
      */
-    fun removeAllListeners()
+    public fun removeAllListeners()
 
     /**
      * Checks the status of permissions of this request without sending it.
@@ -73,13 +73,13 @@ interface PermissionRequest {
      *
      * @return the status of each permission.
      */
-    fun checkStatus(): List<PermissionStatus>
+    public fun checkStatus(): List<PermissionStatus>
 
     /**
      * Sends the [PermissionRequest] and performs the checks on its status.
      * The result will be returned to the attached listeners.
      */
-    fun send()
+    public fun send()
 
     /**
      * Attaches an instance of [AcceptedListener] that will be notified when the permissions
@@ -88,7 +88,7 @@ interface PermissionRequest {
      * @param listener [AcceptedListener] that must be attached.
      */
     @Deprecated("Use the method PermissionRequest.addListener(PermissionRequest.Listener) instead.")
-    fun acceptedListener(listener: AcceptedListener)
+    public fun acceptedListener(listener: AcceptedListener)
 
     /**
      * Attaches an instance of [DeniedListener] that will be notified when the permissions
@@ -97,7 +97,7 @@ interface PermissionRequest {
      * @param listener [DeniedListener] that must be attached.
      */
     @Deprecated("Use the method PermissionRequest.addListener(PermissionRequest.Listener) instead.")
-    fun deniedListener(listener: DeniedListener)
+    public fun deniedListener(listener: DeniedListener)
 
     /**
      * Attaches an instance of [PermanentlyDeniedListener] that will be notified when the permissions
@@ -106,7 +106,7 @@ interface PermissionRequest {
      * @param listener [PermanentlyDeniedListener] that must be attached.
      */
     @Deprecated("Use the method PermissionRequest.addListener(PermissionRequest.Listener) instead.")
-    fun permanentlyDeniedListener(listener: PermanentlyDeniedListener)
+    public fun permanentlyDeniedListener(listener: PermanentlyDeniedListener)
 
     /**
      * Attaches an instance of [RationaleListener] that will be notified when the permissions
@@ -115,42 +115,42 @@ interface PermissionRequest {
      * @param listener [RationaleListener] that must be attached.
      */
     @Deprecated("Use the method PermissionRequest.addListener(PermissionRequest.Listener) instead.")
-    fun rationaleListener(listener: RationaleListener)
+    public fun rationaleListener(listener: RationaleListener)
 
     /**
      * Detaches the current attached instance of [AcceptedListener], if any.
      */
     @Deprecated("Use the method PermissionRequest.removeListener(PermissionRequest.Listener) instead.")
-    fun detachAcceptedListener()
+    public fun detachAcceptedListener()
 
     /**
      * Detaches the current attached instance of [DeniedListener], if any.
      */
     @Deprecated("Use the method PermissionRequest.removeListener(PermissionRequest.Listener) instead.")
-    fun detachDeniedListener()
+    public fun detachDeniedListener()
 
     /**
      * Detaches the current attached instance of [PermanentlyDeniedListener], if any.
      */
     @Deprecated("Use the method PermissionRequest.removeListener(PermissionRequest.Listener) instead.")
-    fun detachPermanentlyDeniedListener()
+    public fun detachPermanentlyDeniedListener()
 
     /**
      * Detaches the current attached instance of [RationaleListener], if any.
      */
     @Deprecated("Use the method PermissionRequest.removeListener(PermissionRequest.Listener) instead.")
-    fun detachRationaleListener()
+    public fun detachRationaleListener()
 
     /**
      * Detaches all the current attached listeners.
      */
     @Deprecated("Use the method PermissionRequest.removeAllListeners() instead.")
-    fun detachAllListeners()
+    public fun detachAllListeners()
 
     /**
      * Listener notified when a permissions request ends.
      */
-    fun interface Listener {
+    public fun interface Listener {
 
         /**
          * Notifies when the status of each permission can be established.
@@ -169,14 +169,14 @@ interface PermissionRequest {
          *
          * @param result the status of each permission.
          */
-        fun onPermissionsResult(result: List<PermissionStatus>)
+        public fun onPermissionsResult(result: List<PermissionStatus>)
     }
 
     /**
      * Listener used to receive information about the accepted status of some permissions.
      */
     @Deprecated("Use the listener PermissionRequest.Listener instead.")
-    fun interface AcceptedListener {
+    public fun interface AcceptedListener {
 
         /**
          * Notified when some permissions are accepted.
@@ -184,14 +184,14 @@ interface PermissionRequest {
          * @param permissions set of accepted permissions.
          */
         @Deprecated("Use the method [PermissionRequest.Listener.onPermissionsResult(List<PermissionStatus>) instead.")
-        fun onPermissionsAccepted(permissions: Array<out String>)
+        public fun onPermissionsAccepted(permissions: Array<out String>)
     }
 
     /**
      * Listener used to receive information about the denied status of some permissions.
      */
     @Deprecated("Use the listener PermissionRequest.Listener instead.")
-    fun interface DeniedListener {
+    public fun interface DeniedListener {
 
         /**
          * Notified when some permissions are denied.
@@ -199,14 +199,14 @@ interface PermissionRequest {
          * @param permissions set of denied permissions.
          */
         @Deprecated("Use the method [PermissionRequest.Listener.onPermissionsResult(List<PermissionStatus>) instead.")
-        fun onPermissionsDenied(permissions: Array<out String>)
+        public fun onPermissionsDenied(permissions: Array<out String>)
     }
 
     /**
      * Listener used to receive information about the permanently denied status of some permissions.
      */
     @Deprecated("Use the listener PermissionRequest.Listener instead.")
-    fun interface PermanentlyDeniedListener {
+    public fun interface PermanentlyDeniedListener {
 
         /**
          * Notified when some permissions are permanently denied.
@@ -216,14 +216,14 @@ interface PermissionRequest {
          * @param permissions set of permanently denied permissions.
          */
         @Deprecated("Use the method [PermissionRequest.Listener.onPermissionsResult(List<PermissionStatus>) instead.")
-        fun onPermissionsPermanentlyDenied(permissions: Array<out String>)
+        public fun onPermissionsPermanentlyDenied(permissions: Array<out String>)
     }
 
     /**
      * Listener used to receive information about the rationale of some permissions.
      */
     @Deprecated("Use the listener PermissionRequest.Listener instead.")
-    fun interface RationaleListener {
+    public fun interface RationaleListener {
 
         /**
          * Notified when some permissions needs a rationale that must be displayed to the user.
@@ -234,6 +234,6 @@ interface PermissionRequest {
          * @param nonce instance of [PermissionNonce] that can be used one time.
          */
         @Deprecated("Use the method [PermissionRequest.Listener.onPermissionsResult(List<PermissionStatus>) instead.")
-        fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce)
+        public fun onPermissionsShouldShowRationale(permissions: Array<out String>, nonce: PermissionNonce)
     }
 }

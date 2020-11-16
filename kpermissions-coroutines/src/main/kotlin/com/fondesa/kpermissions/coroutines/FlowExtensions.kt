@@ -32,12 +32,8 @@ import kotlinx.coroutines.flow.callbackFlow
  * @see PermissionRequest.Listener.onPermissionsResult
  */
 @ExperimentalCoroutinesApi
-fun PermissionRequest.flow(): Flow<List<PermissionStatus>> = callbackFlow {
-    val listener = object : PermissionRequest.Listener {
-        override fun onPermissionsResult(result: List<PermissionStatus>) {
-            offer(result)
-        }
-    }
+public fun PermissionRequest.flow(): Flow<List<PermissionStatus>> = callbackFlow {
+    val listener = PermissionRequest.Listener { result -> offer(result) }
     addListener(listener)
     awaitClose { removeListener(listener) }
 }

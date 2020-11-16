@@ -34,7 +34,7 @@ import com.fondesa.kpermissions.PermissionStatus
  * should handle more than one permission.
  * @return the status of each permission.
  */
-fun Activity.checkPermissionsStatus(
+public fun Activity.checkPermissionsStatus(
     firstPermission: String,
     vararg otherPermissions: String
 ): List<PermissionStatus> {

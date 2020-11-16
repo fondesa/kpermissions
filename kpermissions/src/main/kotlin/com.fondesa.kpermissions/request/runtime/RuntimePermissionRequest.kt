@@ -29,7 +29,7 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  * The checks on the permissions are delegated to the [RuntimePermissionHandler] provided
  * to this request.
  */
-class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler.Listener {
+public class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler.Listener {
     private val activity: Activity?
     private val permissions: Array<out String>
     private val permissionNonceGenerator: PermissionNonceGenerator?
@@ -42,7 +42,7 @@ class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler
      * @param permissions the set of permissions that must be checked.
      * @param handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
      */
-    constructor(
+    public constructor(
         activity: Activity,
         permissions: Array<out String>,
         handler: RuntimePermissionHandler
@@ -65,7 +65,7 @@ class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler
      * @param handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
      */
     @Deprecated("Use the constructor (Activity, Array<out String>, RuntimePermissionsHandler) instead.")
-    constructor(
+    public constructor(
         activity: Activity,
         permissions: Array<out String>,
         permissionNonceGenerator: PermissionNonceGenerator,
@@ -88,7 +88,7 @@ class RuntimePermissionRequest : BasePermissionRequest, RuntimePermissionHandler
      * @param handler the [RuntimePermissionHandler] which all checks on permissions are delegated to.
      */
     @Deprecated("Use the constructor (Activity, Array<out String>, RuntimePermissionsHandler) instead.")
-    constructor(
+    public constructor(
         permissions: Array<out String>,
         permissionNonceGenerator: PermissionNonceGenerator,
         handler: RuntimePermissionHandler

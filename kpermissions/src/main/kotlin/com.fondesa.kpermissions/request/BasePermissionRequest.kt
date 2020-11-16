@@ -22,9 +22,8 @@ package com.fondesa.kpermissions.request
  * Base implementation of [PermissionRequest] that implements all the listeners' logic
  * that must be the same to all its subclasses.
  */
-abstract class BasePermissionRequest : PermissionRequest {
-
-    protected val listeners = mutableSetOf<PermissionRequest.Listener>()
+public abstract class BasePermissionRequest : PermissionRequest {
+    protected val listeners: MutableSet<PermissionRequest.Listener> = mutableSetOf()
 
     protected var acceptedListener: PermissionRequest.AcceptedListener? = null
         private set

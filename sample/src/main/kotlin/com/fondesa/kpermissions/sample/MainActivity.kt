@@ -30,8 +30,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
 /**
  * The main screen of this application that requires some permissions.
  */
-class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
-
+internal class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     private val request by lazy {
         permissionsBuilder(Manifest.permission.CAMERA, Manifest.permission.SEND_SMS).build()
     }

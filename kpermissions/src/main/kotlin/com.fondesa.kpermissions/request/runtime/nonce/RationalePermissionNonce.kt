@@ -29,7 +29,7 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
  * @property permissions the permissions that must be requested again.
  */
 @Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
-class RationalePermissionNonce(
+public class RationalePermissionNonce(
     private val handler: RuntimePermissionHandler,
     private val permissions: Array<out String>
 ) : PermissionNonce {

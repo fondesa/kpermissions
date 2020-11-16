@@ -72,8 +72,7 @@ import com.fondesa.kpermissions.shouldShowRationale
  * the request is sent or after the result is received.
  */
 @RequiresApi(23)
-class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler() {
-
+public class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler() {
     private var isProcessingPermissions = false
     private var pendingHandleRuntimePermissions: (() -> Unit)? = null
 
@@ -130,9 +129,11 @@ class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler
                 // Some permissions are permanently denied by the user.
                 Log.d(
                     TAG,
-                    "permissions permanently denied: ${permanentlyDeniedPermissions.joinToString(
-                        separator = ","
-                    )}"
+                    "permissions permanently denied: ${
+                        permanentlyDeniedPermissions.joinToString(
+                            separator = ","
+                        )
+                    }"
                 )
                 listener.permissionsPermanentlyDenied(permanentlyDeniedPermissions)
             }

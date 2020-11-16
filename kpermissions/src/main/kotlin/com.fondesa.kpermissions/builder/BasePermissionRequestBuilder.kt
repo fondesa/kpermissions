@@ -31,8 +31,7 @@ import com.fondesa.kpermissions.request.runtime.nonce.RationalePermissionNonceGe
  * When the method [createRequest] is called, the configuration can't change anymore,
  * all the defaults are assigned and it can be considered valid.
  */
-abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
-
+public abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
     private var permissions: Array<out String>? = null
     private var nonceGenerator: PermissionNonceGenerator? = null
     private var runtimeHandlerProvider: RuntimePermissionHandlerProvider? = null

@@ -33,7 +33,7 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
  * should handle more than one permission.
  * @return new instance of the default [PermissionRequestBuilder].
  */
-fun FragmentActivity.permissionsBuilder(
+public fun FragmentActivity.permissionsBuilder(
     firstPermission: String,
     vararg otherPermissions: String
 ): PermissionRequestBuilder {
@@ -56,8 +56,7 @@ fun FragmentActivity.permissionsBuilder(
  * @return new instance of the default [PermissionRequestBuilder].
  * @throws NullPointerException if the [Fragment] is not attached to an [Activity].
  */
-fun Fragment.permissionsBuilder(
+public fun Fragment.permissionsBuilder(
     firstPermission: String,
     vararg otherPermissions: String
-): PermissionRequestBuilder =
-    requireActivity().permissionsBuilder(firstPermission, *otherPermissions)
+): PermissionRequestBuilder = requireActivity().permissionsBuilder(firstPermission, *otherPermissions)

@@ -26,8 +26,7 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
  * permissions was displayed to the user.
  */
 @Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
-class RationalePermissionNonceGenerator : PermissionNonceGenerator {
-
+public class RationalePermissionNonceGenerator : PermissionNonceGenerator {
     override fun generateNonce(
         handler: RuntimePermissionHandler,
         permissions: Array<out String>

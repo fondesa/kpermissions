@@ -27,5 +27,5 @@ import androidx.core.content.ContextCompat
  * @param permission permission that must be checked.
  * @return true if the [permission] is granted, false otherwise.
  */
-fun Context.isPermissionGranted(permission: String): Boolean =
+public fun Context.isPermissionGranted(permission: String): Boolean =
     ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED

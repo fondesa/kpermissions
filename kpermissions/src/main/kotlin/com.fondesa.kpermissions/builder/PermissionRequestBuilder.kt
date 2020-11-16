@@ -34,8 +34,7 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  * The correct behavior is to use the same instance of a [PermissionRequestBuilder] only
  * for the same set of configurations.
  */
-interface PermissionRequestBuilder {
-
+public interface PermissionRequestBuilder {
     /**
      * Sets the permissions that must be requested.
      *
@@ -44,7 +43,7 @@ interface PermissionRequestBuilder {
      * should handle more than one permission.
      * @return the builder itself.
      */
-    fun permissions(
+    public fun permissions(
         firstPermission: String,
         vararg otherPermissions: String
     ): PermissionRequestBuilder
@@ -56,7 +55,7 @@ interface PermissionRequestBuilder {
      * @return the builder itself.
      */
     @Deprecated("Use the PermissionStatus API instead which don't need a nonce to execute a request again.")
-    fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder
+    public fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder
 
     /**
      * Sets the [RuntimePermissionHandlerProvider] used to provide a [RuntimePermissionHandler].
@@ -64,7 +63,7 @@ interface PermissionRequestBuilder {
      * @param runtimeHandlerProvider instance of [RuntimePermissionHandlerProvider] that must be added.
      * @return the builder itself.
      */
-    fun runtimeHandlerProvider(runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequestBuilder
+    public fun runtimeHandlerProvider(runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequestBuilder
 
     /**
      * Build the [PermissionRequest] with all the configurations set.
@@ -75,5 +74,5 @@ interface PermissionRequestBuilder {
      * @throws IllegalArgumentException if the permissions or the [RuntimePermissionHandlerProvider]
      * are not specified.
      */
-    fun build(): PermissionRequest
+    public fun build(): PermissionRequest
 }

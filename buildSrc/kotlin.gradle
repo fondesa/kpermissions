@@ -15,12 +15,16 @@
  */
 
 tasks.configureEach {
+    def taskName = it.name
     // Matches the compile*Kotlin tasks regardless of the applied plugins.
-    it.name.eachMatch("^compile.*Kotlin\$") {
+    taskName.eachMatch("^compile.*Kotlin\$") {
         kotlinOptions {
             jvmTarget = "1.8"
             allWarningsAsErrors = true
             freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+            if (!taskName.contains("UnitTest")) {
+                freeCompilerArgs += "-Xexplicit-api=strict"
+            }
         }
     }
 }

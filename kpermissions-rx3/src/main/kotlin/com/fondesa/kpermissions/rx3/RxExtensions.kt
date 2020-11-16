@@ -29,12 +29,8 @@ import io.reactivex.rxjava3.subjects.PublishSubject
  * @return a new [Observable] which emits a new item to the observers every time the result of [PermissionRequest.send] is received.
  * @see PermissionRequest.Listener.onPermissionsResult
  */
-fun PermissionRequest.observe(): Observable<List<PermissionStatus>> = PublishSubject.create<List<PermissionStatus>>().apply {
-    val listener = object : PermissionRequest.Listener {
-        override fun onPermissionsResult(result: List<PermissionStatus>) {
-            onNext(result)
-        }
-    }
+public fun PermissionRequest.observe(): Observable<List<PermissionStatus>> = PublishSubject.create<List<PermissionStatus>>().apply {
+    val listener = PermissionRequest.Listener { result -> onNext(result) }
     return doOnSubscribe {
         if (!hasObservers()) {
             addListener(listener)

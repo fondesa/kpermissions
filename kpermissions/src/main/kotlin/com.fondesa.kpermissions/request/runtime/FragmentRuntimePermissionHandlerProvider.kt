@@ -32,7 +32,7 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
  *
  * @property manager the [FragmentManager] of the [Activity].
  */
-open class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
+public open class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
     RuntimePermissionHandlerProvider {
 
     @RequiresApi(23)
@@ -53,7 +53,7 @@ open class FragmentRuntimePermissionHandlerProvider(private val manager: Fragmen
     protected open fun createPermissionHandlerFragment(): FragmentRuntimePermissionHandler =
         DefaultFragmentRuntimePermissionHandler()
 
-    companion object {
+    public companion object {
         private const val FRAGMENT_TAG = "KPermissionsFragment"
     }
 }

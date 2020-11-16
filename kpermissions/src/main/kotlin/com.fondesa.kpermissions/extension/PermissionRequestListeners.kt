@@ -34,7 +34,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
  */
 @JvmSynthetic
 @Deprecated("Use the fun interface PermissionRequest.Listener.")
-inline fun PermissionRequest.addListener(crossinline callback: (List<PermissionStatus>) -> Unit) {
+public inline fun PermissionRequest.addListener(crossinline callback: (List<PermissionStatus>) -> Unit) {
     addListener { result -> callback(result) }
 }
 
@@ -46,7 +46,7 @@ inline fun PermissionRequest.addListener(crossinline callback: (List<PermissionS
  * @return the [PermissionRequest] itself.
  */
 @Deprecated("Use the PermissionStatus API instead.")
-inline fun PermissionRequest.onAccepted(crossinline callback: AcceptedCallback) = apply {
+public inline fun PermissionRequest.onAccepted(crossinline callback: AcceptedCallback): PermissionRequest = apply {
     // Attach the listener that will invoke the callback.
     acceptedListener { permissions -> callback(permissions) }
 }
@@ -59,7 +59,7 @@ inline fun PermissionRequest.onAccepted(crossinline callback: AcceptedCallback) 
  * @return the [PermissionRequest] itself.
  */
 @Deprecated("Use the PermissionStatus API instead.")
-inline fun PermissionRequest.onDenied(crossinline callback: DeniedCallback) = apply {
+public inline fun PermissionRequest.onDenied(crossinline callback: DeniedCallback): PermissionRequest = apply {
     // Attach the listener that will invoke the callback.
     deniedListener { permissions -> callback(permissions) }
 }
@@ -72,7 +72,7 @@ inline fun PermissionRequest.onDenied(crossinline callback: DeniedCallback) = ap
  * @return the [PermissionRequest] itself.
  */
 @Deprecated("Use the PermissionStatus API instead.")
-inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: PermanentlyDeniedCallback) = apply {
+public inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: PermanentlyDeniedCallback): PermissionRequest = apply {
     // Attach the listener that will invoke the callback.
     permanentlyDeniedListener { permissions -> callback(permissions) }
 }
@@ -85,7 +85,7 @@ inline fun PermissionRequest.onPermanentlyDenied(crossinline callback: Permanent
  * @return the [PermissionRequest] itself.
  */
 @Deprecated("Use the PermissionStatus API instead.")
-inline fun PermissionRequest.onShouldShowRationale(crossinline callback: RationaleCallback) = apply {
+public inline fun PermissionRequest.onShouldShowRationale(crossinline callback: RationaleCallback): PermissionRequest = apply {
     // Attach the listener that will invoke the callback.
     rationaleListener { permissions, nonce -> callback(permissions, nonce) }
 }
@@ -98,7 +98,7 @@ inline fun PermissionRequest.onShouldShowRationale(crossinline callback: Rationa
  * @param listeners lambda invoked on a context of type [PermissionRequestDSL].
  */
 @Deprecated("Use the PermissionStatus API instead.")
-fun PermissionRequest.listeners(listeners: PermissionRequestDSL.() -> Unit) {
+public fun PermissionRequest.listeners(listeners: PermissionRequestDSL.() -> Unit) {
     val dsl = PermissionRequestDSL(this)
     // Add the listeners to the request.
     listeners(dsl)

@@ -24,7 +24,7 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
  * Used to generate a [PermissionNonce] that can request the permissions one time again.
  */
 @Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
-fun interface PermissionNonceGenerator {
+public fun interface PermissionNonceGenerator {
 
     /**
      * Generates a [PermissionNonce] that can be used one time.
@@ -34,7 +34,7 @@ fun interface PermissionNonceGenerator {
      * @return unique instance of [PermissionNonce].
      */
     @Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
-    fun generateNonce(
+    public fun generateNonce(
         handler: RuntimePermissionHandler,
         permissions: Array<out String>
     ): PermissionNonce

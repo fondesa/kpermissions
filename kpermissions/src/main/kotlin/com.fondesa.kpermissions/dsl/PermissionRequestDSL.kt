@@ -36,8 +36,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
  */
 @Suppress("KDocUnresolvedReference")
 @Deprecated("Use the PermissionStatus API instead.")
-class PermissionRequestDSL internal constructor(private val request: PermissionRequest) {
-
+public class PermissionRequestDSL internal constructor(private val request: PermissionRequest) {
     /**
      * Used to attach a [PermissionRequest.AcceptedListener] to the request that will
      * invoke an [AcceptedCallback] when it's notified.
@@ -45,7 +44,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      * @param callback lambda that must be executed when the listener is notified.
      */
     @Deprecated("Use the PermissionStatus API instead.")
-    fun onAccepted(callback: AcceptedCallback) {
+    public fun onAccepted(callback: AcceptedCallback) {
         request.onAccepted(callback)
     }
 
@@ -56,7 +55,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      * @param callback lambda that must be executed when the listener is notified.
      */
     @Deprecated("Use the PermissionStatus API instead.")
-    fun onDenied(callback: DeniedCallback) {
+    public fun onDenied(callback: DeniedCallback) {
         request.onDenied(callback)
     }
 
@@ -67,7 +66,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      * @param callback lambda that must be executed when the listener is notified.
      */
     @Deprecated("Use the PermissionStatus API instead.")
-    fun onPermanentlyDenied(callback: PermanentlyDeniedCallback) {
+    public fun onPermanentlyDenied(callback: PermanentlyDeniedCallback) {
         request.onPermanentlyDenied(callback)
     }
 
@@ -78,7 +77,7 @@ class PermissionRequestDSL internal constructor(private val request: PermissionR
      * @param callback lambda that must be executed when the listener is notified.
      */
     @Deprecated("Use the PermissionStatus API instead.")
-    fun onShouldShowRationale(callback: RationaleCallback) {
+    public fun onShouldShowRationale(callback: RationaleCallback) {
         request.onShouldShowRationale(callback)
     }
 }

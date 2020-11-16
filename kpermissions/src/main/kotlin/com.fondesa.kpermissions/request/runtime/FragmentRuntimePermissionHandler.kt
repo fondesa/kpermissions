@@ -30,7 +30,7 @@ import androidx.fragment.app.Fragment
  * will be notified to [onRequestPermissionsResult].
  */
 @RequiresApi(23)
-abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
+public abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
     private val listeners = mutableMapOf<Set<String>, RuntimePermissionHandler.Listener>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,8 +118,8 @@ abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionH
 
     private fun internalKeyOf(permissions: Array<out String>): String = permissions.joinToString(separator = ",")
 
-    companion object {
-        val TAG: String = FragmentRuntimePermissionHandler::class.java.simpleName
+    public companion object {
+        public val TAG: String = FragmentRuntimePermissionHandler::class.java.simpleName
         private const val REQ_CODE_PERMISSIONS = 986
     }
 }

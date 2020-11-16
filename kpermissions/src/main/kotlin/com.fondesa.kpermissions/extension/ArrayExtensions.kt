@@ -29,5 +29,5 @@ package com.fondesa.kpermissions.extension
     "This method is no longer needed since the Kotlin stdlib contains it.",
     ReplaceWith("joinToString(separator = separator.toString())")
 )
-fun Array<out String>.flatString(separator: Char = ','): String =
+public fun Array<out String>.flatString(separator: Char = ','): String =
     joinToString(separator = separator.toString())

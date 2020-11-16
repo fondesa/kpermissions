@@ -29,7 +29,7 @@ import kotlin.coroutines.resume
  * @return the list of [PermissionStatus] received from the call to [PermissionRequest.send].
  * @see PermissionRequest.Listener.onPermissionsResult
  */
-suspend fun PermissionRequest.sendSuspend(): List<PermissionStatus> = suspendCancellableCoroutine { continuation ->
+public suspend fun PermissionRequest.sendSuspend(): List<PermissionStatus> = suspendCancellableCoroutine { continuation ->
     val listener = object : PermissionRequest.Listener {
         override fun onPermissionsResult(result: List<PermissionStatus>) {
             removeListener(this)

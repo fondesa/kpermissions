@@ -37,9 +37,7 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
  *
  * @property activity the [Activity] used to create the [PermissionRequest].
  */
-class CompatPermissionRequestBuilder internal constructor(private val activity: Activity) :
-    BasePermissionRequestBuilder() {
-
+public class CompatPermissionRequestBuilder internal constructor(private val activity: Activity) : BasePermissionRequestBuilder() {
     override fun createRequest(
         permissions: Array<out String>,
         nonceGenerator: PermissionNonceGenerator,

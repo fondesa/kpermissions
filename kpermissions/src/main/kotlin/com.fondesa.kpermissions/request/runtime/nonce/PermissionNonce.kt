@@ -21,7 +21,7 @@ package com.fondesa.kpermissions.request.runtime.nonce
  * Used to request some permissions again.
  * A [PermissionNonce] can be used only one time.
  */
-fun interface PermissionNonce {
+public fun interface PermissionNonce {
 
     /**
      * Request the permissions related to this [PermissionNonce] again.
@@ -30,5 +30,5 @@ fun interface PermissionNonce {
      * on the same instance of [PermissionNonce].
      */
     @Deprecated("If you are using the status API, use PermissionRequest.send() sending a new request instead.")
-    fun use()
+    public fun use()
 }

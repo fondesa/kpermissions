@@ -23,7 +23,7 @@ import com.fondesa.kpermissions.PermissionStatus
  * This component must persist across configuration changes because the
  * permission request is partially handled by the OS.
  */
-interface RuntimePermissionHandler {
+public interface RuntimePermissionHandler {
 
     /**
      * Attaches an instance of [Listener] that will be notified about
@@ -33,7 +33,7 @@ interface RuntimePermissionHandler {
      * @param permissions set of permissions to identify the attached [Listener] afterward.
      * @param listener the [Listener] that must be attached.
      */
-    fun attachListener(permissions: Array<out String>, listener: Listener)
+    public fun attachListener(permissions: Array<out String>, listener: Listener)
 
     /**
      * Handle a group of permissions notifying the changes on the attached [Listener].
@@ -41,7 +41,7 @@ interface RuntimePermissionHandler {
      *
      * @param permissions set of permissions that must be handled.
      */
-    fun handleRuntimePermissions(permissions: Array<out String>)
+    public fun handleRuntimePermissions(permissions: Array<out String>)
 
     /**
      * Request a group of permissions without checking the [permissions]'s state before
@@ -51,19 +51,19 @@ interface RuntimePermissionHandler {
      *
      * @param permissions set of permissions that must be requested.
      */
-    fun requestRuntimePermissions(permissions: Array<out String>)
+    public fun requestRuntimePermissions(permissions: Array<out String>)
 
     /**
      * Listener used to notify changed about the permissions' state.
      */
-    interface Listener {
+    public interface Listener {
 
         /**
          * Notified when the permissions request ended and a status for each permission is available.
          *
          * @param result the status of each permission.
          */
-        fun onPermissionsResult(result: List<PermissionStatus>)
+        public fun onPermissionsResult(result: List<PermissionStatus>)
 
         /**
          * Notified when some permissions are accepted.
@@ -72,7 +72,7 @@ interface RuntimePermissionHandler {
          * @return true if the listener handled this permissions' state, false otherwise.
          */
         @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
-        fun permissionsAccepted(permissions: Array<out String>): Boolean
+        public fun permissionsAccepted(permissions: Array<out String>): Boolean
 
         /**
          * Notified when some permissions are denied.
@@ -81,7 +81,7 @@ interface RuntimePermissionHandler {
          * @return true if the listener handled this permissions' state, false otherwise.
          */
         @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
-        fun permissionsDenied(permissions: Array<out String>): Boolean
+        public fun permissionsDenied(permissions: Array<out String>): Boolean
 
         /**
          * Notified when some permissions are permanently denied.
@@ -90,7 +90,7 @@ interface RuntimePermissionHandler {
          * @return true if the listener handled this permissions' state, false otherwise.
          */
         @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
-        fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean
+        public fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean
 
         /**
          * Notified when some permissions need a rationale.
@@ -99,6 +99,6 @@ interface RuntimePermissionHandler {
          * @return true if the listener handled this permissions' state, false otherwise.
          */
         @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
-        fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean
+        public fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean
     }
 }

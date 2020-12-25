@@ -36,5 +36,5 @@ object Deps {
     const val releasesHubPlugin = "com.releaseshub:releases-hub-gradle-plugin:1.6.1"
     const val robolectric = "org.robolectric:robolectric:4.4"
     const val rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.20"
-    const val rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.6"
+    const val rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.8"
 }

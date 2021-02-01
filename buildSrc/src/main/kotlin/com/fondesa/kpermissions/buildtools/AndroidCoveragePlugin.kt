@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.fondesa.kpermissions.buildtools
 
 import com.android.build.gradle.BaseExtension
@@ -33,7 +35,6 @@ import java.util.Locale
  */
 @ExperimentalStdlibApi
 class AndroidCoveragePlugin : Plugin<Project> {
-
     override fun apply(project: Project) = with(project) {
         plugins.apply("jacoco")
 
@@ -45,7 +46,6 @@ class AndroidCoveragePlugin : Plugin<Project> {
             fixRobolectricCoverage(this)
             configureCoverageTasks(this)
         }
-        Unit
     }
 
     private fun Project.configureCoverageTasks(extension: BaseExtension) {

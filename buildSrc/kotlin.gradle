@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-tasks.configureEach {
-    def taskName = it.name
+apply plugin: "org.jlleitschuh.gradle.ktlint"
+
+ktlint.enableExperimentalRules = true
+
+tasks.configureEach { task ->
+    def taskName = task.name
     // Matches the compile*Kotlin tasks regardless of the applied plugins.
     taskName.eachMatch("^compile.*Kotlin\$") {
         kotlinOptions {
             jvmTarget = "1.8"
             allWarningsAsErrors = true
             freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
-            if (!taskName.contains("UnitTest")) {
+            if (task.project.name != "buildSrc" && !taskName.contains("UnitTest")) {
                 freeCompilerArgs += "-Xexplicit-api=strict"
             }
         }

@@ -30,7 +30,6 @@ class AndroidModulePlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
         plugins.apply("kotlin-android")
         plugins.apply("org.jetbrains.dokka")
-        applyFrom("buildSrc/kotlin.gradle")
 
         withAndroidPlugin {
             val androidProperties = readPropertiesOf("android-config.properties")

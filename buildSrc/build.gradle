@@ -27,26 +27,15 @@ buildscript {
 apply from: "repositories.gradle"
 apply plugin: "groovy"
 apply plugin: "kotlin"
-apply from: "ktlint.gradle"
-
-// We can't apply kotlin.gradle because otherwise the warnings will be treated as errors.
-// Since Kotlin 1.4.x, we can't compile buildSrc because the Gradle Wrapper contains an old Kotlin version internally.
-tasks.configureEach {
-    // Matches the compile*Kotlin tasks regardless of the applied plugins.
-    it.name.eachMatch("^compile.*Kotlin\$") {
-        kotlinOptions {
-            jvmTarget = "1.8"
-            allWarningsAsErrors = false
-            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
-        }
-    }
-}
+apply from: "kotlin.gradle"
 
 dependencies {
     implementation deps.androidPlugin
     implementation deps.bintrayPlugin
     implementation deps.dokkaPlugin
     implementation deps.gitHubReleasePlugin
+    // Fixes the warning thrown until the Gradle Wrapper doesn't update its Kotlin version internally.
+    implementation deps.kotlinReflect
 }
 
 configurations.all {

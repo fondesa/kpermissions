@@ -30,7 +30,7 @@ buildscript {
 
 allprojects {
     apply from: rootProject.file("buildSrc/repositories.gradle")
-    apply from: rootProject.file("buildSrc/ktlint.gradle")
+    apply from: rootProject.file("buildSrc/kotlin.gradle")
     // Adds the version of this library to all the projects, including the root project.
     apply plugin: "kpermissions-version"
 }

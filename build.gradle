@@ -30,7 +30,7 @@ buildscript {
 
 allprojects {
     apply from: rootProject.file("buildSrc/repositories.gradle")
-    apply from: rootProject.file("buildSrc/ktlint.gradle")
+    apply from: rootProject.file("buildSrc/kotlin.gradle")
     // Adds the version of this library to all the projects, including the root project.
     apply plugin: "kpermissions-version"
 }
@@ -60,6 +60,7 @@ githubRelease {
 def gitHubToken = project.properties["github.token"] ?: System.getenv("GITHUB_TOKEN")
 if (gitHubToken != null) {
     githubRelease.token = gitHubToken
+    releasesHub.gitHubWriteToken = gitHubToken
 }
 
 task clean(type: Delete) {

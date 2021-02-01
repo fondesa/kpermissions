@@ -1,4 +1,4 @@
-name: deploy
+name: GitHub CI Deploy
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: build
+name: GitHub CI Build
 
 on:
   push:

@@ -1,6 +1,5 @@
 KPermissions
 ===============
-[![Build Status](https://travis-ci.com/fondesa/kpermissions.svg?branch=master)](https://travis-ci.com/fondesa/kpermissions)
 [![KPermissions](https://www.appbrain.com/stats/libraries/shield/kpermissions.svg)](https://www.appbrain.com/stats/libraries/details/kpermissions/kpermissions)
 
 An Android library totally written in Kotlin that helps to request runtime permissions.

@@ -60,6 +60,7 @@ githubRelease {
 def gitHubToken = project.properties["github.token"] ?: System.getenv("GITHUB_TOKEN")
 if (gitHubToken != null) {
     githubRelease.token = gitHubToken
+    releasesHub.gitHubWriteToken = gitHubToken
 }
 
 task clean(type: Delete) {

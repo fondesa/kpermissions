@@ -15,7 +15,7 @@
  */
 
 object Deps {
-    const val androidPlugin = "com.android.tools.build:gradle:4.1.1"
+    const val androidPlugin = "com.android.tools.build:gradle:4.1.2"
     const val androidxAppCompat = "androidx.appcompat:appcompat:1.2.0"
     const val androidxFragment = "androidx.fragment:fragment:1.2.5"
     const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.2.5"
@@ -31,8 +31,8 @@ object Deps {
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:9.4.1"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.6"
-    const val mockitoCore = "org.mockito:mockito-core:3.6.28"
-    const val mockitoInLine = "org.mockito:mockito-inline:3.6.28"
+    const val mockitoCore = "org.mockito:mockito-core:3.7.7"
+    const val mockitoInLine = "org.mockito:mockito-inline:3.7.7"
     const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     const val releasesHubPlugin = "com.releaseshub:releases-hub-gradle-plugin:1.6.1"
     const val robolectric = "org.robolectric:robolectric:4.4"

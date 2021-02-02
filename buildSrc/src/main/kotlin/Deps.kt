@@ -15,7 +15,7 @@
  */
 
 object Deps {
-    const val androidPlugin = "com.android.tools.build:gradle:4.1.1"
+    const val androidPlugin = "com.android.tools.build:gradle:4.1.2"
     const val androidxAppCompat = "androidx.appcompat:appcompat:1.2.0"
     const val androidxFragment = "androidx.fragment:fragment:1.2.5"
     const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.2.5"

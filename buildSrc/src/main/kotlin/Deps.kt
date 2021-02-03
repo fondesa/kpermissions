@@ -27,7 +27,7 @@ object Deps {
     const val gitHubReleasePlugin = "com.github.breadmoirai:github-release:2.2.12"
     const val junit = "junit:junit:4.13.1"
     const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:1.4.21"
-    const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.21"
+    const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.30"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:9.4.1"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.6"

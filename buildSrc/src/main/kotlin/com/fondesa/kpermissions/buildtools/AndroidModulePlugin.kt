@@ -16,7 +16,6 @@
 
 package com.fondesa.kpermissions.buildtools
 
-import org.gradle.api.Action
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -39,33 +38,25 @@ class AndroidModulePlugin : Plugin<Project> {
                 minSdkVersion(androidProperties.getProperty("android.config.minSdk").toInt())
                 targetSdkVersion(androidProperties.getProperty("android.config.targetSdk").toInt())
             }
-            compileOptions(
-                // Horrible solution to compile against AGP 4.x.
-                @Suppress("RedundantSamConstructor") Action {
-                    it.sourceCompatibility = JavaVersion.VERSION_1_8
-                    it.targetCompatibility = JavaVersion.VERSION_1_8
-                }
-            )
+            compileOptions {
+                it.sourceCompatibility = JavaVersion.VERSION_1_8
+                it.targetCompatibility = JavaVersion.VERSION_1_8
+            }
             lintOptions.isWarningsAsErrors = true
             testOptions.unitTests.apply {
                 // Used by Robolectric since Android resources can be used in unit tests.
                 isIncludeAndroidResources = true
-                all(
-                    closureOf {
-                        testLogging.events("passed", "skipped", "failed")
-                        systemProperty("robolectric.logging.enabled", true)
-                    }
-                )
+                all { test ->
+                    test.testLogging.events("passed", "skipped", "failed")
+                    test.systemProperty("robolectric.logging.enabled", true)
+                }
             }
             // Adds the Kotlin source set for each Java source set.
-            sourceSets(
-                // Horrible solution to compile against AGP 4.x.
-                @Suppress("RedundantSamConstructor") Action { sourceSetContainer ->
-                    sourceSetContainer.all { sourceSet ->
-                        sourceSet.java.srcDirs("src/${sourceSet.name}/kotlin")
-                    }
+            sourceSets { sourceSetContainer ->
+                sourceSetContainer.all { sourceSet ->
+                    sourceSet.java.srcDirs("src/${sourceSet.name}/kotlin")
                 }
-            )
+            }
         }
         tasks.withType(DokkaTask::class.java) {
             it.outputFormat = "html"

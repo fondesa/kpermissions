@@ -58,7 +58,6 @@ class DeployPlugin : Plugin<Project> {
         configureBintrayUpload(deployProperties)
         configureGitHubReleaseExtension()
         registerPublishLibraryTask()
-        Unit
     }
 
     private val Project.aarFileName: String get() = "$name-$versionName.aar"
@@ -123,7 +122,6 @@ class DeployPlugin : Plugin<Project> {
         }
     }
 
-    @Suppress("UnstableApiUsage")
     private fun Project.configureMavenPom(pom: MavenPom, deployProperties: Properties) {
         pom.name.set(deployProperties.getProperty("lib.name"))
         pom.description.set(deployProperties.getProperty("lib.description"))

@@ -24,23 +24,20 @@ import org.jetbrains.dokka.gradle.DokkaTask
 /**
  * Applies the base configuration to all the Android modules of this project.
  */
+@Suppress("UnstableApiUsage")
 class AndroidModulePlugin : Plugin<Project> {
-
     override fun apply(project: Project) = with(project) {
         plugins.apply("kotlin-android")
         plugins.apply("org.jetbrains.dokka")
 
+        val androidProperties = readPropertiesOf("android-config.properties")
         withAndroidPlugin {
-            val androidProperties = readPropertiesOf("android-config.properties")
-            compileSdkVersion(androidProperties.getProperty("android.config.compileSdk").toInt())
-            buildToolsVersion(androidProperties.getProperty("android.config.buildTools"))
-            defaultConfig.apply {
-                minSdkVersion(androidProperties.getProperty("android.config.minSdk").toInt())
-                targetSdkVersion(androidProperties.getProperty("android.config.targetSdk").toInt())
-            }
+            compileSdk = androidProperties.getProperty("android.config.compileSdk").toInt()
+            buildToolsVersion = androidProperties.getProperty("android.config.buildTools")
+            defaultConfig.minSdk = androidProperties.getProperty("android.config.minSdk").toInt()
             compileOptions {
-                it.sourceCompatibility = JavaVersion.VERSION_1_8
-                it.targetCompatibility = JavaVersion.VERSION_1_8
+                sourceCompatibility = JavaVersion.VERSION_1_8
+                targetCompatibility = JavaVersion.VERSION_1_8
             }
             lintOptions.isWarningsAsErrors = true
             testOptions.unitTests.apply {
@@ -52,11 +49,12 @@ class AndroidModulePlugin : Plugin<Project> {
                 }
             }
             // Adds the Kotlin source set for each Java source set.
-            sourceSets { sourceSetContainer ->
-                sourceSetContainer.all { sourceSet ->
-                    sourceSet.java.srcDirs("src/${sourceSet.name}/kotlin")
-                }
+            sourceSets.all { sourceSet ->
+                sourceSet.java.srcDirs("src/${sourceSet.name}/kotlin")
             }
+        }
+        withAndroidApplicationPlugin {
+            defaultConfig.targetSdk = androidProperties.getProperty("android.config.targetSdk").toInt()
         }
         tasks.withType(DokkaTask::class.java) {
             it.outputFormat = "html"

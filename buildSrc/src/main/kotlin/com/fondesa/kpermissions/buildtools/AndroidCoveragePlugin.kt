@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION")
-
 package com.fondesa.kpermissions.buildtools
 
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.api.AndroidSourceSet
-import com.android.builder.model.BuildType
-import org.gradle.api.NamedDomainObjectContainer
+import com.android.build.api.component.ComponentIdentity
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.FileTree
@@ -33,60 +28,46 @@ import java.util.Locale
 /**
  * Enables the unit tests coverage in an Android project.
  */
-@ExperimentalStdlibApi
+@Suppress("UnstableApiUsage")
 class AndroidCoveragePlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
         plugins.apply("jacoco")
 
         extensions.configure(JacocoPluginExtension::class.java) {
             it.toolVersion = JACOCO_VERSION
-            it.reportsDir = file("$buildDir/coverageReport")
+            it.reportsDirectory.set(file("$buildDir/coverageReport"))
         }
         withAndroidPlugin {
             fixRobolectricCoverage()
-            configureCoverageTasks(this)
+            onVariants { configureCoverageTasks(this) }
         }
     }
 
-    private fun Project.configureCoverageTasks(extension: BaseExtension) {
-        afterEvaluate {
-            extension.buildTypes.all { configureCoverageTask(it, extension.sourceSets) }
-        }
-    }
-
-    private fun Project.configureCoverageTask(
-        buildType: BuildType,
-        sourceSets: NamedDomainObjectContainer<AndroidSourceSet>
-    ) {
-        val buildTypeName = buildType.name
-        val testTaskName = "test${buildTypeName.capitalize(Locale.getDefault())}UnitTest"
-        // Avoids the creation of the coverage task if the test task does not exist.
-        val testTaskProvider = tasks.namedOrNull(testTaskName) ?: return
+    private fun Project.configureCoverageTasks(variant: ComponentIdentity) {
+        val testTaskName = "test${variant.name.capitalize(Locale.getDefault())}UnitTest"
         val coverageTaskName = "${testTaskName}Coverage"
         tasks.register(coverageTaskName, JacocoReport::class.java).configure { coverageTask ->
             coverageTask.group = COVERAGE_TASKS_GROUP
-            coverageTask.description = "Calculates the coverage and generates the reports for the \"$buildTypeName\" build."
+            coverageTask.description = "Calculates the coverage and generates the reports for the variant \"${variant.name}\"."
             coverageTask.reports.apply {
                 html.isEnabled = true
                 xml.isEnabled = true
                 csv.isEnabled = false
             }
-            val javaClassDirectories = fileTreeOf("$buildDir/intermediates/javac/$buildTypeName/classes")
-            val kotlinClassDirectories = fileTreeOf("$buildDir/tmp/kotlin-classes/$buildTypeName")
+            val javaClassDirectories = fileTreeOf("$buildDir/intermediates/javac/${variant.name}/classes")
+            val kotlinClassDirectories = fileTreeOf("$buildDir/tmp/kotlin-classes/${variant.name}")
             coverageTask.classDirectories.from(javaClassDirectories, kotlinClassDirectories)
             coverageTask.executionData.from("$buildDir/jacoco/$testTaskName.exec")
-            sourceSets.configureEach { sourceSet ->
-                if (sourceSet.name in arrayOf("main", buildTypeName)) {
-                    coverageTask.sourceDirectories.from(sourceSet.java.srcDirs)
-                }
+            variant.sourceSets(this).forEach { sourceSet ->
+                coverageTask.sourceDirectories.from(sourceSet)
             }
         }
-        testTaskProvider.configure { task ->
+        tasks.matching { task -> task.name == testTaskName }.configureEach { task ->
             task.finalizedBy(coverageTaskName)
         }
     }
 
-    private fun BaseExtension.fixRobolectricCoverage() {
+    private fun AndroidCommonExtension.fixRobolectricCoverage() {
         testOptions.unitTests.all { test ->
             test.extensions.configure(JacocoTaskExtension::class.java) {
                 // It must be set to true otherwise the coverage of Robolectric tests is not calculated.
@@ -98,7 +79,7 @@ class AndroidCoveragePlugin : Plugin<Project> {
     private fun Project.fileTreeOf(dir: String): FileTree = fileTree(mapOf("dir" to dir, "excludes" to COVERAGE_EXCLUSIONS))
 
     companion object {
-        private const val JACOCO_VERSION = "0.8.5"
+        private const val JACOCO_VERSION = "0.8.6"
         private const val COVERAGE_TASKS_GROUP = "Coverage"
     }
 }

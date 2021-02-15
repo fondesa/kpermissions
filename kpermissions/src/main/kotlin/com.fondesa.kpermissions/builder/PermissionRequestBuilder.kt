@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
-
 package com.fondesa.kpermissions.builder
 
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonce
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 
 /**
  * Builder used to create a [PermissionRequest].
@@ -47,15 +43,6 @@ public interface PermissionRequestBuilder {
         firstPermission: String,
         vararg otherPermissions: String
     ): PermissionRequestBuilder
-
-    /**
-     * Sets the [PermissionNonceGenerator] used to generate a [PermissionNonce].
-     *
-     * @param nonceGenerator instance of [PermissionNonceGenerator] that must be added.
-     * @return the builder itself.
-     */
-    @Deprecated("Use the PermissionStatus API instead which don't need a nonce to execute a request again.")
-    public fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder
 
     /**
      * Sets the [RuntimePermissionHandlerProvider] used to provide a [RuntimePermissionHandler].

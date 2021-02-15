@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
-
 package com.fondesa.kpermissions.builder
 
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
-import com.fondesa.kpermissions.request.runtime.nonce.RationalePermissionNonceGenerator
 
 /**
  * Base [PermissionRequestBuilder] that specifies the common configurations.
@@ -33,7 +29,6 @@ import com.fondesa.kpermissions.request.runtime.nonce.RationalePermissionNonceGe
  */
 public abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
     private var permissions: Array<out String>? = null
-    private var nonceGenerator: PermissionNonceGenerator? = null
     private var runtimeHandlerProvider: RuntimePermissionHandlerProvider? = null
 
     override fun permissions(
@@ -49,11 +44,6 @@ public abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
         }
     }
 
-    override fun nonceGenerator(nonceGenerator: PermissionNonceGenerator): PermissionRequestBuilder =
-        apply {
-            this.nonceGenerator = nonceGenerator
-        }
-
     override fun runtimeHandlerProvider(runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequestBuilder =
         apply {
             this.runtimeHandlerProvider = runtimeHandlerProvider
@@ -63,18 +53,11 @@ public abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
         val permissions = permissions
             ?: throw IllegalArgumentException("The permissions names are necessary.")
 
-        // Instantiate the default NonceGenerator if a custom one isn't set.
-        val nonceGenerator = nonceGenerator ?: RationalePermissionNonceGenerator()
-
         // Get the runtime handler.
         val runtimeHandlerProvider = runtimeHandlerProvider
             ?: throw IllegalArgumentException("A runtime handler is necessary to request the permissions.")
 
-        return createRequest(
-            permissions,
-            nonceGenerator,
-            runtimeHandlerProvider
-        )
+        return createRequest(permissions, runtimeHandlerProvider)
     }
 
     /**
@@ -82,13 +65,11 @@ public abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
      * assigned and this configuration can be considered valid.
      *
      * @param permissions set of permissions that must be requested.
-     * @param nonceGenerator instance of [PermissionNonceGenerator] specified in this configuration.
      * @param runtimeHandlerProvider instance of [RuntimePermissionHandlerProvider] specified in this configuration.
      * @return instance of [PermissionRequest] that uses this configuration.
      */
     protected abstract fun createRequest(
         permissions: Array<out String>,
-        nonceGenerator: PermissionNonceGenerator,
         runtimeHandlerProvider: RuntimePermissionHandlerProvider
     ): PermissionRequest
 }

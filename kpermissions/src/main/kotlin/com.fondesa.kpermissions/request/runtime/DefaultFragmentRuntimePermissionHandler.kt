@@ -41,31 +41,6 @@ import com.fondesa.kpermissions.request.PermissionRequest
  * show a rationale explaining the motivation of this permission request
  * - [PermissionStatus.Denied.Permanently] -> the permission is permanently denied by the user using the
  * "never ask again" button on the permissions dialog.
- *
- * If you are using the legacy API:
- * Considering a lifecycle the group of phases that passes from [requestPermissions] till the end
- * of [managePermissionsResult], this handler notifies the [RuntimePermissionHandler.Listener]
- * for maximum one event during the lifecycle.
- * For example if a permission's request contains two permissions and the user accepts only one of
- * them, the [RuntimePermissionHandler.Listener] won't be notified on the accepted permissions, but
- * only on the denied one.
- *
- * This is done following the consideration that a permissions' request must contain only
- * the permissions that are related to a single functionality, so the functionality mustn't be
- * available if the user doesn't "resolve" the permissions.
- *
- * Every state needs a [PermissionRequest]'s listener attached to be handled, otherwise the
- * application will proceed to the next state, if any.
- *
- * The available states are the following.
- * - rationale: happens when a permission is denied and a rationale is needed. It can be notified
- * before the request is sent and after the result is received.
- * - denied: happens when a permission is denied and the rationale state isn't handled. It can be
- * notified after the result is received.
- * - permanently denied: happens when the user selects the "never ask again" checkbox and the
- * rationale/denied state isn't handled. It can be notified after the result is received.
- * - accepted: happens when the user accepts ALL the permissions. It can be notified before
- * the request is sent or after the result is received.
  */
 @RequiresApi(23)
 public class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler() {

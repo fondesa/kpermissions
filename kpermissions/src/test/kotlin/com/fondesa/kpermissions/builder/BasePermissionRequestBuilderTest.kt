@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
-
 package com.fondesa.kpermissions.builder
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 import com.nhaarman.mockitokotlin2.mock
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
@@ -38,7 +35,6 @@ class BasePermissionRequestBuilderTest {
     private val provider = mock<RuntimePermissionHandlerProvider> {
         on(it.provideHandler()).thenReturn(mock())
     }
-    private val nonceGenerator = mock<PermissionNonceGenerator>()
 
     @Test(expected = IllegalArgumentException::class)
     fun throwsExceptionWithoutPermissions() {
@@ -66,17 +62,14 @@ class BasePermissionRequestBuilderTest {
         // Build the request.
         val request = builder.permissions("example")
             .runtimeHandlerProvider(provider)
-            .nonceGenerator(nonceGenerator)
             .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))
     }
 
     class MockBuilder : BasePermissionRequestBuilder() {
-
         override fun createRequest(
             permissions: Array<out String>,
-            nonceGenerator: PermissionNonceGenerator,
             runtimeHandlerProvider: RuntimePermissionHandlerProvider
         ) = mock<PermissionRequest>()
     }

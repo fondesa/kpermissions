@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
-
 package com.fondesa.kpermissions.builder
 
 import android.app.Activity
@@ -25,7 +23,6 @@ import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandler
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 
 /**
  * Implementation of [BasePermissionRequestBuilder] that creates a different request depending
@@ -40,13 +37,12 @@ import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 public class CompatPermissionRequestBuilder internal constructor(private val activity: Activity) : BasePermissionRequestBuilder() {
     override fun createRequest(
         permissions: Array<out String>,
-        nonceGenerator: PermissionNonceGenerator,
         runtimeHandlerProvider: RuntimePermissionHandlerProvider
     ): PermissionRequest = if (Build.VERSION.SDK_INT >= 23) {
         // Provide the handler.
         val handler = runtimeHandlerProvider.provideHandler()
         // Create the runtime request.
-        RuntimePermissionRequest(activity, permissions, nonceGenerator, handler)
+        RuntimePermissionRequest(activity, permissions, handler)
     } else {
         // Create the manifest request.
         ManifestPermissionRequest(activity, permissions)

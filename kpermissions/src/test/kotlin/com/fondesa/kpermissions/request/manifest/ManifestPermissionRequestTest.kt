@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
-
 package com.fondesa.kpermissions.request.manifest
 
 import android.Manifest
@@ -39,14 +37,11 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(maxSdk = 22)
 class ManifestPermissionRequestTest {
-    private val acceptedListener = mock<PermissionRequest.AcceptedListener>()
-    private val deniedListener = mock<PermissionRequest.DeniedListener>()
-
     @Test
     fun requestWithoutListeners() {
         val permission = Manifest.permission.ACCESS_FINE_LOCATION
         // The request will be sent without listeners and it mustn't throw an exception.
-        val request = requestOf(permission, listeners = false)
+        val request = requestOf(permission)
 
         request.send()
 
@@ -60,105 +55,12 @@ class ManifestPermissionRequestTest {
     }
 
     @Test
-    fun onePermissionHandled() {
-        val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = requestOf(*permission)
-
-        request.send()
-        // The first time, the denied listener must be called.
-        verify(deniedListener).onPermissionsDenied(permission)
-
-        // Grant the permission.
-        context.grantPermissions(*permission)
-        request.send()
-        verify(acceptedListener).onPermissionsAccepted(permission)
-
-        // Revoke the permission.
-        context.denyPermissions(*permission)
-        request.send()
-        verify(deniedListener, times(2)).onPermissionsDenied(permission)
-    }
-
-    @Test
-    fun moreThanOnePermissionsHandled() {
-        val first = Manifest.permission.ACCESS_FINE_LOCATION
-        val second = Manifest.permission.SEND_SMS
-        val permissions = arrayOf(first, second)
-        val request = requestOf(*permissions)
-
-        request.send()
-        // The first time, the denied listener must be called.
-        verify(deniedListener).onPermissionsDenied(permissions)
-
-        // Grant the permissions.
-        context.grantPermissions(*permissions)
-        request.send()
-        verify(acceptedListener).onPermissionsAccepted(permissions)
-
-        // Revoke the permissions.
-        context.denyPermissions(*permissions)
-        request.send()
-        verify(deniedListener, times(2)).onPermissionsDenied(permissions)
-
-        // Grant only the first permission.
-        context.grantPermissions(first)
-        request.send()
-        verify(deniedListener).onPermissionsDenied(arrayOf(second))
-    }
-
-    @Test
-    fun detachAcceptedListener() {
-        val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = requestOf(*permission)
-
-        // Grant the permission
-        context.grantPermissions(*permission)
-
-        request.send()
-        verify(acceptedListener).onPermissionsAccepted(permission)
-
-        request.detachAcceptedListener()
-        request.send()
-        verify(acceptedListener).onPermissionsAccepted(permission)
-
-        request.acceptedListener(acceptedListener)
-        request.send()
-        verify(acceptedListener, times(2)).onPermissionsAccepted(permission)
-
-        request.detachAllListeners()
-        request.send()
-        verify(acceptedListener, times(2)).onPermissionsAccepted(permission)
-    }
-
-    @Test
-    fun detachDeniedListener() {
-        val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = requestOf(*permission)
-
-        request.send()
-        verify(deniedListener).onPermissionsDenied(permission)
-
-        request.detachDeniedListener()
-        request.send()
-        verify(deniedListener).onPermissionsDenied(permission)
-
-        request.deniedListener(deniedListener)
-        request.send()
-        verify(deniedListener, times(2)).onPermissionsDenied(permission)
-
-        request.detachAllListeners()
-        request.send()
-        verify(deniedListener, times(2)).onPermissionsDenied(permission)
-    }
-
-    @Test
     fun `When request is sent, listeners are notified with the right permission status`() {
         val firstListener = mock<PermissionRequest.Listener>()
         val secondListener = mock<PermissionRequest.Listener>()
         val request = requestOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.SEND_SMS,
-            listeners = false
+            Manifest.permission.SEND_SMS
         )
         request.addListener(firstListener)
         request.addListener(secondListener)
@@ -182,8 +84,7 @@ class ManifestPermissionRequestTest {
         val secondListener = mock<PermissionRequest.Listener>()
         val request = requestOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.SEND_SMS,
-            listeners = false
+            Manifest.permission.SEND_SMS
         )
         request.addListener(firstListener)
         request.addListener(secondListener)
@@ -214,8 +115,7 @@ class ManifestPermissionRequestTest {
         val secondListener = mock<PermissionRequest.Listener>()
         val request = requestOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.SEND_SMS,
-            listeners = false
+            Manifest.permission.SEND_SMS
         )
         request.addListener(firstListener)
         request.addListener(secondListener)
@@ -240,15 +140,5 @@ class ManifestPermissionRequestTest {
         verifyNoMoreInteractions(firstListener, secondListener)
     }
 
-    private fun requestOf(
-        vararg permissions: String,
-        listeners: Boolean = true
-    ): ManifestPermissionRequest {
-        val request = ManifestPermissionRequest(context, permissions)
-        if (listeners) {
-            request.acceptedListener(acceptedListener)
-            request.deniedListener(deniedListener)
-        }
-        return request
-    }
+    private fun requestOf(vararg permissions: String): ManifestPermissionRequest = ManifestPermissionRequest(context, permissions)
 }

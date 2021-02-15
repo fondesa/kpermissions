@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
-
 package com.fondesa.kpermissions.request.runtime
 
 import android.content.Context
@@ -25,9 +23,7 @@ import androidx.annotation.RequiresApi
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.extension.checkRuntimePermissionsStatus
-import com.fondesa.kpermissions.isPermanentlyDenied
 import com.fondesa.kpermissions.request.PermissionRequest
-import com.fondesa.kpermissions.shouldShowRationale
 
 /**
  * Implementation of [FragmentRuntimePermissionHandler] that specifies the lifecycle of the
@@ -101,39 +97,6 @@ public class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermission
             }
         }
         listener.onPermissionsResult(result)
-
-        // Get the denied permissions.
-        val deniedPermissions = result.filterIsInstance<PermissionStatus.Denied>()
-
-        if (deniedPermissions.isNotEmpty()) {
-            var rationaleHandled = false
-            // Get the permissions that need a rationale.
-            val permissionsWithRationale = deniedPermissions
-                .filter { it.shouldShowRationale() }
-                .map { it.permission }
-                .toTypedArray()
-            if (permissionsWithRationale.isNotEmpty()) {
-                // Show rationale of permissions if possible.
-                rationaleHandled = listener.permissionsShouldShowRationale(permissionsWithRationale)
-                if (!rationaleHandled) {
-                    // Otherwise, if possible, notify the listener that the permissions are denied.
-                    rationaleHandled = listener.permissionsDenied(permissionsWithRationale)
-                }
-            }
-
-            val permanentlyDeniedPermissions = deniedPermissions
-                .filter { it.isPermanentlyDenied() }
-                .map { it.permission }
-                .toTypedArray()
-            if (!rationaleHandled && permanentlyDeniedPermissions.isNotEmpty()) {
-                // Some permissions are permanently denied by the user.
-                Log.d(TAG, "permissions permanently denied: ${permanentlyDeniedPermissions.joinToString(separator = ",")}")
-                listener.permissionsPermanentlyDenied(permanentlyDeniedPermissions)
-            }
-        } else {
-            // All permissions are accepted.
-            listener.permissionsAccepted(permissions)
-        }
     }
 
     override fun handleRuntimePermissions(permissions: Array<out String>) {
@@ -158,23 +121,9 @@ public class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermission
                 // The Fragment can process only one request at the same time.
                 return
             }
-            val permissionsWithRationale = currentStatus
-                .filter { it.shouldShowRationale() }
-                .map { it.permission }
-                .toTypedArray()
-
-            val rationaleHandled = if (permissionsWithRationale.isNotEmpty()) {
-                // Show rationale of permissions.
-                listener.permissionsShouldShowRationale(permissionsWithRationale)
-            } else false
-
-            if (!rationaleHandled) {
-                // Request the permissions.
-                requestRuntimePermissions(permissions)
-            }
+            // Request the permissions.
+            requestRuntimePermissions(permissions)
         } else {
-            // All permissions are accepted.
-            listener.permissionsAccepted(permissions)
             listener.onPermissionsResult(currentStatus)
         }
     }

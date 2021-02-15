@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
-
 package com.fondesa.kpermissions.builder
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.request.runtime.nonce.PermissionNonceGenerator
 import com.fondesa.test.TestActivity
 import com.fondesa.test.launchTestActivity
 import com.fondesa.test.letActivity
 import com.nhaarman.mockitokotlin2.mock
-import junit.framework.Assert.assertNotNull
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +40,6 @@ class CompatPermissionRequestBuilderTest {
     private val provider = mock<RuntimePermissionHandlerProvider> {
         on(it.provideHandler()).thenReturn(mock())
     }
-    private val nonceGenerator = mock<PermissionNonceGenerator>()
     private lateinit var builder: CompatPermissionRequestBuilder
     private lateinit var scenario: ActivityScenario<TestActivity>
 
@@ -75,7 +71,6 @@ class CompatPermissionRequestBuilderTest {
         // Build the request.
         val request = builder.permissions("example", "example_2")
             .runtimeHandlerProvider(provider)
-            .nonceGenerator(nonceGenerator)
             .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))

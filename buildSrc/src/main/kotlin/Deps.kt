@@ -26,7 +26,7 @@ object Deps {
     const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2"
     const val dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:0.9.18"
     const val gitHubReleasePlugin = "com.github.breadmoirai:github-release:2.2.12"
-    const val junit = "junit:junit:4.13.1"
+    const val junit = "junit:junit:4.13.2"
     const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:1.4.30"
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.30"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
@@ -37,6 +37,6 @@ object Deps {
     const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     const val releasesHubPlugin = "com.releaseshub:releases-hub-gradle-plugin:1.6.1"
     const val robolectric = "org.robolectric:robolectric:4.5.1"
-    const val rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.20"
+    const val rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.21"
     const val rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.8"
 }

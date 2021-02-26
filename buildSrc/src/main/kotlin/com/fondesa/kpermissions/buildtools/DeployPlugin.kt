@@ -29,9 +29,9 @@ import org.gradle.plugins.signing.SigningExtension
  * The version which should be deployed is defined through [VersionPlugin].
  * To deploy a version manually, you should provide the following properties:
  * - VERSION_NAME -> the version of the library which should be deployed (e.g. 3.1.5)
- * - signing.keyId -> the last 8 chars of your secret GPG key
- * - signing.password -> the password of your GPG key
- * - signing.secretKeyRingFile -> the absolute path to your secret key ring file (e.g. /Users/foo/.gnupg/secring.gpg)
+ * - signingKeyId (or the env variable ORG_GRADLE_PROJECT_signingKeyId) -> the last 8 chars of your secret GPG key
+ * - signingPassword (or the env variable ORG_GRADLE_PROJECT_signingPassword) -> the password of your GPG key
+ * - signingKey (or the env variable ORG_GRADLE_PROJECT_signingKey) -> the private GPG key
  */
 class DeployPlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
@@ -39,7 +39,7 @@ class DeployPlugin : Plugin<Project> {
         changeAarFileName()
         configureGitHubReleaseExtension()
         registerPublishLibraryTask()
-        configureSigningOnCI()
+        configureSigning()
     }
 
     private val Project.aarFileName: String get() = "$name-$versionName.aar"
@@ -77,8 +77,7 @@ class DeployPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.configureSigningOnCI() {
-        if (System.getenv("CI") != "true") return
+    private fun Project.configureSigning() {
         extensions.configure(SigningExtension::class.java) { signing ->
             // Populated from the environment variable ORG_GRADLE_PROJECT_signingKeyId.
             val signingKeyId = findProperty("signingKeyId") ?: return@configure

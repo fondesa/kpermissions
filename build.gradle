@@ -19,9 +19,9 @@ buildscript {
 
     dependencies {
         classpath Deps.androidPlugin
-        classpath Deps.bintrayPlugin
         classpath Deps.dokkaPlugin
         classpath Deps.gitHubReleasePlugin
+        classpath Deps.gradleMavenPublishPlugin
         classpath Deps.kotlinPlugin
         classpath Deps.ktlint
         classpath Deps.releasesHubPlugin
@@ -56,6 +56,7 @@ githubRelease {
     tagName version
     releaseName "KPermissions $version"
     body "TBD"
+    draft true
 }
 def gitHubToken = project.properties["github.token"] ?: System.getenv("GITHUB_TOKEN")
 if (gitHubToken != null) {

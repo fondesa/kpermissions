@@ -24,9 +24,14 @@ import org.gradle.plugins.signing.SigningExtension
 
 /**
  * Deploys this library to Maven Central.
- * The public deploy properties are defined in the file "deploy.properties".
+ * The public deploy properties are defined in the file "gradle.properties".
  * The private deploy properties aren't versioned.
  * The version which should be deployed is defined through [VersionPlugin].
+ * To deploy a version manually, you should provide the following properties:
+ * - VERSION_NAME -> the version of the library which should be deployed (e.g. 3.1.5)
+ * - signing.keyId -> the last 8 chars of your secret GPG key
+ * - signing.password -> the password of your GPG key
+ * - signing.secretKeyRingFile -> the absolute path to your secret key ring file (e.g. /Users/foo/.gnupg/secring.gpg)
  */
 class DeployPlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {

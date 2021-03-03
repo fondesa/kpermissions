@@ -120,12 +120,13 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
     @Test
     fun `When permission status should be notified in onPermissionsResult and listener is not attached, nothing happens`() {
+        var fragment = scenario.withFragment { this }
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
 
         // This will detach the listener.
         scenario.recreate()
-        val fragment = scenario.withFragment { this }
+        fragment = scenario.withFragment { this }
 
         // It shouldn't throw an exception.
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)

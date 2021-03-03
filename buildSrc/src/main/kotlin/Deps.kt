@@ -31,7 +31,7 @@ object Deps {
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:9.4.1"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.6"
-    const val mockitoCore = "org.mockito:mockito-core:3.7.7"
+    const val mockitoCore = "org.mockito:mockito-core:3.8.0"
     const val mockitoInLine = "org.mockito:mockito-inline:3.7.7"
     const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     const val releasesHubPlugin = "com.dipien:releases-hub-gradle-plugin:2.0.0"

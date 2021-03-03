@@ -35,12 +35,11 @@ allprojects {
     apply plugin: "kpermissions-version"
 }
 
-apply plugin: "com.releaseshub.gradle.plugin"
+apply plugin: "com.dipien.releaseshub.gradle.plugin"
 
 releasesHub {
     dependenciesBasePath = "buildSrc/src/main/kotlin/"
     dependenciesClassNames = ["Deps.kt"]
-    pullRequestEnabled = true
     pullRequestLabels = ["dependencies"]
     headBranchPrefix = "update-dependency/"
     gitHubRepositoryOwner = "fondesa"

@@ -50,7 +50,7 @@ class PermissionsBuilderKtTest {
     }
 
     @Test
-    fun `When permissionsBuilder() is invoked with an Activity instance and legacy runtime handler is enabled, the PermissionRequest is built successfully`() {
+    fun `When permissionsBuilder() is invoked with an Activity instance and legacy handler is enabled request is built successfully`() {
         useLegacyRuntimePermissionHandler()
         val scenario = launchTestActivity()
         val builder = scenario.letActivity {
@@ -72,7 +72,7 @@ class PermissionsBuilderKtTest {
     }
 
     @Test
-    fun `When permissionsBuilder() is invoked with a Fragment instance and legacy runtime handler is enabled, the PermissionRequest is built successfully`() {
+    fun `When permissionsBuilder() is invoked with a Fragment instance and legacy handler is enabled, request is built successfully`() {
         useLegacyRuntimePermissionHandler()
         val scenario = launchFragment<Fragment>()
         val builder = scenario.withFragment {

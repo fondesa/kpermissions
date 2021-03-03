@@ -168,7 +168,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
     // Verifies the bug: https://issuetracker.google.com/issues/180884668.
     @Test
-    fun `When permissions result is received without some permissions, the listeners are notified with granted permissions for missing permissions`() {
+    fun `When permissions result is received without some permissions, the listeners are notified with granted permissions`() {
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
         fragment.stubRationaleResult(firstPermission, true)

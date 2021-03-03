@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
-
 package com.fondesa.kpermissions.request
 
 /**
@@ -24,18 +22,6 @@ package com.fondesa.kpermissions.request
  */
 public abstract class BasePermissionRequest : PermissionRequest {
     protected val listeners: MutableSet<PermissionRequest.Listener> = mutableSetOf()
-
-    protected var acceptedListener: PermissionRequest.AcceptedListener? = null
-        private set
-
-    protected var deniedListener: PermissionRequest.DeniedListener? = null
-        private set
-
-    protected var permanentlyDeniedListener: PermissionRequest.PermanentlyDeniedListener? = null
-        private set
-
-    protected var rationaleListener: PermissionRequest.RationaleListener? = null
-        private set
 
     override fun addListener(listener: PermissionRequest.Listener) {
         listeners += listener
@@ -47,45 +33,5 @@ public abstract class BasePermissionRequest : PermissionRequest {
 
     override fun removeAllListeners() {
         listeners.clear()
-        detachAcceptedListener()
-        detachDeniedListener()
-        detachPermanentlyDeniedListener()
-        detachRationaleListener()
-    }
-
-    override fun acceptedListener(listener: PermissionRequest.AcceptedListener) {
-        acceptedListener = listener
-    }
-
-    override fun deniedListener(listener: PermissionRequest.DeniedListener) {
-        deniedListener = listener
-    }
-
-    override fun permanentlyDeniedListener(listener: PermissionRequest.PermanentlyDeniedListener) {
-        permanentlyDeniedListener = listener
-    }
-
-    override fun rationaleListener(listener: PermissionRequest.RationaleListener) {
-        rationaleListener = listener
-    }
-
-    override fun detachAcceptedListener() {
-        acceptedListener = null
-    }
-
-    override fun detachDeniedListener() {
-        deniedListener = null
-    }
-
-    override fun detachPermanentlyDeniedListener() {
-        permanentlyDeniedListener = null
-    }
-
-    override fun detachRationaleListener() {
-        rationaleListener = null
-    }
-
-    override fun detachAllListeners() {
-        removeAllListeners()
     }
 }

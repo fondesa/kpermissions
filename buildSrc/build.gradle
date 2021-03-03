@@ -32,9 +32,9 @@ apply from: "kotlin.gradle"
 dependencies {
     implementation deps.androidPlugin
     implementation deps.androidPluginApi
-    implementation deps.bintrayPlugin
     implementation deps.dokkaPlugin
     implementation deps.gitHubReleasePlugin
+    implementation deps.gradleMavenPublishPlugin
     // Fixes the warning thrown until the Gradle Wrapper doesn't update its Kotlin version internally.
     implementation deps.kotlinReflect
 }

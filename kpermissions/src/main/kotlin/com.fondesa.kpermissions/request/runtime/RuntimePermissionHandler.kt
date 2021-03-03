@@ -51,7 +51,9 @@ public interface RuntimePermissionHandler {
      *
      * @param permissions set of permissions that must be requested.
      */
-    public fun requestRuntimePermissions(permissions: Array<out String>)
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("Not invoked anymore by the library.")
+    public fun requestRuntimePermissions(permissions: Array<out String>): Unit = Unit
 
     /**
      * Listener used to notify changed about the permissions' state.
@@ -64,41 +66,5 @@ public interface RuntimePermissionHandler {
          * @param result the status of each permission.
          */
         public fun onPermissionsResult(result: List<PermissionStatus>)
-
-        /**
-         * Notified when some permissions are accepted.
-         *
-         * @param permissions set of permissions that are accepted.
-         * @return true if the listener handled this permissions' state, false otherwise.
-         */
-        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
-        public fun permissionsAccepted(permissions: Array<out String>): Boolean
-
-        /**
-         * Notified when some permissions are denied.
-         *
-         * @param permissions set of permissions that are denied.
-         * @return true if the listener handled this permissions' state, false otherwise.
-         */
-        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
-        public fun permissionsDenied(permissions: Array<out String>): Boolean
-
-        /**
-         * Notified when some permissions are permanently denied.
-         *
-         * @param permissions set of permissions that are permanently denied.
-         * @return true if the listener handled this permissions' state, false otherwise.
-         */
-        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
-        public fun permissionsPermanentlyDenied(permissions: Array<out String>): Boolean
-
-        /**
-         * Notified when some permissions need a rationale.
-         *
-         * @param permissions set of permissions that need a rationale.
-         * @return true if the listener handled this permissions' state, false otherwise.
-         */
-        @Deprecated("Use the Listener.onPermissionsResult(List<PermissionStatus>) API instead.")
-        public fun permissionsShouldShowRationale(permissions: Array<out String>): Boolean
     }
 }

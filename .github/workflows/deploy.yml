@@ -7,11 +7,12 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+"
 
 env:
-  BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-  BINTRAY_GPG_PASSWORD: ${{ secrets.BINTRAY_GPG_PASSWORD }}
   MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
   MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
+  ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.GPG_SIGNING_KEY_ID }}
+  ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
 
 jobs:
   deploy:
@@ -35,4 +36,7 @@ jobs:
       - name: Deploy
         env:
           DEPLOY_TAG: ${{ steps.tag-extractor.outputs.TAG }}
-        run: ./gradlew publishLibrary -Pversion.name=$DEPLOY_TAG -s
+        run: ./gradlew publishLibrary --no-parallel -s \
+          -PVERSION_NAME=$DEPLOY_TAG \
+          -PmavenCentralRepositoryUsername=$MAVEN_CENTRAL_USERNAME \
+          -PmavenCentralRepositoryPassword=$MAVEN_CENTRAL_PASSWORD

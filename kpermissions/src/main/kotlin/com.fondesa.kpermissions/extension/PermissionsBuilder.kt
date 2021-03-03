@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.fondesa.kpermissions.extension
 
 import android.app.Activity
@@ -22,6 +24,8 @@ import androidx.fragment.app.FragmentActivity
 import com.fondesa.kpermissions.builder.CompatPermissionRequestBuilder
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider
+import com.fondesa.kpermissions.request.runtime.ResultLauncherRuntimePermissionHandlerProvider
+import com.fondesa.kpermissions.shouldUseLegacyRuntimePermissionHandler
 
 /**
  * Creates the default [PermissionRequestBuilder] using the context of the [Activity].
@@ -37,7 +41,11 @@ public fun FragmentActivity.permissionsBuilder(
     firstPermission: String,
     vararg otherPermissions: String
 ): PermissionRequestBuilder {
-    val handler = FragmentRuntimePermissionHandlerProvider(supportFragmentManager)
+    val handler = if (shouldUseLegacyRuntimePermissionHandler) {
+        FragmentRuntimePermissionHandlerProvider(supportFragmentManager)
+    } else {
+        ResultLauncherRuntimePermissionHandlerProvider(supportFragmentManager)
+    }
     // Creates the builder.
     return CompatPermissionRequestBuilder(this)
         .permissions(firstPermission, *otherPermissions)

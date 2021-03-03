@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.fondesa.kpermissions.request.runtime
 
 import android.os.Bundle
@@ -29,6 +31,7 @@ import androidx.fragment.app.Fragment
  * The runtime permissions are requested through [requestPermissions] and the result
  * will be notified to [onRequestPermissionsResult].
  */
+@Deprecated("Use the new ResultLauncherRuntimePermissionHandler.")
 @RequiresApi(23)
 public abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
     private val listeners = mutableMapOf<Set<String>, RuntimePermissionHandler.Listener>()
@@ -59,8 +62,7 @@ public abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePerm
         permissions: Array<out String>,
         listener: RuntimePermissionHandler.Listener
     ) {
-        val key = compatKeyOf(permissions)
-        listeners[key] = listener
+        listeners[permissions.toSet()] = listener
     }
 
     /**
@@ -76,22 +78,6 @@ public abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePerm
         permissions: Array<out String>,
         grantResults: IntArray
     )
-
-    /**
-     * Get a unique key from a set of permissions.
-     *
-     * @param permissions the permissions that are used to generate the key.
-     * @return unique key in [String] format generated from [permissions].
-     */
-    @Deprecated("This API will be removed since the key will be the set of permissions instead.")
-    protected open fun keyOf(permissions: Array<out String>): String = internalKeyOf(permissions)
-
-    @Suppress("DEPRECATION")
-    private fun compatKeyOf(permissions: Array<out String>): Set<String> {
-        val legacyKey = keyOf(permissions)
-        val userSpecifiedCustomKey = legacyKey != internalKeyOf(permissions)
-        return if (userSpecifiedCustomKey) setOf(legacyKey) else permissions.toSet()
-    }
 
     /**
      * Request the permissions with a fixed request code.
@@ -110,13 +96,7 @@ public abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePerm
      * @throws IllegalArgumentException if a [RuntimePermissionHandler.Listener] for the given [permissions]
      * wasn't found.
      */
-    @Suppress("DEPRECATION")
-    protected fun listenerOf(permissions: Array<out String>): RuntimePermissionHandler.Listener? {
-        val key = compatKeyOf(permissions)
-        return listeners[key]
-    }
-
-    private fun internalKeyOf(permissions: Array<out String>): String = permissions.joinToString(separator = ",")
+    protected fun listenerOf(permissions: Array<out String>): RuntimePermissionHandler.Listener? = listeners[permissions.toSet()]
 
     public companion object {
         public val TAG: String = FragmentRuntimePermissionHandler::class.java.simpleName

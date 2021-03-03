@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.fondesa.kpermissions.request.runtime
 
 import android.os.Bundle
@@ -29,6 +31,7 @@ import androidx.fragment.app.Fragment
  * The runtime permissions are requested through [requestPermissions] and the result
  * will be notified to [onRequestPermissionsResult].
  */
+@Deprecated("Use the new ResultLauncherRuntimePermissionHandler.")
 @RequiresApi(23)
 public abstract class FragmentRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
     private val listeners = mutableMapOf<Set<String>, RuntimePermissionHandler.Listener>()

@@ -16,6 +16,7 @@
 
 package com.fondesa.kpermissions.builder
 
+import androidx.annotation.VisibleForTesting
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 
@@ -29,7 +30,8 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
  */
 public abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
     private var permissions: Array<out String>? = null
-    private var runtimeHandlerProvider: RuntimePermissionHandlerProvider? = null
+    @VisibleForTesting internal var runtimeHandlerProvider: RuntimePermissionHandlerProvider? = null
+        private set
 
     override fun permissions(
         firstPermission: String,

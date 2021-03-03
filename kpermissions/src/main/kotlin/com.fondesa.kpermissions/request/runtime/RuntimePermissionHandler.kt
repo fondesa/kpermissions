@@ -51,7 +51,9 @@ public interface RuntimePermissionHandler {
      *
      * @param permissions set of permissions that must be requested.
      */
-    public fun requestRuntimePermissions(permissions: Array<out String>)
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("Not invoked anymore by the library.")
+    public fun requestRuntimePermissions(permissions: Array<out String>): Unit = Unit
 
     /**
      * Listener used to notify changed about the permissions' state.

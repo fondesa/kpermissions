@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.fondesa.kpermissions.request.runtime
 
 import androidx.fragment.app.testing.launchFragment

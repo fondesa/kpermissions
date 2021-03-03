@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.fondesa.kpermissions.request.runtime
 
 import android.content.Context
@@ -67,6 +69,7 @@ import com.fondesa.kpermissions.request.PermissionRequest
  * - accepted: happens when the user accepts ALL the permissions. It can be notified before
  * the request is sent or after the result is received.
  */
+@Deprecated("Use the new ResultLauncherRuntimePermissionHandler.")
 @RequiresApi(23)
 public class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermissionHandler() {
     private var isProcessingPermissions = false
@@ -128,10 +131,11 @@ public class DefaultFragmentRuntimePermissionHandler : FragmentRuntimePermission
         }
     }
 
+    @Suppress("OverridingDeprecatedMember")
     override fun requestRuntimePermissions(permissions: Array<out String>) {
         // The Fragment is now processing some permissions.
         isProcessingPermissions = true
-        Log.d(TAG, "requesting permissions: ${permissions.joinToString(separator = ",")}")
+        Log.d(TAG, "requesting permissions: ${permissions.joinToString()}")
         requestPermissions(permissions)
     }
 }

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION")
-
 package com.fondesa.kpermissions.request.runtime
 
 import androidx.fragment.app.Fragment
@@ -38,18 +36,18 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 /**
- * Tests for [FragmentRuntimePermissionHandlerProvider].
+ * Tests for [ResultLauncherRuntimePermissionHandlerProvider].
  */
 @RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
-class FragmentRuntimePermissionHandlerProviderTest {
-    private lateinit var provider: FragmentRuntimePermissionHandlerProvider
+class ResultLauncherRuntimePermissionHandlerProviderTest {
+    private lateinit var provider: ResultLauncherRuntimePermissionHandlerProvider
     private lateinit var scenario: ActivityScenario<TestActivity>
 
     @Before
     fun createProvider() {
         scenario = launchTestActivity()
-        provider = scenario.letActivity { FragmentRuntimePermissionHandlerProvider(it.supportFragmentManager) }
+        provider = scenario.letActivity { ResultLauncherRuntimePermissionHandlerProvider(it.supportFragmentManager) }
     }
 
     @After

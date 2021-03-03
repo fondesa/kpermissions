@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION")
-
 package com.fondesa.kpermissions.request.runtime
 
 import android.app.Activity
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider.Companion.FRAGMENT_TAG
+import com.fondesa.kpermissions.request.runtime.ResultLauncherRuntimePermissionHandlerProvider.Companion.FRAGMENT_TAG
 
 /**
- * Implementation of [RuntimePermissionHandler] that uses a [FragmentRuntimePermissionHandler]
+ * Implementation of [RuntimePermissionHandler] that uses a [ResultLauncherRuntimePermissionHandler]
  * to manage the permissions.
  *
  * The [Fragment] will be added synchronously to the [Activity] with the tag [FRAGMENT_TAG].
@@ -34,17 +32,14 @@ import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandler
  *
  * @property manager the [FragmentManager] of the [Activity].
  */
-@Deprecated("Use the new ResultLauncherRuntimePermissionHandlerProvider.")
-public open class FragmentRuntimePermissionHandlerProvider(private val manager: FragmentManager) :
-    RuntimePermissionHandlerProvider {
-
+internal class ResultLauncherRuntimePermissionHandlerProvider(private val manager: FragmentManager) : RuntimePermissionHandlerProvider {
     @RequiresApi(23)
-    final override fun provideHandler(): RuntimePermissionHandler {
+    override fun provideHandler(): RuntimePermissionHandler {
         // Obtain the current Fragment if possible, otherwise create it.
         var fragment = manager.findFragmentByTag(FRAGMENT_TAG) as? RuntimePermissionHandler
         if (fragment == null) {
             // Create the Fragment delegated to handle permissions.
-            fragment = createPermissionHandlerFragment()
+            fragment = ResultLauncherRuntimePermissionHandler()
             manager.beginTransaction()
                 .add(fragment, FRAGMENT_TAG)
                 .commitAllowingStateLoss()
@@ -52,11 +47,7 @@ public open class FragmentRuntimePermissionHandlerProvider(private val manager: 
         return fragment
     }
 
-    @RequiresApi(23)
-    protected open fun createPermissionHandlerFragment(): FragmentRuntimePermissionHandler =
-        DefaultFragmentRuntimePermissionHandler()
-
-    public companion object {
+    companion object {
         private const val FRAGMENT_TAG = "KPermissionsFragment"
     }
 }

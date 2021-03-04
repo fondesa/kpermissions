@@ -23,7 +23,7 @@ import org.gradle.api.file.FileTree
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
-import java.util.*
+import java.util.Locale
 
 /**
  * Enables the unit tests coverage in an Android project.

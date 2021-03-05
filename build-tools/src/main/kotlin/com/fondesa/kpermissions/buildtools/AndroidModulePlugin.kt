@@ -19,7 +19,6 @@ package com.fondesa.kpermissions.buildtools
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.jetbrains.dokka.gradle.DokkaTask
 
 /**
  * Applies the base configuration to all the Android modules of this project.
@@ -56,10 +55,5 @@ class AndroidModulePlugin : Plugin<Project> {
         withAndroidApplicationPlugin {
             defaultConfig.targetSdk = androidProperties.getProperty("android.config.targetSdk").toInt()
         }
-        tasks.withType(DokkaTask::class.java) {
-            it.outputFormat = "html"
-            it.skipEmptyPackages = true
-        }
-        Unit
     }
 }

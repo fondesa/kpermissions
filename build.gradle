@@ -15,22 +15,24 @@
  */
 
 buildscript {
-    apply from: rootProject.file("buildSrc/repositories.gradle"), to: buildscript
+    apply from: rootProject.file("build-tools/repositories.gradle"), to: buildscript
+    apply from: rootProject.file("build-tools/parse-dependencies.gradle")
 
     dependencies {
-        classpath Deps.androidPlugin
-        classpath Deps.dokkaPlugin
-        classpath Deps.gitHubReleasePlugin
-        classpath Deps.gradleMavenPublishPlugin
-        classpath Deps.kotlinPlugin
-        classpath Deps.ktlint
-        classpath Deps.releasesHubPlugin
+        classpath deps.androidPlugin
+        classpath deps.dokkaPlugin
+        classpath deps.gitHubReleasePlugin
+        classpath deps.gradleMavenPublishPlugin
+        classpath deps.kotlinPlugin
+        classpath deps.kpermissionsBuildTools
+        classpath deps.ktlint
+        classpath deps.releasesHubPlugin
     }
 }
 
 allprojects {
-    apply from: rootProject.file("buildSrc/repositories.gradle")
-    apply from: rootProject.file("buildSrc/kotlin.gradle")
+    apply from: rootProject.file("build-tools/repositories.gradle")
+    apply from: rootProject.file("build-tools/kotlin.gradle")
     // Adds the version of this library to all the projects, including the root project.
     apply plugin: "kpermissions-version"
 }
@@ -38,7 +40,7 @@ allprojects {
 apply plugin: "com.dipien.releaseshub.gradle.plugin"
 
 releasesHub {
-    dependenciesBasePath = "buildSrc/src/main/kotlin/"
+    dependenciesBasePath = "build-tools/src/main/kotlin/"
     dependenciesClassNames = ["Deps.kt"]
     pullRequestLabels = ["dependencies"]
     headBranchPrefix = "update-dependency/"

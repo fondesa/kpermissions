@@ -16,6 +16,8 @@
 
 rootProject.name = "kpermissions-root"
 
+includeBuild "build-tools"
+
 include ":kpermissions"
 include ":kpermissions-coroutines"
 include ":kpermissions-rx2"

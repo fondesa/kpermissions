@@ -17,7 +17,8 @@
 import java.util.regex.Pattern
 
 def dependencyLinePattern = Pattern.compile("\\s*const\\s*val\\s*(\\w+)\\s*=\\s*\"([\\w\\d.:\\-]+)\"")
-ext.deps = file("src/main/kotlin/Deps.kt")
+def depsFilePath = rootProject.name == "build-tools" ? "src/main/kotlin" : "build-tools/src/main/kotlin"
+ext.deps = rootProject.file("$depsFilePath/Deps.kt")
         .readLines()
         .stream()
         .map { line ->

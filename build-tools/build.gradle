@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+group = "com.fondesa.kpermissions.buildtools"
+
 buildscript {
     apply from: "repositories.gradle", to: buildscript
     apply from: "parse-dependencies.gradle"
@@ -24,12 +26,12 @@ buildscript {
     }
 }
 
-apply from: "repositories.gradle"
-apply plugin: "groovy"
 apply plugin: "kotlin"
+apply from: "repositories.gradle"
 apply from: "kotlin.gradle"
 
 dependencies {
+    implementation gradleApi()
     implementation deps.androidPlugin
     implementation deps.androidPluginApi
     implementation deps.dokkaPlugin

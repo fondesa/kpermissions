@@ -20,7 +20,6 @@ apply plugin: "kpermissions-android-coverage"
 apply plugin: "kpermissions-deploy"
 
 dependencies {
-    api Deps.androidxActivity
     api Deps.androidxFragment
 
     testImplementation Deps.androidxFragmentTesting

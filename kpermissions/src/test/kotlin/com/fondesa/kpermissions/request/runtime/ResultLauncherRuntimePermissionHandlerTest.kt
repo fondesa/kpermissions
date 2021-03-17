@@ -156,34 +156,6 @@ class ResultLauncherRuntimePermissionHandlerTest {
         verifyZeroInteractions(listener)
     }
 
-    // Verifies the bug: https://issuetracker.google.com/issues/180884668.
-    @Test
-    fun `When permissions result is received without permissions, the listeners are notified with granted permissions`() {
-        fragment.attachListener(permissions, listener)
-        fragment.handleRuntimePermissions(permissions)
-
-        fragment.onPermissionsResult()
-
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
-    }
-
-    // Verifies the bug: https://issuetracker.google.com/issues/180884668.
-    @Test
-    fun `When permissions result is received without some permissions, the listeners are notified with granted permissions`() {
-        fragment.attachListener(permissions, listener)
-        fragment.handleRuntimePermissions(permissions)
-        fragment.stubRationaleResult(firstPermission, true)
-
-        fragment.onPermissionsResult(firstPermission to false)
-
-        verify(listener).onPermissionsResult(
-            listOf(
-                PermissionStatus.Denied.ShouldShowRationale(firstPermission),
-                PermissionStatus.Granted(secondPermission)
-            )
-        )
-    }
-
     @Test
     fun `When permissions result is received with granted permissions, the listeners are notified`() {
         fragment.attachListener(permissions, listener)

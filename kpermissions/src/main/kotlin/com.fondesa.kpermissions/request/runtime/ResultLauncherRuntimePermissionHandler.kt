@@ -92,10 +92,7 @@ internal class ResultLauncherRuntimePermissionHandler : Fragment(), RuntimePermi
         // Get the listener for this set of permissions.
         // If it's null, the permissions can't be notified.
         val listener = listeners[pendingPermissions.toSet()] ?: return
-        // The result does not contain the already granted permissions.
-        // This behavior will be fixed in future versions, see: https://issuetracker.google.com/issues/180884668.
-        val normalizedResult = pendingPermissions.map { permission -> permission to true }.toMap() + permissionsResult
-        val result = normalizedResult.map { (permission, isGranted) ->
+        val result = permissionsResult.map { (permission, isGranted) ->
             when {
                 isGranted -> PermissionStatus.Granted(permission)
                 shouldShowRequestPermissionRationale(permission) -> PermissionStatus.Denied.ShouldShowRationale(permission)

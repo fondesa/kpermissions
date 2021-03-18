@@ -157,6 +157,51 @@ class ResultLauncherRuntimePermissionHandlerTest {
     }
 
     @Test
+    fun `When permissions result is received with implicit permissions in the manifest, the listeners are notified`() {
+        fragment.attachListener(permissions, listener)
+        fragment.handleRuntimePermissions(permissions)
+        context.grantPermissions(firstPermission, secondPermission)
+
+        fragment.onPermissionsResult()
+
+        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+    }
+
+    @Test
+    fun `When permissions result is received with implicit permissions not in the manifest, the listeners are notified`() {
+        fragment.attachListener(permissions, listener)
+        fragment.handleRuntimePermissions(permissions)
+        fragment.stubRationaleResult(firstPermission, true)
+        fragment.stubRationaleResult(secondPermission, false)
+
+        fragment.onPermissionsResult()
+
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Denied.ShouldShowRationale(firstPermission),
+                PermissionStatus.Denied.Permanently(secondPermission)
+            )
+        )
+    }
+
+    @Test
+    fun `When permissions result is received without some permissions, the listeners are notified`() {
+        fragment.attachListener(permissions, listener)
+        fragment.handleRuntimePermissions(permissions)
+        fragment.stubRationaleResult(firstPermission, true)
+        context.grantPermissions(secondPermission)
+
+        fragment.onPermissionsResult(firstPermission to false)
+
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Denied.ShouldShowRationale(firstPermission),
+                PermissionStatus.Granted(secondPermission)
+            )
+        )
+    }
+
+    @Test
     fun `When permissions result is received with granted permissions, the listeners are notified`() {
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.extension.checkRuntimePermissionsStatus
+import com.fondesa.kpermissions.extension.isPermissionGranted
 
 /**
  * Implementation of [RuntimePermissionHandler] which used the new [ActivityResultContracts] API to manage the permissions' request.
@@ -94,7 +95,9 @@ internal class ResultLauncherRuntimePermissionHandler : Fragment(), RuntimePermi
         // Get the listener for this set of permissions.
         // If it's null, the permissions can't be notified.
         val listener = listeners[pendingPermissions.toSet()] ?: return
-        val result = permissionsResult.map { (permission, isGranted) ->
+        val context = requireContext()
+        val result = pendingPermissions.map { permission ->
+            val isGranted = permissionsResult.getOrElse(permission) { context.isPermissionGranted(permission) }
             when {
                 isGranted -> PermissionStatus.Granted(permission)
                 shouldShowRequestPermissionRationale(permission) -> PermissionStatus.Denied.ShouldShowRationale(permission)

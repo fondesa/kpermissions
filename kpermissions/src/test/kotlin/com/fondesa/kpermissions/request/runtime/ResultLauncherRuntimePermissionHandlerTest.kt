@@ -219,7 +219,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
     }
 
     @Test
-    fun `When Fragment is not added yet, the permissions are handled when it will be attached`() {
+    fun `When Fragment is not added yet and the permissions are granted, the permissions are handled when it will be attached`() {
         fragment.attachListener(permissions, listener)
         context.grantPermissions(*permissions)
         whenever(fragment.isAdded) doReturn false
@@ -229,6 +229,23 @@ class ResultLauncherRuntimePermissionHandlerTest {
         verify(listener, never()).onPermissionsResult(any())
 
         fragment.onAttach(context)
+        fragment.onCreate(null)
+
+        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+    }
+
+    @Test
+    fun `When Fragment is not added yet and the permissions are not granted, the permissions are handled when it will be attached`() {
+        fragment.attachListener(permissions, listener)
+        whenever(fragment.isAdded) doReturn false
+
+        fragment.handleRuntimePermissions(permissions)
+
+        verify(listener, never()).onPermissionsResult(any())
+
+        fragment.onAttach(context)
+        fragment.onCreate(null)
+        fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
 
         verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
     }

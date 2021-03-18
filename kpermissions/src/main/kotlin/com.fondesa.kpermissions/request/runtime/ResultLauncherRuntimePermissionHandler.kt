@@ -33,7 +33,9 @@ internal class ResultLauncherRuntimePermissionHandler : Fragment(), RuntimePermi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pendingPermissions = savedInstanceState?.getStringArray(KEY_PENDING_PERMISSIONS)
+        if (pendingPermissions == null) {
+            pendingPermissions = savedInstanceState?.getStringArray(KEY_PENDING_PERMISSIONS)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

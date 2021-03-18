@@ -157,6 +157,51 @@ class ResultLauncherRuntimePermissionHandlerTest {
     }
 
     @Test
+    fun `When permissions result is received with implicit permissions in the manifest, the listeners are notified`() {
+        fragment.attachListener(permissions, listener)
+        fragment.handleRuntimePermissions(permissions)
+        context.grantPermissions(firstPermission, secondPermission)
+
+        fragment.onPermissionsResult()
+
+        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+    }
+
+    @Test
+    fun `When permissions result is received with implicit permissions not in the manifest, the listeners are notified`() {
+        fragment.attachListener(permissions, listener)
+        fragment.handleRuntimePermissions(permissions)
+        fragment.stubRationaleResult(firstPermission, true)
+        fragment.stubRationaleResult(secondPermission, false)
+
+        fragment.onPermissionsResult()
+
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Denied.ShouldShowRationale(firstPermission),
+                PermissionStatus.Denied.Permanently(secondPermission)
+            )
+        )
+    }
+
+    @Test
+    fun `When permissions result is received without some permissions, the listeners are notified`() {
+        fragment.attachListener(permissions, listener)
+        fragment.handleRuntimePermissions(permissions)
+        fragment.stubRationaleResult(firstPermission, true)
+        context.grantPermissions(secondPermission)
+
+        fragment.onPermissionsResult(firstPermission to false)
+
+        verify(listener).onPermissionsResult(
+            listOf(
+                PermissionStatus.Denied.ShouldShowRationale(firstPermission),
+                PermissionStatus.Granted(secondPermission)
+            )
+        )
+    }
+
+    @Test
     fun `When permissions result is received with granted permissions, the listeners are notified`() {
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
@@ -219,7 +264,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
     }
 
     @Test
-    fun `When Fragment is not added yet, the permissions are handled when it will be attached`() {
+    fun `When Fragment is not added yet and the permissions are granted, the permissions are handled when it will be attached`() {
         fragment.attachListener(permissions, listener)
         context.grantPermissions(*permissions)
         whenever(fragment.isAdded) doReturn false
@@ -229,6 +274,23 @@ class ResultLauncherRuntimePermissionHandlerTest {
         verify(listener, never()).onPermissionsResult(any())
 
         fragment.onAttach(context)
+        fragment.onCreate(null)
+
+        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+    }
+
+    @Test
+    fun `When Fragment is not added yet and the permissions are not granted, the permissions are handled when it will be attached`() {
+        fragment.attachListener(permissions, listener)
+        whenever(fragment.isAdded) doReturn false
+
+        fragment.handleRuntimePermissions(permissions)
+
+        verify(listener, never()).onPermissionsResult(any())
+
+        fragment.onAttach(context)
+        fragment.onCreate(null)
+        fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
 
         verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
     }

@@ -27,7 +27,7 @@ object Deps {
     const val gitHubReleasePlugin = "com.github.breadmoirai:github-release:2.2.12"
     const val gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
     const val junit = "junit:junit:4.13.2"
-    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
+    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:1.4.32"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32"
     const val kpermissionsBuildTools = "com.fondesa.kpermissions.buildtools:build-tools"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:9.4.1"

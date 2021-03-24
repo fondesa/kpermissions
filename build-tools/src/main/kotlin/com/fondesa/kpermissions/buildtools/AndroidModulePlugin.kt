@@ -38,12 +38,7 @@ class AndroidModulePlugin : Plugin<Project> {
                 sourceCompatibility = JavaVersion.VERSION_1_8
                 targetCompatibility = JavaVersion.VERSION_1_8
             }
-            lintOptions {
-                isWarningsAsErrors = true
-                // https://issuetracker.google.com/issues/182680677
-                // https://issuetracker.google.com/issues/182701066
-                ignore("InvalidFragmentVersionForActivityResult")
-            }
+            lintOptions.isWarningsAsErrors = true
             testOptions.unitTests.apply {
                 // Used by Robolectric since Android resources can be used in unit tests.
                 isIncludeAndroidResources = true

@@ -35,7 +35,10 @@ class PrioritizePropsFileConfigurationStrategy(vararg configurers: Configurer<*>
     HierarchicalConfigurationStrategy(*configurers.removeRobolectricConfigConfigurer())
 
 /**
- * A custom [ConfigConfigurer] which prioritizes the robolectric.properties file instead of the annotation @Config on the tests methods.
+ * A custom [ConfigConfigurer] which merges the robolectric.properties with the annotation @Config on the tests methods/classes.
+ * This is useful to avoid the automatic prioritization done by the annotation @Config on tests.
+ * This fixes the following problem:
+ * When a minSdk=22 is specified on a test, if the robolectric.properties contain minSdk=23, the minSdk=22 on test wins.
  */
 class PrioritizePropsFileConfigurer(packagePropertiesLoader: PackagePropertiesLoader, defaultConfigProvider: GlobalConfigProvider) :
     ConfigConfigurer(packagePropertiesLoader, defaultConfigProvider) {
@@ -57,10 +60,20 @@ class PrioritizePropsFileConfigurer(packagePropertiesLoader: PackagePropertiesLo
     }
 
     private fun Config.mergeWithProperties(): Config {
-        var minSdk = max(robolectricPropertiesConfig.minSdk, minSdk)
-        val maxSdk = min(robolectricPropertiesConfig.maxSdk, maxSdk)
+        val propertiesMinSdk = robolectricPropertiesConfig.minSdk
+        val propertiesMaxSdk = robolectricPropertiesConfig.maxSdk
+        var minSdk = if (minSdk == -1) propertiesMinSdk else max(propertiesMinSdk, minSdk)
+        var maxSdk = if (maxSdk == -1) propertiesMaxSdk else min(propertiesMaxSdk, maxSdk)
         if (minSdk > maxSdk) {
-            minSdk = maxSdk
+            if (this.maxSdk == maxSdk) {
+                // E.g. propertiesMinSdk is 19, propertiesMaxSdk is 21 and this.maxSdk is 17.
+                // Since, maxSdk can't be 17 and minSdk 19, it makes minSdk 17.
+                minSdk = maxSdk
+            } else if (this.minSdk == minSdk) {
+                // E.g. propertiesMinSdk is 16, propertiesMaxSdk is 19 and this.minSdk is 21.
+                // Since, maxSdk can't be 19 and minSdk 21, it makes maxSdk 21.
+                maxSdk = minSdk
+            }
         }
         return Config.Builder()
             .overlay(this)

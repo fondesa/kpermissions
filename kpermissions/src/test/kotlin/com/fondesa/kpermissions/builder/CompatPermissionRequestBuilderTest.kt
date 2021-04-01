@@ -19,7 +19,9 @@ package com.fondesa.kpermissions.builder
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
+import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
 import com.fondesa.test.TestActivity
 import com.fondesa.test.launchTestActivity
 import com.fondesa.test.letActivity
@@ -31,6 +33,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
 /**
  * Tests for [CompatPermissionRequestBuilderTest].
@@ -56,23 +59,27 @@ class CompatPermissionRequestBuilderTest {
         }
     }
 
+    @Config(maxSdk = 22)
     @Test
-    fun verifyMinimumBuildInstance() {
+    fun verifyRequestBelowApi23() {
         // Build the request.
         val request = builder.permissions("example")
             .runtimeHandlerProvider(provider)
             .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))
+        assertThat(request, instanceOf(ManifestPermissionRequest::class.java))
     }
 
+    @Config(minSdk = 23)
     @Test
-    fun verifyFullBuildInstance() {
+    fun verifyRequestSinceApi23() {
         // Build the request.
         val request = builder.permissions("example", "example_2")
             .runtimeHandlerProvider(provider)
             .build()
         assertNotNull(request)
         assertThat(request, instanceOf(PermissionRequest::class.java))
+        assertThat(request, instanceOf(RuntimePermissionRequest::class.java))
     }
 }

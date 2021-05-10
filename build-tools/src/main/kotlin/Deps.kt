@@ -15,8 +15,8 @@
  */
 
 object Deps {
-    const val androidPlugin = "com.android.tools.build:gradle:4.1.3"
-    const val androidPluginApi = "com.android.tools.build:gradle-api:4.1.3"
+    const val androidPlugin = "com.android.tools.build:gradle:4.2.0"
+    const val androidPluginApi = "com.android.tools.build:gradle-api:4.2.0"
     const val androidxAppCompat = "androidx.appcompat:appcompat:1.2.0"
     const val androidxFragment = "androidx.fragment:fragment:1.3.3"
     const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.3.3"

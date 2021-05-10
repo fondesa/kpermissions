@@ -17,6 +17,7 @@
 package com.fondesa.kpermissions.buildtools
 
 import com.android.build.api.component.ComponentIdentity
+import com.android.build.api.extension.AndroidComponentsExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.FileTree
@@ -39,7 +40,7 @@ class AndroidCoveragePlugin : Plugin<Project> {
         }
         withAndroidPlugin {
             fixRobolectricCoverage()
-            onVariants { configureCoverageTasks(this) }
+            extensions.getByType(AndroidComponentsExtension::class.java).onVariants { configureCoverageTasks(it) }
         }
     }
 
@@ -72,6 +73,8 @@ class AndroidCoveragePlugin : Plugin<Project> {
             test.extensions.configure(JacocoTaskExtension::class.java) {
                 // It must be set to true otherwise the coverage of Robolectric tests is not calculated.
                 it.isIncludeNoLocationClasses = true
+                // Required when using JDK 11+.
+                it.excludes = listOf("jdk.internal.*")
             }
         }
     }
@@ -79,7 +82,7 @@ class AndroidCoveragePlugin : Plugin<Project> {
     private fun Project.fileTreeOf(dir: String): FileTree = fileTree(mapOf("dir" to dir, "excludes" to COVERAGE_EXCLUSIONS))
 
     companion object {
-        private const val JACOCO_VERSION = "0.8.6"
+        private const val JACOCO_VERSION = "0.8.7"
         private const val COVERAGE_TASKS_GROUP = "Coverage"
     }
 }

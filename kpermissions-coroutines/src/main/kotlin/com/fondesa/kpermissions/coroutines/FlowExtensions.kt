@@ -31,9 +31,9 @@ import kotlinx.coroutines.flow.callbackFlow
  * @return a new [Flow] which notifies the collector with a new item every time the result of [PermissionRequest.send] is received.
  * @see PermissionRequest.Listener.onPermissionsResult
  */
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 public fun PermissionRequest.flow(): Flow<List<PermissionStatus>> = callbackFlow {
-    val listener = PermissionRequest.Listener { result -> offer(result) }
+    val listener = PermissionRequest.Listener { result -> trySend(result) }
     addListener(listener)
     awaitClose { removeListener(listener) }
 }

@@ -29,7 +29,7 @@ object Deps {
     const val junit = "junit:junit:4.13.2"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10"
     const val kpermissionsBuildTools = "com.fondesa.kpermissions.buildtools:build-tools"
-    const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
+    const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"
     const val mockitoCore = "org.mockito:mockito-core:3.11.1"
     const val mockitoInLine = "org.mockito:mockito-inline:3.11.1"

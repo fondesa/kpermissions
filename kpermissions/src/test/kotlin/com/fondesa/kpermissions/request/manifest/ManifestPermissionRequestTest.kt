@@ -23,12 +23,12 @@ import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.test.context
 import com.fondesa.test.denyPermissions
 import com.fondesa.test.grantPermissions
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.robolectric.annotation.Config
 
 /**

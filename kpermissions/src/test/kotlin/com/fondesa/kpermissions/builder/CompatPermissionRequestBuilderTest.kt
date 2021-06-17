@@ -25,7 +25,6 @@ import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
 import com.fondesa.test.TestActivity
 import com.fondesa.test.launchTestActivity
 import com.fondesa.test.letActivity
-import com.nhaarman.mockitokotlin2.mock
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -33,6 +32,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
 import org.robolectric.annotation.Config
 
 /**

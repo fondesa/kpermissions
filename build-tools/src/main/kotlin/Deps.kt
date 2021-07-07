@@ -27,7 +27,7 @@ object Deps {
     const val gitHubReleasePlugin = "com.github.breadmoirai:github-release:2.2.12"
     const val gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.15.1"
     const val junit = "junit:junit:4.13.2"
-    const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10"
+    const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
     const val kpermissionsBuildTools = "com.fondesa.kpermissions.buildtools:build-tools"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"

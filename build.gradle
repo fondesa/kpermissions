@@ -46,6 +46,10 @@ releasesHub {
     headBranchPrefix = "update-dependency/"
     gitHubRepositoryOwner = "fondesa"
     gitHubRepositoryName = "kpermissions"
+    excludes = [
+            // Excluded because since the version 3.1.0 the minimum supported Android version is 21.
+            "io.reactivex.rxjava3:rxjava"
+    ]
 }
 
 apply plugin: "com.github.breadmoirai.github-release"

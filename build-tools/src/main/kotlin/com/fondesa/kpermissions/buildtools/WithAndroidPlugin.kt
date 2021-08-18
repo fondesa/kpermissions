@@ -23,13 +23,13 @@ import org.gradle.api.Project
 import com.android.build.gradle.LibraryExtension as LegacyLibraryExtension
 
 @Suppress("UnstableApiUsage")
-internal typealias AndroidCommonExtension = CommonExtension<*, *, *, *, *, *, *, *>
+internal typealias AndroidCommonExtension = CommonExtension<*, *, *, *>
 
 @Suppress("UnstableApiUsage")
-internal typealias AndroidApplicationExtension = ApplicationExtension<*, *, *, *, *>
+internal typealias AndroidApplicationExtension = ApplicationExtension
 
 @Suppress("UnstableApiUsage")
-internal typealias AndroidLibraryExtension = LibraryExtension<*, *, *, *, *>
+internal typealias AndroidLibraryExtension = LibraryExtension
 
 /**
  * Executes the given action when an Android plugin is applied using the new API.

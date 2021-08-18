@@ -15,8 +15,8 @@
  */
 
 object Deps {
-    const val androidPlugin = "com.android.tools.build:gradle:4.2.2"
-    const val androidPluginApi = "com.android.tools.build:gradle-api:4.2.2"
+    const val androidPlugin = "com.android.tools.build:gradle:7.0.0"
+    const val androidPluginApi = "com.android.tools.build:gradle-api:7.0.0"
     const val androidxAppCompat = "androidx.appcompat:appcompat:1.3.1"
     const val androidxFragment = "androidx.fragment:fragment:1.3.6"
     const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.3.6"
@@ -28,6 +28,7 @@ object Deps {
     const val gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.17.0"
     const val junit = "junit:junit:4.13.2"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21"
+    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:1.5.21"
     const val kpermissionsBuildTools = "com.fondesa.kpermissions.buildtools:build-tools"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"

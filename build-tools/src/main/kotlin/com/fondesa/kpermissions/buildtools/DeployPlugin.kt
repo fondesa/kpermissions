@@ -16,6 +16,8 @@
 
 package com.fondesa.kpermissions.buildtools
 
+import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseExtension
 import org.gradle.api.Plugin

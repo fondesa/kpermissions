@@ -16,15 +16,14 @@
 
 package com.fondesa.kpermissions.buildtools
 
-import com.android.build.api.component.ComponentIdentity
-import com.android.build.api.extension.AndroidComponentsExtension
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.ComponentIdentity
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.FileTree
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
-import java.util.Locale
 
 /**
  * Enables the unit tests coverage in an Android project.
@@ -44,16 +43,17 @@ class AndroidCoveragePlugin : Plugin<Project> {
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     private fun Project.configureCoverageTasks(variant: ComponentIdentity) {
-        val testTaskName = "test${variant.name.capitalize(Locale.getDefault())}UnitTest"
+        val testTaskName = "test${variant.name.replaceFirstChar { it.uppercase() }}UnitTest"
         val coverageTaskName = "${testTaskName}Coverage"
         tasks.register(coverageTaskName, JacocoReport::class.java).configure { coverageTask ->
             coverageTask.group = COVERAGE_TASKS_GROUP
             coverageTask.description = "Calculates the coverage and generates the reports for the variant \"${variant.name}\"."
             coverageTask.reports.apply {
-                html.isEnabled = true
-                xml.isEnabled = true
-                csv.isEnabled = false
+                html.required.set(true)
+                xml.required.set(true)
+                csv.required.set(false)
             }
             val javaClassDirectories = fileTreeOf("$buildDir/intermediates/javac/${variant.name}/classes")
             val kotlinClassDirectories = fileTreeOf("$buildDir/tmp/kotlin-classes/${variant.name}")

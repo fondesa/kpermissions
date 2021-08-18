@@ -22,8 +22,7 @@ tasks.configureEach { task ->
     taskName.eachMatch("^compile.*Kotlin\$") {
         kotlinOptions {
             jvmTarget = "1.8"
-            // Disabled in build-tools for this: https://github.com/gradle/gradle/issues/16345
-            allWarningsAsErrors = task.project.name != "build-tools"
+            allWarningsAsErrors = true
             freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
             if (task.project.name != "build-tools" && !taskName.contains("UnitTest")) {
                 freeCompilerArgs += "-Xexplicit-api=strict"

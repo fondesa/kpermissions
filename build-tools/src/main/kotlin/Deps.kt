@@ -21,7 +21,7 @@ object Deps {
     const val androidxFragment = "androidx.fragment:fragment:1.3.6"
     const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.3.6"
     const val androidxJUnit = "androidx.test.ext:junit:1.1.3"
-    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
     const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1"
     const val dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0"
     const val gitHubReleasePlugin = "com.github.breadmoirai:github-release:2.2.12"

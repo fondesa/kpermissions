@@ -23,7 +23,7 @@ tasks.configureEach { task ->
         kotlinOptions {
             jvmTarget = "1.8"
             allWarningsAsErrors = true
-            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
             if (task.project.name != "build-tools" && !taskName.contains("UnitTest")) {
                 freeCompilerArgs += "-Xexplicit-api=strict"
             }

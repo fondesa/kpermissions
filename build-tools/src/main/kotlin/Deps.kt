@@ -28,7 +28,7 @@ object Deps {
     const val gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.17.0"
     const val junit = "junit:junit:4.13.2"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30"
-    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:1.5.21"
+    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:1.5.30"
     const val kpermissionsBuildTools = "com.fondesa.kpermissions.buildtools:build-tools"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.1.0"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"

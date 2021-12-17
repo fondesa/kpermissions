@@ -32,7 +32,7 @@ object Deps {
     const val kpermissionsBuildTools = "com.fondesa.kpermissions.buildtools:build-tools"
     const val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.2.0"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.7"
-    const val mockitoCore = "org.mockito:mockito-core:3.12.4"
+    const val mockitoCore = "org.mockito:mockito-core:4.2.0"
     const val mockitoInLine = "org.mockito:mockito-inline:3.12.4"
     const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:4.0.0"
     const val releasesHubPlugin = "com.dipien:releases-hub-gradle-plugin:3.1.0"

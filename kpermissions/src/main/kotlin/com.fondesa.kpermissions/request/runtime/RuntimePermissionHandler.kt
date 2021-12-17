@@ -44,18 +44,6 @@ public interface RuntimePermissionHandler {
     public fun handleRuntimePermissions(permissions: Array<out String>)
 
     /**
-     * Request a group of permissions without checking the [permissions]'s state before
-     * sending the request.
-     * This shortcut can be useful to request the permissions again after a failure or
-     * when the state of the permissions is known.
-     *
-     * @param permissions set of permissions that must be requested.
-     */
-    @Suppress("DeprecatedCallableAddReplaceWith")
-    @Deprecated("Not invoked anymore by the library.")
-    public fun requestRuntimePermissions(permissions: Array<out String>): Unit = Unit
-
-    /**
      * Listener used to notify changed about the permissions' state.
      */
     public interface Listener {

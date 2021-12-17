@@ -39,6 +39,8 @@ class AndroidModulePlugin : Plugin<Project> {
                 targetCompatibility = JavaVersion.VERSION_1_8
             }
             lint.isWarningsAsErrors = true
+            // Fix of the following bug: https://issuetracker.google.com/issues/206855622
+            lint.ignore("ObsoleteLintCustomCheck")
             testOptions.unitTests.apply {
                 // Used by Robolectric since Android resources can be used in unit tests.
                 isIncludeAndroidResources = true

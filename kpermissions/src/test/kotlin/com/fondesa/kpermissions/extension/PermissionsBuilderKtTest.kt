@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION")
-
 package com.fondesa.kpermissions.extension
 
 import android.Manifest
@@ -26,15 +24,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.builder.BasePermissionRequestBuilder
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
-import com.fondesa.kpermissions.request.runtime.FragmentRuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.ResultLauncherRuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.shouldUseLegacyRuntimePermissionHandler
-import com.fondesa.kpermissions.useLegacyRuntimePermissionHandler
 import com.fondesa.test.launchTestActivity
 import com.fondesa.test.letActivity
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,54 +38,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class PermissionsBuilderKtTest {
-    @After
-    fun resetLegacyRuntimePermissionHandler() {
-        shouldUseLegacyRuntimePermissionHandler = false
-    }
-
-    @Test
-    fun `When permissionsBuilder() is invoked with an Activity instance and legacy handler is enabled request is built successfully`() {
-        useLegacyRuntimePermissionHandler()
-        val scenario = launchTestActivity()
-        val builder = scenario.letActivity {
-            it.permissionsBuilder(
-                Manifest.permission.SEND_SMS,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        }
-
-        assertNotNull(builder)
-        assertThat(builder, instanceOf(BasePermissionRequestBuilder::class.java))
-        builder as BasePermissionRequestBuilder
-        assertThat(builder.runtimeHandlerProvider, instanceOf(FragmentRuntimePermissionHandlerProvider::class.java))
-
-        val request = builder.build()
-        assertNotNull(request)
-        assertThat(request, instanceOf(PermissionRequest::class.java))
-        scenario.close()
-    }
-
-    @Test
-    fun `When permissionsBuilder() is invoked with a Fragment instance and legacy handler is enabled, request is built successfully`() {
-        useLegacyRuntimePermissionHandler()
-        val scenario = launchFragment<Fragment>()
-        val builder = scenario.withFragment {
-            permissionsBuilder(
-                Manifest.permission.SEND_SMS,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        }
-
-        assertNotNull(builder)
-        assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))
-        builder as BasePermissionRequestBuilder
-        assertThat(builder.runtimeHandlerProvider, instanceOf(FragmentRuntimePermissionHandlerProvider::class.java))
-
-        val request = builder.build()
-        assertNotNull(request)
-        assertThat(request, instanceOf(PermissionRequest::class.java))
-    }
-
     @Test
     fun `When permissionsBuilder() is invoked with an Activity instance, the PermissionRequest is built successfully`() {
         val scenario = launchTestActivity()

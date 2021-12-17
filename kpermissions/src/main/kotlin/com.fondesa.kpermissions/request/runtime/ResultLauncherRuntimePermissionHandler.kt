@@ -59,14 +59,6 @@ internal class ResultLauncherRuntimePermissionHandler : Fragment(), RuntimePermi
         }
     }
 
-    @Suppress("OverridingDeprecatedMember")
-    override fun requestRuntimePermissions(permissions: Array<out String>) {
-        // The Fragment is now processing some permissions.
-        pendingPermissions = permissions
-        Log.d(TAG, "requesting permissions: ${permissions.joinToString()}")
-        resultLauncher.launch(permissions)
-    }
-
     private fun handleRuntimePermissionsWhenAdded(permissions: Array<out String>) {
         // Get the listener for this set of permissions.
         // If it's null, the permissions can't be notified.
@@ -80,11 +72,17 @@ internal class ResultLauncherRuntimePermissionHandler : Fragment(), RuntimePermi
                 return
             }
             // Request the permissions.
-            @Suppress("DEPRECATION")
             requestRuntimePermissions(permissions)
         } else {
             listener.onPermissionsResult(currentStatus)
         }
+    }
+
+    private fun requestRuntimePermissions(permissions: Array<out String>) {
+        // The Fragment is now processing some permissions.
+        pendingPermissions = permissions
+        Log.d(TAG, "requesting permissions: ${permissions.joinToString()}")
+        resultLauncher.launch(permissions)
     }
 
     @VisibleForTesting

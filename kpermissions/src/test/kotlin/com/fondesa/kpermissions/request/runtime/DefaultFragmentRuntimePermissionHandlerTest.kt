@@ -43,8 +43,8 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.verifyZeroInteractions
 import org.mockito.kotlin.whenever
 import org.robolectric.annotation.Config
 
@@ -99,7 +99,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         // The Fragment must request the runtime permissions at first, because they are denied.
         verify(spiedFragment).requestRuntimePermissions(permissions)
         // The listener mustn't be invoked.
-        verifyZeroInteractions(listener)
+        verifyNoInteractions(listener)
     }
 
     @Test
@@ -237,7 +237,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
             )
         )
 
-        verifyZeroInteractions(listener)
+        verifyNoInteractions(listener)
     }
 
     @Test
@@ -253,7 +253,7 @@ class DefaultFragmentRuntimePermissionHandlerTest {
         // Calls the result with the captured code.
         spiedFragment.onRequestPermissionsResult(reqCode, emptyArray(), intArrayOf())
 
-        verifyZeroInteractions(listener)
+        verifyNoInteractions(listener)
     }
 
     @Test

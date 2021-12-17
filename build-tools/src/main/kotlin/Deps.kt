@@ -19,7 +19,7 @@ object Deps {
     const val androidPluginApi = "com.android.tools.build:gradle-api:7.0.2"
     const val androidxAppCompat = "androidx.appcompat:appcompat:1.3.1"
     const val androidxFragment = "androidx.fragment:fragment:1.4.0"
-    const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.3.6"
+    const val androidxFragmentTesting = "androidx.fragment:fragment-testing:1.4.0"
     const val androidxJUnit = "androidx.test.ext:junit:1.1.3"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
     const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"

@@ -36,7 +36,7 @@ object Deps {
     const val mockitoInLine = "org.mockito:mockito-inline:3.12.4"
     const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:3.2.0"
     const val releasesHubPlugin = "com.dipien:releases-hub-gradle-plugin:3.1.0"
-    const val robolectric = "org.robolectric:robolectric:4.6.1"
+    const val robolectric = "org.robolectric:robolectric:4.7.3"
     const val rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.21"
     const val rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.13"
 }

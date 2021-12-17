@@ -40,8 +40,8 @@ allprojects {
 apply plugin: "com.dipien.releaseshub.gradle.plugin"
 
 releasesHub {
-    dependenciesBasePath = "build-tools/src/main/kotlin/"
-    dependenciesClassNames = ["Deps.kt"]
+    autoDetectDependenciesPaths = false
+    dependenciesPaths = ["build-tools/src/main/kotlin/Deps.kt"]
     pullRequestLabels = ["dependencies"]
     headBranchPrefix = "update-dependency/"
     gitHubRepositoryOwner = "fondesa"

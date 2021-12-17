@@ -22,8 +22,8 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.verifyZeroInteractions
 import org.mockito.kotlin.whenever
 import org.robolectric.annotation.Config
 
@@ -67,7 +67,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
         verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
         verifyNoMoreInteractions(listener)
-        verifyZeroInteractions(resultLauncher)
+        verifyNoInteractions(resultLauncher)
     }
 
     @Test
@@ -86,7 +86,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
         verify(resultLauncher).launch(permissions)
         verifyNoMoreInteractions(resultLauncher)
-        verifyZeroInteractions(listener)
+        verifyNoInteractions(listener)
     }
 
     @Test
@@ -153,7 +153,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
 
-        verifyZeroInteractions(listener)
+        verifyNoInteractions(listener)
     }
 
     @Test

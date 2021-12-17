@@ -21,17 +21,20 @@ package com.fondesa.kpermissions.request
  * that must be the same to all its subclasses.
  */
 public abstract class BasePermissionRequest : PermissionRequest {
-    protected val listeners: MutableSet<PermissionRequest.Listener> = mutableSetOf()
+    // Avoids ConcurrentModificationException when updating the set while iterating on it in another thread.
+    // https://github.com/fondesa/kpermissions/issues/288
+    protected val listeners: Set<PermissionRequest.Listener> get() = mutableListeners.toSet()
+    private val mutableListeners: MutableSet<PermissionRequest.Listener> = mutableSetOf()
 
     override fun addListener(listener: PermissionRequest.Listener) {
-        listeners += listener
+        mutableListeners += listener
     }
 
     override fun removeListener(listener: PermissionRequest.Listener) {
-        listeners -= listener
+        mutableListeners -= listener
     }
 
     override fun removeAllListeners() {
-        listeners.clear()
+        mutableListeners.clear()
     }
 }

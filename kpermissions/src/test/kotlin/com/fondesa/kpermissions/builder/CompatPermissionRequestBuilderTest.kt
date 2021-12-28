@@ -16,23 +16,21 @@
 
 package com.fondesa.kpermissions.builder
 
-import androidx.test.core.app.ActivityScenario
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
-import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
-import com.fondesa.test.TestActivity
-import com.fondesa.test.launchTestActivity
-import com.fondesa.test.letActivity
+import com.fondesa.kpermissions.testing.fakes.FakeRuntimePermissionHandlerProvider
+import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
+import com.fondesa.kpermissions.testing.activity
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
 import org.robolectric.annotation.Config
 
 /**
@@ -40,23 +38,14 @@ import org.robolectric.annotation.Config
  */
 @RunWith(AndroidJUnit4::class)
 class CompatPermissionRequestBuilderTest {
-    private val provider = mock<RuntimePermissionHandlerProvider> {
-        on(it.provideHandler()).thenReturn(mock())
-    }
+    @get:Rule
+    internal val scenarioRule = ActivityScenarioRule(FakeFragmentActivity::class.java)
+    private val provider = FakeRuntimePermissionHandlerProvider()
     private lateinit var builder: CompatPermissionRequestBuilder
-    private lateinit var scenario: ActivityScenario<TestActivity>
 
     @Before
     fun createBuilder() {
-        scenario = launchTestActivity()
-        builder = scenario.letActivity { CompatPermissionRequestBuilder(it) }
-    }
-
-    @After
-    fun destroyScenario() {
-        if (::scenario.isInitialized) {
-            scenario.close()
-        }
+        builder = CompatPermissionRequestBuilder(scenarioRule.activity)
     }
 
     @Config(maxSdk = 22)

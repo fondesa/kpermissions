@@ -18,28 +18,22 @@ package com.fondesa.kpermissions.coroutines
 
 import android.Manifest
 import com.fondesa.kpermissions.PermissionStatus
-import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.testing.fakes.FakePermissionRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
 
 /**
  * Tests for FlowExtensions.kt file.
  */
 @ExperimentalCoroutinesApi
 class FlowExtensionsKtTest {
-    private val request = mock<PermissionRequest>()
-    private val listenerCaptor = argumentCaptor<PermissionRequest.Listener>()
+    private val request = FakePermissionRequest()
 
     @Test
     fun `When request listener is notified, the collector is notified too`() = runBlockingTest {
@@ -48,9 +42,9 @@ class FlowExtensionsKtTest {
             request.flow().collect { values += it }
         }
 
-        verify(request).addListener(listenerCaptor.capture())
+        assertEquals(1, request.listeners.size)
 
-        val listener = listenerCaptor.lastValue
+        val listener = request.listeners.first()
         listener.onPermissionsResult(
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
@@ -98,23 +92,24 @@ class FlowExtensionsKtTest {
     fun `When the collector is launched and canceled, the request listener is added and removed`() = runBlockingTest {
         val flow = request.flow()
 
-        verify(request, never()).addListener(any())
+        assertTrue(request.listeners.isEmpty())
 
         val job1 = launch { flow.collect() }
 
-        verify(request).addListener(listenerCaptor.capture())
+        assertEquals(1, request.listeners.size)
 
         val job2 = launch { flow.collect() }
 
-        verify(request, times(2)).addListener(listenerCaptor.capture())
-        assertNotEquals(listenerCaptor.firstValue, listenerCaptor.lastValue)
+        assertEquals(2, request.listeners.size)
+        val secondListener = request.listeners[1]
+        assertNotEquals(request.listeners.first(), secondListener)
 
         job1.cancel()
 
-        verify(request).removeListener(listenerCaptor.firstValue)
+        assertEquals(listOf(secondListener), request.listeners)
 
         job2.cancel()
 
-        verify(request).removeListener(listenerCaptor.lastValue)
+        assertTrue(request.listeners.isEmpty())
     }
 }

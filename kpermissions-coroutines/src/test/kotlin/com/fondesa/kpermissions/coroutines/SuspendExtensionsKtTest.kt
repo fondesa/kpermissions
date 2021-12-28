@@ -18,35 +18,30 @@ package com.fondesa.kpermissions.coroutines
 
 import android.Manifest
 import com.fondesa.kpermissions.PermissionStatus
-import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.testing.fakes.FakePermissionRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
 
 /**
  * Tests for SuspendExtensions.kt file.
  */
 @ExperimentalCoroutinesApi
 class SuspendExtensionsKtTest {
-    private val request = mock<PermissionRequest>()
-    private val listenerCaptor = argumentCaptor<PermissionRequest.Listener>()
+    private val request = FakePermissionRequest()
 
     @Test
     fun `When sendSuspend is invoked, the result is received when listener is notified`() = runBlockingTest {
         var result: List<PermissionStatus>? = null
         val job = launch { result = request.sendSuspend() }
 
-        verify(request).addListener(listenerCaptor.capture())
+        assertEquals(1, request.listeners.size)
 
-        val listener = listenerCaptor.lastValue
+        val listener = request.listeners.first()
         listener.onPermissionsResult(
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
@@ -70,10 +65,9 @@ class SuspendExtensionsKtTest {
     fun `When sendSuspend is invoked and the result is received, the listener is removed`() = runBlockingTest {
         val job = launch { request.sendSuspend() }
 
-        verify(request).addListener(listenerCaptor.capture())
-        verify(request, never()).removeListener(any())
+        assertEquals(1, request.listeners.size)
 
-        val listener = listenerCaptor.lastValue
+        val listener = request.listeners.first()
         listener.onPermissionsResult(
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
@@ -81,7 +75,7 @@ class SuspendExtensionsKtTest {
             )
         )
 
-        verify(request).removeListener(listener)
+        assertTrue(request.listeners.isEmpty())
 
         job.cancel()
     }
@@ -90,11 +84,10 @@ class SuspendExtensionsKtTest {
     fun `When sendSuspend is invoked and the job is canceled, the listener is removed`() = runBlockingTest {
         val job = launch { request.sendSuspend() }
 
-        verify(request).addListener(listenerCaptor.capture())
-        verify(request, never()).removeListener(any())
+        assertEquals(1, request.listeners.size)
 
         job.cancel()
 
-        verify(request).removeListener(listenerCaptor.lastValue)
+        assertTrue(request.listeners.isEmpty())
     }
 }

@@ -19,16 +19,13 @@ package com.fondesa.kpermissions.request.manifest
 import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
-import com.fondesa.kpermissions.request.PermissionRequest
-import com.fondesa.test.context
-import com.fondesa.test.denyPermissions
-import com.fondesa.test.grantPermissions
+import com.fondesa.kpermissions.testing.context
+import com.fondesa.kpermissions.testing.fakes.FakePermissionRequestListener
+import com.fondesa.kpermissions.testing.denyPermissions
+import com.fondesa.kpermissions.testing.grantPermissions
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoMoreInteractions
 import org.robolectric.annotation.Config
 
 /**
@@ -56,8 +53,8 @@ class ManifestPermissionRequestTest {
 
     @Test
     fun `When request is sent, listeners are notified with the right permission status`() {
-        val firstListener = mock<PermissionRequest.Listener>()
-        val secondListener = mock<PermissionRequest.Listener>()
+        val firstListener = FakePermissionRequestListener()
+        val secondListener = FakePermissionRequestListener()
         val request = requestOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.SEND_SMS
@@ -73,15 +70,14 @@ class ManifestPermissionRequestTest {
             PermissionStatus.Granted(Manifest.permission.ACCESS_FINE_LOCATION),
             PermissionStatus.Denied.Permanently(Manifest.permission.SEND_SMS)
         )
-        verify(firstListener).onPermissionsResult(expectedResult)
-        verify(secondListener).onPermissionsResult(expectedResult)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(expectedResult), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(expectedResult), secondListener.receivedPermissionsResults)
     }
 
     @Test
     fun `When one listener is detached and request is sent, the detached listener is not notified anymore`() {
-        val firstListener = mock<PermissionRequest.Listener>()
-        val secondListener = mock<PermissionRequest.Listener>()
+        val firstListener = FakePermissionRequestListener()
+        val secondListener = FakePermissionRequestListener()
         val request = requestOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.SEND_SMS
@@ -97,22 +93,20 @@ class ManifestPermissionRequestTest {
             PermissionStatus.Granted(Manifest.permission.ACCESS_FINE_LOCATION),
             PermissionStatus.Denied.Permanently(Manifest.permission.SEND_SMS)
         )
-        verify(firstListener).onPermissionsResult(expectedResult)
-        verify(secondListener).onPermissionsResult(expectedResult)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(expectedResult), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(expectedResult), secondListener.receivedPermissionsResults)
 
         request.removeListener(firstListener)
         request.send()
 
-        verify(firstListener).onPermissionsResult(expectedResult)
-        verify(secondListener, times(2)).onPermissionsResult(expectedResult)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(expectedResult), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(expectedResult, expectedResult), secondListener.receivedPermissionsResults)
     }
 
     @Test
     fun `When all listeners are detached and request is sent, the listeners are not notified anymore`() {
-        val firstListener = mock<PermissionRequest.Listener>()
-        val secondListener = mock<PermissionRequest.Listener>()
+        val firstListener = FakePermissionRequestListener()
+        val secondListener = FakePermissionRequestListener()
         val request = requestOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.SEND_SMS
@@ -128,16 +122,14 @@ class ManifestPermissionRequestTest {
             PermissionStatus.Granted(Manifest.permission.ACCESS_FINE_LOCATION),
             PermissionStatus.Denied.Permanently(Manifest.permission.SEND_SMS)
         )
-        verify(firstListener).onPermissionsResult(expectedResult)
-        verify(secondListener).onPermissionsResult(expectedResult)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(expectedResult), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(expectedResult), secondListener.receivedPermissionsResults)
 
         request.removeAllListeners()
         request.send()
 
-        verify(firstListener).onPermissionsResult(expectedResult)
-        verify(secondListener).onPermissionsResult(expectedResult)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(expectedResult), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(expectedResult), secondListener.receivedPermissionsResults)
     }
 
     private fun requestOf(vararg permissions: String): ManifestPermissionRequest = ManifestPermissionRequest(context, permissions)

@@ -17,27 +17,19 @@
 package com.fondesa.kpermissions.request.runtime
 
 import android.Manifest
-import androidx.test.core.app.ActivityScenario
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
-import com.fondesa.kpermissions.request.PermissionRequest
-import com.fondesa.test.TestActivity
-import com.fondesa.test.denyPermissions
-import com.fondesa.test.grantPermissions
-import com.fondesa.test.launchTestActivity
-import com.fondesa.test.letActivity
-import org.junit.After
+import com.fondesa.kpermissions.testing.activity
+import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
+import com.fondesa.kpermissions.testing.fakes.FakePermissionRequestListener
+import com.fondesa.kpermissions.testing.fakes.FakeRuntimePermissionHandler
+import com.fondesa.kpermissions.testing.denyPermissions
+import com.fondesa.kpermissions.testing.grantPermissions
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.whenever
 import org.robolectric.annotation.Config
 
 /**
@@ -46,32 +38,19 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(minSdk = 23)
 class RuntimePermissionRequestTest {
-    private val handler = mock<RuntimePermissionHandler>()
-    private lateinit var scenario: ActivityScenario<TestActivity>
-    private lateinit var spiedActivity: TestActivity
-
-    @Before
-    fun spyActivity() {
-        scenario = launchTestActivity()
-        spiedActivity = scenario.letActivity { spy(it) }
-    }
-
-    @After
-    fun destroyScenario() {
-        if (::scenario.isInitialized) {
-            scenario.close()
-        }
-    }
+    @get:Rule
+    internal val scenarioRule = ActivityScenarioRule(FakeFragmentActivity::class.java)
+    private val handler = FakeRuntimePermissionHandler()
+    private val activity get() = scenarioRule.activity
 
     @Test
     fun onePermissionHandled() {
-        val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val request = RuntimePermissionRequest(spiedActivity, permission, handler)
-
-        verify(handler).attachListener(permission, request)
+        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        val request = RuntimePermissionRequest(activity, permissions, handler)
 
         request.send()
-        verify(handler).handleRuntimePermissions(permission)
+
+        assertEquals(listOf(permissions), handler.handledRuntimePermissions)
     }
 
     @Test
@@ -80,21 +59,20 @@ class RuntimePermissionRequestTest {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.SEND_SMS
         )
-        val request = RuntimePermissionRequest(spiedActivity, permissions, handler)
-
-        verify(handler).attachListener(permissions, request)
+        val request = RuntimePermissionRequest(activity, permissions, handler)
 
         request.send()
-        verify(handler).handleRuntimePermissions(permissions)
+
+        assertEquals(listOf(permissions), handler.handledRuntimePermissions)
     }
 
     @Test
     fun `When onPermissionsResult is invoked, the result is sent to the notified listeners`() {
-        val firstListener = mock<PermissionRequest.Listener>()
-        val secondListener = mock<PermissionRequest.Listener>()
+        val firstListener = FakePermissionRequestListener()
+        val secondListener = FakePermissionRequestListener()
         val permissions =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
-        val request = RuntimePermissionRequest(spiedActivity, permissions, handler).apply {
+        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
             addListener(firstListener)
             addListener(secondListener)
         }
@@ -105,18 +83,17 @@ class RuntimePermissionRequestTest {
         )
         request.onPermissionsResult(result)
 
-        verify(firstListener).onPermissionsResult(result)
-        verify(secondListener).onPermissionsResult(result)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(result), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(result), secondListener.receivedPermissionsResults)
     }
 
     @Test
     fun `When one listener is detached and onPermissionsResult is invoked, the detached listener is not notified anymore`() {
-        val firstListener = mock<PermissionRequest.Listener>()
-        val secondListener = mock<PermissionRequest.Listener>()
+        val firstListener = FakePermissionRequestListener()
+        val secondListener = FakePermissionRequestListener()
         val permissions =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
-        val request = RuntimePermissionRequest(spiedActivity, permissions, handler).apply {
+        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
             addListener(firstListener)
             addListener(secondListener)
         }
@@ -127,25 +104,23 @@ class RuntimePermissionRequestTest {
         )
         request.onPermissionsResult(result)
 
-        verify(firstListener).onPermissionsResult(result)
-        verify(secondListener).onPermissionsResult(result)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(result), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(result), secondListener.receivedPermissionsResults)
 
         request.removeListener(firstListener)
         request.onPermissionsResult(result)
 
-        verify(firstListener).onPermissionsResult(result)
-        verify(secondListener, times(2)).onPermissionsResult(result)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(result), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(result, result), secondListener.receivedPermissionsResults)
     }
 
     @Test
     fun `When all listeners are detached and onPermissionsResult is invoked, they are not notified anymore`() {
-        val firstListener = mock<PermissionRequest.Listener>()
-        val secondListener = mock<PermissionRequest.Listener>()
+        val firstListener = FakePermissionRequestListener()
+        val secondListener = FakePermissionRequestListener()
         val permissions =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS)
-        val request = RuntimePermissionRequest(spiedActivity, permissions, handler).apply {
+        val request = RuntimePermissionRequest(activity, permissions, handler).apply {
             addListener(firstListener)
             addListener(secondListener)
         }
@@ -156,34 +131,34 @@ class RuntimePermissionRequestTest {
         )
         request.onPermissionsResult(result)
 
-        verify(firstListener).onPermissionsResult(result)
-        verify(secondListener).onPermissionsResult(result)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(result), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(result), secondListener.receivedPermissionsResults)
 
         request.removeAllListeners()
         request.onPermissionsResult(result)
 
-        verify(firstListener).onPermissionsResult(result)
-        verify(secondListener).onPermissionsResult(result)
-        verifyNoMoreInteractions(firstListener, secondListener)
+        assertEquals(listOf(result), firstListener.receivedPermissionsResults)
+        assertEquals(listOf(result), secondListener.receivedPermissionsResults)
     }
 
     @Test
     fun `When checkStatus() is invoked with an Activity, the runtime permissions status is retrieved`() {
-        spiedActivity.grantPermissions(Manifest.permission.SEND_SMS)
-        spiedActivity.denyPermissions(
+        activity.grantPermissions(Manifest.permission.SEND_SMS)
+        activity.denyPermissions(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CALL_PHONE
         )
-        whenever(spiedActivity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) doReturn true
-        whenever(spiedActivity.shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) doReturn false
+        activity.overrideShouldShowRequestPermissionRationale(
+            Manifest.permission.ACCESS_FINE_LOCATION to true,
+            Manifest.permission.CALL_PHONE to false
+        )
         val expected = listOf(
             PermissionStatus.Granted(Manifest.permission.SEND_SMS),
             PermissionStatus.Denied.ShouldShowRationale(Manifest.permission.ACCESS_FINE_LOCATION),
             PermissionStatus.RequestRequired(Manifest.permission.CALL_PHONE)
         )
         val request = RuntimePermissionRequest(
-            spiedActivity,
+            activity,
             arrayOf(
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.ACCESS_FINE_LOCATION,

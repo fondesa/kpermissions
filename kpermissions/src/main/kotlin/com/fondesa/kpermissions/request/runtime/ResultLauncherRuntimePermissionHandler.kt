@@ -17,7 +17,7 @@ import com.fondesa.kpermissions.extension.isPermissionGranted
  * It can process maximum one permissions' request at the same time to avoid the overlap of multiple permissions' dialogs.
  */
 @RequiresApi(23)
-internal class ResultLauncherRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
+internal open /* open for testing */ class ResultLauncherRuntimePermissionHandler : Fragment(), RuntimePermissionHandler {
     @VisibleForTesting var resultLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
         ::onPermissionsResult

@@ -21,8 +21,8 @@ apply plugin: "kpermissions-deploy"
 
 dependencies {
     api project(":kpermissions")
-    api Deps.rxJava2
+    api libs.rxJava2
 
     testImplementation project(":kpermissions-testing")
-    testImplementation Deps.junit
+    testImplementation libs.junit
 }

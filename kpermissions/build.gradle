@@ -20,10 +20,10 @@ apply plugin: "kpermissions-android-coverage"
 apply plugin: "kpermissions-deploy"
 
 dependencies {
-    api Deps.androidxFragment
+    api libs.androidx.fragment.core
 
     testImplementation project(":kpermissions-testing")
-    testImplementation Deps.androidxJUnit
-    testImplementation Deps.junit
-    testImplementation Deps.robolectric
+    testImplementation libs.androidx.junit
+    testImplementation libs.junit
+    testImplementation libs.robolectric
 }

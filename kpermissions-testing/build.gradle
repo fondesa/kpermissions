@@ -19,7 +19,7 @@ apply plugin: "kpermissions-android"
 
 dependencies {
     api project(":kpermissions")
-    api Deps.androidxFragmentTesting
-    implementation Deps.androidxJUnit
-    implementation Deps.robolectric
+    api libs.androidx.fragment.testing
+    implementation libs.androidx.junit
+    implementation libs.robolectric
 }

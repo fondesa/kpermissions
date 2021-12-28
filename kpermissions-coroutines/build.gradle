@@ -21,9 +21,9 @@ apply plugin: "kpermissions-deploy"
 
 dependencies {
     api project(":kpermissions")
-    api Deps.coroutines
+    api libs.coroutines.core
 
     testImplementation project(":kpermissions-testing")
-    testImplementation Deps.coroutinesTest
-    testImplementation Deps.junit
+    testImplementation libs.coroutines.test
+    testImplementation libs.junit
 }

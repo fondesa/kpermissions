@@ -18,11 +18,10 @@ group = "com.fondesa.kpermissions.buildtools"
 
 buildscript {
     apply from: "repositories.gradle", to: buildscript
-    apply from: "parse-dependencies.gradle"
 
     dependencies {
-        classpath deps.kotlinPlugin
-        classpath deps.ktlint
+        classpath libs.kotlin.gp
+        classpath libs.ktlint.gp
     }
 }
 
@@ -32,12 +31,12 @@ apply from: "kotlin.gradle"
 
 dependencies {
     implementation gradleApi()
-    implementation deps.androidPlugin
-    implementation deps.androidPluginApi
-    implementation deps.gitHubReleasePlugin
-    implementation deps.gradleMavenPublishPlugin
+    implementation libs.android.gp.api
+    implementation libs.android.gp.impl
+    implementation libs.gitHubRelease.gp
+    implementation libs.gradleMavenPublish.gp
     // Fixes the warning thrown until the Gradle Wrapper doesn't update its Kotlin version internally.
-    implementation deps.kotlinReflect
+    implementation libs.kotlin.reflect
 }
 
 configurations.all {

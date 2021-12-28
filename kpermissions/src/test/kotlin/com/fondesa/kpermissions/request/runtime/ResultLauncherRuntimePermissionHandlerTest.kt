@@ -239,7 +239,6 @@ class ResultLauncherRuntimePermissionHandlerTest {
             secondPermission to false,
         )
 
-
         fragment.onPermissionsResult(firstPermission to false, secondPermission to false)
 
         assertEquals(

@@ -18,22 +18,16 @@ package com.fondesa.kpermissions.extension
 
 import android.Manifest
 import com.fondesa.kpermissions.PermissionStatus
-import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.testing.fakes.FakePermissionRequest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
 
 /**
  * Tests for SendPermissionRequestWithListener.kt file.
  */
 class SendPermissionRequestWithListenerKtTest {
-    private val request = mock<PermissionRequest>()
-    private val listenerCaptor = argumentCaptor<PermissionRequest.Listener>()
+    private val request = FakePermissionRequest()
 
     @Test
     fun `When send { } is invoked and listener is notified, callback is invoked`() {
@@ -42,9 +36,10 @@ class SendPermissionRequestWithListenerKtTest {
         request.send { results += it }
 
         assertTrue(results.isEmpty())
-        verify(request).addListener(listenerCaptor.capture())
+        assertEquals(1, request.listeners.size)
 
-        listenerCaptor.lastValue.onPermissionsResult(
+        val listener = request.listeners.first()
+        listener.onPermissionsResult(
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
                 PermissionStatus.Denied.Permanently(Manifest.permission.CALL_PHONE)
@@ -65,10 +60,9 @@ class SendPermissionRequestWithListenerKtTest {
     fun `When send { } is invoked and listener is notified, listener is removed`() {
         request.send {}
 
-        verify(request).addListener(listenerCaptor.capture())
-        verify(request, never()).removeListener(any())
+        assertEquals(1, request.listeners.size)
 
-        val listener = listenerCaptor.lastValue
+        val listener = request.listeners.first()
         listener.onPermissionsResult(
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
@@ -76,6 +70,6 @@ class SendPermissionRequestWithListenerKtTest {
             )
         )
 
-        verify(request).removeListener(listener)
+        assertTrue(request.listeners.isEmpty())
     }
 }

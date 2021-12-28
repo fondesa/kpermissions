@@ -17,22 +17,17 @@
 package com.fondesa.kpermissions.extension
 
 import android.Manifest
-import androidx.test.core.app.ActivityScenario
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
-import com.fondesa.test.TestActivity
-import com.fondesa.test.denyPermissions
-import com.fondesa.test.grantPermissions
-import com.fondesa.test.launchTestActivity
-import com.fondesa.test.letActivity
-import org.junit.After
+import com.fondesa.kpermissions.testing.activity
+import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
+import com.fondesa.kpermissions.testing.denyPermissions
+import com.fondesa.kpermissions.testing.grantPermissions
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.whenever
 import org.robolectric.annotation.Config
 
 /**
@@ -40,29 +35,17 @@ import org.robolectric.annotation.Config
  */
 @RunWith(AndroidJUnit4::class)
 class CheckPermissionsStatusKtTest {
-    private lateinit var scenario: ActivityScenario<TestActivity>
-    private lateinit var spiedActivity: TestActivity
-
-    @Before
-    fun spyActivity() {
-        scenario = launchTestActivity()
-        spiedActivity = scenario.letActivity { spy(it) }
-    }
-
-    @After
-    fun destroyScenario() {
-        if (::scenario.isInitialized) {
-            scenario.close()
-        }
-    }
+    @get:Rule
+    internal val scenarioRule = ActivityScenarioRule(FakeFragmentActivity::class.java)
+    private val activity get() = scenarioRule.activity
 
     @Config(maxSdk = 22)
     @Test
     fun `With SDK minor than 23, the status returned with checkPermissionsStatus() is on the manifest status`() {
-        spiedActivity.grantPermissions(Manifest.permission.SEND_SMS)
-        spiedActivity.denyPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
+        activity.grantPermissions(Manifest.permission.SEND_SMS)
+        activity.denyPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
 
-        val result = spiedActivity.checkPermissionsStatus(
+        val result = activity.checkPermissionsStatus(
             Manifest.permission.SEND_SMS,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
@@ -76,15 +59,17 @@ class CheckPermissionsStatusKtTest {
     @Config(minSdk = 23)
     @Test
     fun `With SDK since 23, the status returned with checkPermissionsStatus() is on the runtime status`() {
-        spiedActivity.grantPermissions(Manifest.permission.SEND_SMS)
-        spiedActivity.denyPermissions(
+        activity.grantPermissions(Manifest.permission.SEND_SMS)
+        activity.denyPermissions(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CALL_PHONE
         )
-        whenever(spiedActivity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) doReturn true
-        whenever(spiedActivity.shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) doReturn false
+        activity.overrideShouldShowRequestPermissionRationale(
+            Manifest.permission.ACCESS_FINE_LOCATION to true,
+            Manifest.permission.CALL_PHONE to false
+        )
 
-        val result = spiedActivity.checkPermissionsStatus(
+        val result = activity.checkPermissionsStatus(
             Manifest.permission.SEND_SMS,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CALL_PHONE

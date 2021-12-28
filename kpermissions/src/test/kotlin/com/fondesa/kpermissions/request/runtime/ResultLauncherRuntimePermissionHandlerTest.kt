@@ -2,29 +2,23 @@ package com.fondesa.kpermissions.request.runtime
 
 import android.Manifest
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragment
-import androidx.fragment.app.testing.withFragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
-import com.fondesa.test.context
-import com.fondesa.test.denyPermissions
-import com.fondesa.test.grantPermissions
+import com.fondesa.kpermissions.testing.context
+import com.fondesa.kpermissions.testing.fakes.FakeActivityResultLauncher
+import com.fondesa.kpermissions.testing.fakes.FakeRuntimePermissionHandlerListener
+import com.fondesa.kpermissions.testing.fragment
+import com.fondesa.kpermissions.testing.denyPermissions
+import com.fondesa.kpermissions.testing.grantPermissions
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doNothing
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
-import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.whenever
 import org.robolectric.annotation.Config
 
 /**
@@ -36,21 +30,15 @@ class ResultLauncherRuntimePermissionHandlerTest {
     private val firstPermission = Manifest.permission.ACCESS_FINE_LOCATION
     private val secondPermission = Manifest.permission.SEND_SMS
     private val permissions = arrayOf(firstPermission, secondPermission)
-    private val listener = mock<RuntimePermissionHandler.Listener>()
-    private lateinit var scenario: FragmentScenario<ResultLauncherRuntimePermissionHandler>
-    private lateinit var fragment: ResultLauncherRuntimePermissionHandler
-    private lateinit var resultLauncher: ActivityResultLauncher<Array<out String>>
+    private val listener = FakeRuntimePermissionHandlerListener()
+    private lateinit var scenario: FragmentScenario<TestResultLauncherRuntimePermissionHandler>
+    private val fragment get() = scenario.fragment
+    private val resultLauncher: FakeActivityResultLauncher<Array<out String>>
+        get() = fragment.resultLauncher as FakeActivityResultLauncher<Array<out String>>
 
     @Before
     fun launchScenario() {
-        scenario = launchFragment {
-            ResultLauncherRuntimePermissionHandler().also { fragment ->
-                fragment.resultLauncher = spy(fragment.resultLauncher) {
-                    doNothing().whenever(it).launch(any())
-                }.also { resultLauncher = it }
-            }
-        }
-        fragment = scenario.withFragment(::spy)
+        scenario = launchFragment()
     }
 
     @Before
@@ -65,9 +53,8 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
         fragment.handleRuntimePermissions(permissions)
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
-        verifyNoMoreInteractions(listener)
-        verifyNoInteractions(resultLauncher)
+        assertEquals(listOf(permissions.map(PermissionStatus::Granted)), listener.receivedPermissionsStatus)
+        assertTrue(resultLauncher.launchedInputs.isEmpty())
     }
 
     @Test
@@ -84,9 +71,8 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
         fragment.handleRuntimePermissions(permissions)
 
-        verify(resultLauncher).launch(permissions)
-        verifyNoMoreInteractions(resultLauncher)
-        verifyNoInteractions(listener)
+        assertTrue(listener.receivedPermissionsStatus.isEmpty())
+        assertEquals(listOf(permissions), resultLauncher.launchedInputs)
     }
 
     @Test
@@ -97,7 +83,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
         fragment.handleRuntimePermissions(permissions)
 
         // The second resultLauncher.launch() mustn't be called.
-        verify(resultLauncher).launch(permissions)
+        assertEquals(listOf(permissions), resultLauncher.launchedInputs)
     }
 
     @Test
@@ -108,25 +94,23 @@ class ResultLauncherRuntimePermissionHandlerTest {
         fragment.handleRuntimePermissions(permissions)
 
         // The second resultLauncher.launch() mustn't be called.
-        verify(resultLauncher).launch(permissions)
+        assertEquals(listOf(permissions), resultLauncher.launchedInputs)
 
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
         fragment.handleRuntimePermissions(permissions)
 
         // Now the method resultLauncher.launch() can be called again because the Fragment
         // isn't processing the permissions anymore.
-        verify(resultLauncher, times(2)).launch(permissions)
+        assertEquals(listOf(permissions, permissions), resultLauncher.launchedInputs)
     }
 
     @Test
     fun `When permission status should be notified in onPermissionsResult and listener is not attached, nothing happens`() {
-        var fragment = scenario.withFragment { this }
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
 
         // This will detach the listener.
         scenario.recreate()
-        fragment = scenario.withFragment { this }
 
         // It shouldn't throw an exception.
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
@@ -134,17 +118,15 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
     @Test
     fun `When state is saved after a request is sent, permissions result is delivered when state is restored`() {
-        var fragment = scenario.withFragment { this }
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
 
         scenario.recreate()
-        fragment = scenario.withFragment { this }
 
         fragment.attachListener(permissions, listener)
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+        assertEquals(listOf(permissions.map(PermissionStatus::Granted)), listener.receivedPermissionsStatus)
     }
 
     @Test
@@ -153,7 +135,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
 
-        verifyNoInteractions(listener)
+        assertTrue(listener.receivedPermissionsStatus.isEmpty())
     }
 
     @Test
@@ -164,23 +146,28 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
         fragment.onPermissionsResult()
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+        assertEquals(listOf(permissions.map(PermissionStatus::Granted)), listener.receivedPermissionsStatus)
     }
 
     @Test
     fun `When permissions result is received with implicit permissions not in the manifest, the listeners are notified`() {
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
-        fragment.stubRationaleResult(firstPermission, true)
-        fragment.stubRationaleResult(secondPermission, false)
+        fragment.overrideShouldShowRequestPermissionRationale(
+            firstPermission to true,
+            secondPermission to false
+        )
 
         fragment.onPermissionsResult()
 
-        verify(listener).onPermissionsResult(
+        assertEquals(
             listOf(
-                PermissionStatus.Denied.ShouldShowRationale(firstPermission),
-                PermissionStatus.Denied.Permanently(secondPermission)
-            )
+                listOf(
+                    PermissionStatus.Denied.ShouldShowRationale(firstPermission),
+                    PermissionStatus.Denied.Permanently(secondPermission)
+                )
+            ),
+            listener.receivedPermissionsStatus
         )
     }
 
@@ -188,16 +175,19 @@ class ResultLauncherRuntimePermissionHandlerTest {
     fun `When permissions result is received without some permissions, the listeners are notified`() {
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
-        fragment.stubRationaleResult(firstPermission, true)
+        fragment.overrideShouldShowRequestPermissionRationale(firstPermission to true)
         context.grantPermissions(secondPermission)
 
         fragment.onPermissionsResult(firstPermission to false)
 
-        verify(listener).onPermissionsResult(
+        assertEquals(
             listOf(
-                PermissionStatus.Denied.ShouldShowRationale(firstPermission),
-                PermissionStatus.Granted(secondPermission)
-            )
+                listOf(
+                    PermissionStatus.Denied.ShouldShowRationale(firstPermission),
+                    PermissionStatus.Granted(secondPermission)
+                )
+            ),
+            listener.receivedPermissionsStatus
         )
     }
 
@@ -208,98 +198,162 @@ class ResultLauncherRuntimePermissionHandlerTest {
 
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+        assertEquals(listOf(permissions.map(PermissionStatus::Granted)), listener.receivedPermissionsStatus)
     }
 
     @Test
     fun `When permissions result is received with denied permissions, the listeners are notified`() {
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
-        fragment.stubRationaleResult(firstPermission, true)
-        fragment.stubRationaleResult(secondPermission, true)
+        fragment.overrideShouldShowRequestPermissionRationale(
+            firstPermission to true,
+            secondPermission to true,
+        )
 
         fragment.onPermissionsResult(firstPermission to false, secondPermission to false)
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus.Denied::ShouldShowRationale))
+        assertEquals(listOf(permissions.map(PermissionStatus.Denied::ShouldShowRationale)), listener.receivedPermissionsStatus)
 
         fragment.handleRuntimePermissions(permissions)
-        fragment.stubRationaleResult(firstPermission, false)
+        fragment.overrideShouldShowRequestPermissionRationale(
+            firstPermission to false,
+            secondPermission to true,
+        )
 
         fragment.onPermissionsResult(firstPermission to false, secondPermission to false)
 
-        verify(listener).onPermissionsResult(
+        assertEquals(
             listOf(
-                PermissionStatus.Denied.Permanently(firstPermission),
-                PermissionStatus.Denied.ShouldShowRationale(secondPermission)
-            )
+                permissions.map(PermissionStatus.Denied::ShouldShowRationale),
+                listOf(
+                    PermissionStatus.Denied.Permanently(firstPermission),
+                    PermissionStatus.Denied.ShouldShowRationale(secondPermission)
+                )
+            ),
+            listener.receivedPermissionsStatus
         )
 
         fragment.handleRuntimePermissions(permissions)
-        fragment.stubRationaleResult(secondPermission, false)
+        fragment.overrideShouldShowRequestPermissionRationale(
+            firstPermission to false,
+            secondPermission to false,
+        )
+
 
         fragment.onPermissionsResult(firstPermission to false, secondPermission to false)
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus.Denied::Permanently))
+        assertEquals(
+            listOf(
+                permissions.map(PermissionStatus.Denied::ShouldShowRationale),
+                listOf(
+                    PermissionStatus.Denied.Permanently(firstPermission),
+                    PermissionStatus.Denied.ShouldShowRationale(secondPermission)
+                ),
+                permissions.map(PermissionStatus.Denied::Permanently),
+            ),
+            listener.receivedPermissionsStatus
+        )
     }
 
     @Test
     fun `When permissions result is received with denied permissions and they are granted later by the user, the listeners are notified`() {
         fragment.attachListener(permissions, listener)
         fragment.handleRuntimePermissions(permissions)
-        fragment.stubRationaleResult(secondPermission, true)
+        fragment.overrideShouldShowRequestPermissionRationale(secondPermission to true)
 
         fragment.onPermissionsResult(firstPermission to true, secondPermission to false)
 
-        verify(listener).onPermissionsResult(
+        assertEquals(
             listOf(
-                PermissionStatus.Granted(firstPermission),
-                PermissionStatus.Denied.ShouldShowRationale(secondPermission)
-            )
+                listOf(
+                    PermissionStatus.Granted(firstPermission),
+                    PermissionStatus.Denied.ShouldShowRationale(secondPermission)
+                )
+            ),
+            listener.receivedPermissionsStatus
         )
 
         fragment.handleRuntimePermissions(permissions)
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+        assertEquals(
+            listOf(
+                listOf(
+                    PermissionStatus.Granted(firstPermission),
+                    PermissionStatus.Denied.ShouldShowRationale(secondPermission)
+                ),
+                permissions.map(PermissionStatus::Granted)
+            ),
+            listener.receivedPermissionsStatus
+        )
     }
 
     @Test
     fun `When Fragment is not added yet and the permissions are granted, the permissions are handled when it will be attached`() {
         fragment.attachListener(permissions, listener)
         context.grantPermissions(*permissions)
-        whenever(fragment.isAdded) doReturn false
+        fragment.changeIsAddedValue()
 
         fragment.handleRuntimePermissions(permissions)
 
-        verify(listener, never()).onPermissionsResult(any())
+        assertTrue(listener.receivedPermissionsStatus.isEmpty())
 
         fragment.onAttach(context)
         fragment.onCreate(null)
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+        assertEquals(listOf(permissions.map(PermissionStatus::Granted)), listener.receivedPermissionsStatus)
     }
 
     @Test
     fun `When Fragment is not added yet and the permissions are not granted, the permissions are handled when it will be attached`() {
         fragment.attachListener(permissions, listener)
-        whenever(fragment.isAdded) doReturn false
+        fragment.changeIsAddedValue()
 
         fragment.handleRuntimePermissions(permissions)
 
-        verify(listener, never()).onPermissionsResult(any())
+        assertTrue(listener.receivedPermissionsStatus.isEmpty())
 
         fragment.onAttach(context)
         fragment.onCreate(null)
         fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
 
-        verify(listener).onPermissionsResult(permissions.map(PermissionStatus::Granted))
+        assertEquals(listOf(permissions.map(PermissionStatus::Granted)), listener.receivedPermissionsStatus)
     }
 
-    private fun ResultLauncherRuntimePermissionHandler.onPermissionsResult(vararg permissions: Pair<String, Boolean>) {
-        onPermissionsResult(permissions.toMap())
-    }
+    internal class TestResultLauncherRuntimePermissionHandler : ResultLauncherRuntimePermissionHandler() {
+        private val shouldShowRequestPermissionRationaleResults = mutableMapOf<String, Boolean>()
 
-    private fun Fragment.stubRationaleResult(permission: String, result: Boolean) {
-        whenever(shouldShowRequestPermissionRationale(permission)) doReturn result
+        init {
+            resultLauncher = FakePermissionsLauncher(resultLauncher)
+        }
+
+        fun overrideShouldShowRequestPermissionRationale(vararg results: Pair<String, Boolean>) {
+            shouldShowRequestPermissionRationaleResults.clear()
+            shouldShowRequestPermissionRationaleResults += results
+        }
+
+        fun changeIsAddedValue() {
+            val mAddedField = Fragment::class.java.getDeclaredField("mAdded")
+            mAddedField.isAccessible = true
+            mAddedField.set(this, false)
+            mAddedField.isAccessible = false
+        }
+
+        fun onPermissionsResult(vararg permissions: Pair<String, Boolean>) {
+            onPermissionsResult(permissions.toMap())
+        }
+
+        override fun shouldShowRequestPermissionRationale(permission: String): Boolean {
+            return shouldShowRequestPermissionRationaleResults.getOrElse(permission) {
+                super.shouldShowRequestPermissionRationale(permission)
+            }
+        }
+
+        private class FakePermissionsLauncher(
+            private val originalLauncher: ActivityResultLauncher<Array<out String>>
+        ) : FakeActivityResultLauncher<Array<out String>>() {
+            override fun unregister() = originalLauncher.unregister()
+            override fun getContract(): ActivityResultContract<Array<out String>, *> = originalLauncher.contract
+        }
     }
 }

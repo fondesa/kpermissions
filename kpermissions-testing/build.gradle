@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package com.fondesa.test
+apply plugin: "com.android.library"
+apply plugin: "kpermissions-android"
 
-import android.content.Intent
-import androidx.fragment.app.FragmentActivity
-import androidx.test.core.app.ActivityScenario
-
-/**
- * A [FragmentActivity] used in tests to test the permissions.
- */
-internal class TestActivity : FragmentActivity()
-
-/**
- * Launches a [TestActivity].
- *
- * @return the [ActivityScenario] of the [TestActivity] which will be launched.
- */
-internal fun launchTestActivity(): ActivityScenario<TestActivity> =
-    ActivityScenario.launch(Intent(context, TestActivity::class.java))
+dependencies {
+    api project(":kpermissions")
+    api Deps.androidxFragmentTesting
+    implementation Deps.androidxJUnit
+    implementation Deps.robolectric
+}

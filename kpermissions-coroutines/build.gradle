@@ -23,7 +23,7 @@ dependencies {
     api project(":kpermissions")
     api Deps.coroutines
 
-    testImplementation Deps.junit
-    testImplementation Deps.mockitoKotlin
+    testImplementation project(":kpermissions-testing")
     testImplementation Deps.coroutinesTest
+    testImplementation Deps.junit
 }

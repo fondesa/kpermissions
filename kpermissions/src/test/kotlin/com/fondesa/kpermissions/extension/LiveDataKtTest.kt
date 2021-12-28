@@ -20,32 +20,27 @@ import android.Manifest
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
-import com.fondesa.kpermissions.request.PermissionRequest
+import com.fondesa.kpermissions.testing.fakes.FakePermissionRequest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
 
 /**
  * Tests for LiveData.kt file.
  */
 @RunWith(AndroidJUnit4::class)
 class LiveDataKtTest {
-    private val request = mock<PermissionRequest>()
-    private val listenerCaptor = argumentCaptor<PermissionRequest.Listener>()
+    private val request = FakePermissionRequest()
 
     @Test
     fun `When request listener is notified, the observer is notified too`() {
         val values = mutableListOf<List<PermissionStatus>>()
         request.liveData().observeForever { values += it }
 
-        verify(request).addListener(listenerCaptor.capture())
+        assertEquals(1, request.listeners.size)
 
-        val listener = listenerCaptor.lastValue
+        val listener = request.listeners.first()
         listener.onPermissionsResult(
             listOf(
                 PermissionStatus.Granted(Manifest.permission.SEND_SMS),
@@ -91,16 +86,16 @@ class LiveDataKtTest {
     fun `When observer is subscribed, the request listener is added`() {
         val liveData = request.liveData()
 
-        verify(request, never()).addListener(any())
+        assertTrue(request.listeners.isEmpty())
 
         liveData.observeForever {}
 
-        verify(request).addListener(any())
+        assertEquals(1, request.listeners.size)
 
         liveData.observeForever {}
 
         // The method addListener() is not invoked again.
-        verify(request).addListener(any())
+        assertEquals(1, request.listeners.size)
     }
 
     @Test
@@ -111,14 +106,16 @@ class LiveDataKtTest {
         liveData.observeForever(observer1)
         liveData.observeForever(observer2)
 
-        verify(request).addListener(listenerCaptor.capture())
+        assertEquals(1, request.listeners.size)
+
+        val listener = request.listeners.first()
 
         liveData.removeObserver(observer1)
 
-        verify(request, never()).removeListener(any())
+        assertEquals(listOf(listener), request.listeners)
 
         liveData.removeObserver(observer2)
 
-        verify(request).removeListener(listenerCaptor.lastValue)
+        assertTrue(request.listeners.isEmpty())
     }
 }

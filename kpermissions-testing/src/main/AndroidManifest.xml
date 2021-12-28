@@ -14,4 +14,10 @@
   ~ limitations under the License.
   -->
 
-<manifest package="com.fondesa.kpermissions" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fondesa.kpermissions.testing">
+
+    <application>
+        <activity android:name="com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity" />
+    </application>
+</manifest>

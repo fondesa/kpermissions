@@ -19,22 +19,21 @@ package com.fondesa.kpermissions.builder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionHandlerProvider
+import com.fondesa.kpermissions.testing.fakes.FakePermissionRequest
+import com.fondesa.kpermissions.testing.fakes.FakeRuntimePermissionHandlerProvider
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
 
 /**
  * Tests for [BasePermissionRequestBuilder].
  */
 @RunWith(AndroidJUnit4::class)
 class BasePermissionRequestBuilderTest {
-    private val builder: BasePermissionRequestBuilder = MockBuilder()
-    private val provider = mock<RuntimePermissionHandlerProvider> {
-        on(it.provideHandler()).thenReturn(mock())
-    }
+    private val builder: BasePermissionRequestBuilder = BasePermissionRequestBuilderImpl()
+    private val provider = FakeRuntimePermissionHandlerProvider()
 
     @Test(expected = IllegalArgumentException::class)
     fun throwsExceptionWithoutPermissions() {
@@ -67,10 +66,10 @@ class BasePermissionRequestBuilderTest {
         assertThat(request, instanceOf(PermissionRequest::class.java))
     }
 
-    class MockBuilder : BasePermissionRequestBuilder() {
+    private class BasePermissionRequestBuilderImpl : BasePermissionRequestBuilder() {
         override fun createRequest(
             permissions: Array<out String>,
             runtimeHandlerProvider: RuntimePermissionHandlerProvider
-        ) = mock<PermissionRequest>()
+        ) = FakePermissionRequest()
     }
 }

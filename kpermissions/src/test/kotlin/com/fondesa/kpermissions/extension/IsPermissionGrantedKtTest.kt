@@ -18,9 +18,9 @@ package com.fondesa.kpermissions.extension
 
 import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.fondesa.test.context
-import com.fondesa.test.denyPermissions
-import com.fondesa.test.grantPermissions
+import com.fondesa.kpermissions.testing.context
+import com.fondesa.kpermissions.testing.denyPermissions
+import com.fondesa.kpermissions.testing.grantPermissions
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

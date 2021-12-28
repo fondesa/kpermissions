@@ -14,42 +14,36 @@
  * limitations under the License.
  */
 
-package com.fondesa.test
+package com.fondesa.kpermissions.testing
 
 import android.app.Activity
 import android.app.Application
-import androidx.test.platform.app.InstrumentationRegistry
 import org.robolectric.Shadows.shadowOf
-
-/**
- * Get the application's instance returned by Robolectric.
- */
-internal val context: Application get() = InstrumentationRegistry.getInstrumentation().targetContext as Application
 
 /**
  * Grants the given permissions.
  */
-internal fun Application.grantPermissions(vararg permissions: String) {
+public fun Application.grantPermissions(vararg permissions: String) {
     shadowOf(this).grantPermissions(*permissions)
 }
 
 /**
  * Grants the given permissions.
  */
-internal fun Activity.grantPermissions(vararg permissions: String) {
+public fun Activity.grantPermissions(vararg permissions: String) {
     shadowOf(this).grantPermissions(*permissions)
 }
 
 /**
  * Denies the given permissions.
  */
-internal fun Application.denyPermissions(vararg permissions: String) {
+public fun Application.denyPermissions(vararg permissions: String) {
     shadowOf(this).denyPermissions(*permissions)
 }
 
 /**
  * Denies the given permissions.
  */
-internal fun Activity.denyPermissions(vararg permissions: String) {
+public fun Activity.denyPermissions(vararg permissions: String) {
     shadowOf(this).denyPermissions(*permissions)
 }

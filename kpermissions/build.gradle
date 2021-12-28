@@ -22,10 +22,8 @@ apply plugin: "kpermissions-deploy"
 dependencies {
     api Deps.androidxFragment
 
-    testImplementation Deps.androidxFragmentTesting
+    testImplementation project(":kpermissions-testing")
     testImplementation Deps.androidxJUnit
     testImplementation Deps.junit
-    testImplementation Deps.mockitoKotlin
-    testImplementation Deps.mockitoInLine
     testImplementation Deps.robolectric
 }

@@ -21,7 +21,8 @@ import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.testing.fakes.FakePermissionRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -35,7 +36,7 @@ class SuspendExtensionsKtTest {
     private val request = FakePermissionRequest()
 
     @Test
-    fun `When sendSuspend is invoked, the result is received when listener is notified`() = runBlockingTest {
+    fun `When sendSuspend is invoked, the result is received when listener is notified`() = runTest(UnconfinedTestDispatcher()) {
         var result: List<PermissionStatus>? = null
         val job = launch { result = request.sendSuspend() }
 
@@ -62,7 +63,7 @@ class SuspendExtensionsKtTest {
     }
 
     @Test
-    fun `When sendSuspend is invoked and the result is received, the listener is removed`() = runBlockingTest {
+    fun `When sendSuspend is invoked and the result is received, the listener is removed`() = runTest(UnconfinedTestDispatcher()) {
         val job = launch { request.sendSuspend() }
 
         assertEquals(1, request.listeners.size)
@@ -81,7 +82,7 @@ class SuspendExtensionsKtTest {
     }
 
     @Test
-    fun `When sendSuspend is invoked and the job is canceled, the listener is removed`() = runBlockingTest {
+    fun `When sendSuspend is invoked and the job is canceled, the listener is removed`() = runTest(UnconfinedTestDispatcher()) {
         val job = launch { request.sendSuspend() }
 
         assertEquals(1, request.listeners.size)

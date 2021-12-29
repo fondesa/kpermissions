@@ -22,7 +22,8 @@ import com.fondesa.kpermissions.testing.fakes.FakePermissionRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -36,7 +37,7 @@ class FlowExtensionsKtTest {
     private val request = FakePermissionRequest()
 
     @Test
-    fun `When request listener is notified, the collector is notified too`() = runBlockingTest {
+    fun `When request listener is notified, the collector is notified too`() = runTest(UnconfinedTestDispatcher()) {
         val values = mutableListOf<List<PermissionStatus>>()
         val job = launch {
             request.flow().collect { values += it }
@@ -89,7 +90,7 @@ class FlowExtensionsKtTest {
     }
 
     @Test
-    fun `When the collector is launched and canceled, the request listener is added and removed`() = runBlockingTest {
+    fun `When the collector is launched and canceled, the request listener is added and removed`() = runTest(UnconfinedTestDispatcher()) {
         val flow = request.flow()
 
         assertTrue(request.listeners.isEmpty())

@@ -43,7 +43,6 @@ class AndroidCoveragePlugin : Plugin<Project> {
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun Project.configureCoverageTasks(variant: ComponentIdentity) {
         val testTaskName = "test${variant.name.replaceFirstChar { it.uppercase() }}UnitTest"
         val coverageTaskName = "${testTaskName}Coverage"

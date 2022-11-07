@@ -19,7 +19,7 @@
 [libraries]
 android-gp-api = "com.android.tools.build:gradle-api:7.0.4"
 android-gp-impl = "com.android.tools.build:gradle:7.0.4"
-androidx-appCompat = "androidx.appcompat:appcompat:1.4.1"
+androidx-appCompat = "androidx.appcompat:appcompat:1.5.1"
 androidx-fragment-core = "androidx.fragment:fragment:1.4.1"
 androidx-fragment-testing = "androidx.fragment:fragment-testing:1.4.1"
 androidx-junit = "androidx.test.ext:junit:1.1.3"

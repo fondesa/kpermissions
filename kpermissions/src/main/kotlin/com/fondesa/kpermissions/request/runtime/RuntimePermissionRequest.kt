@@ -47,6 +47,7 @@ public class RuntimePermissionRequest(
     }
 
     override fun onPermissionsResult(result: List<PermissionStatus>) {
-        listeners.forEach { it.onPermissionsResult(result) }
+        // Using .iterator() to avoid shadowing with java.lang.Iterable#forEach.
+        listeners.iterator().forEach { it.onPermissionsResult(result) }
     }
 }

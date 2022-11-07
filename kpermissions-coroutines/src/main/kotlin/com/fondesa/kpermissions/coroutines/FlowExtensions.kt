@@ -18,7 +18,6 @@ package com.fondesa.kpermissions.coroutines
 
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.request.PermissionRequest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -31,7 +30,6 @@ import kotlinx.coroutines.flow.callbackFlow
  * @return a new [Flow] which notifies the collector with a new item every time the result of [PermissionRequest.send] is received.
  * @see PermissionRequest.Listener.onPermissionsResult
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 public fun PermissionRequest.flow(): Flow<List<PermissionStatus>> = callbackFlow {
     val listener = PermissionRequest.Listener { result -> trySend(result) }
     addListener(listener)

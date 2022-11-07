@@ -38,12 +38,3 @@ dependencies {
     // Fixes the warning thrown until the Gradle Wrapper doesn't update its Kotlin version internally.
     implementation libs.kotlin.reflect
 }
-
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == "com.squareup.okhttp3" && details.requested.name == "okhttp") {
-            details.useVersion "4.0.0"
-            details.because "Fixes \"com.github.breadmoirai:github-release\" since it doesn't depend on OkHttp 4."
-        }
-    }
-}

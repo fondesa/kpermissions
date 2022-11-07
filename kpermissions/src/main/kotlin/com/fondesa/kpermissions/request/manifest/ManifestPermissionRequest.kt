@@ -37,6 +37,7 @@ public class ManifestPermissionRequest(
 
     override fun send() {
         val result = checkStatus()
-        listeners.forEach { it.onPermissionsResult(result) }
+        // Using .iterator() to avoid shadowing with java.lang.Iterable#forEach.
+        listeners.iterator().forEach { it.onPermissionsResult(result) }
     }
 }

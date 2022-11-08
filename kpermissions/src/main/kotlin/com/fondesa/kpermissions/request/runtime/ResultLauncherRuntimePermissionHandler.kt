@@ -82,7 +82,10 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
         // The Fragment is now processing some permissions.
         pendingPermissions = permissions
         Log.d(TAG, "requesting permissions: ${permissions.joinToString()}")
-        resultLauncher.launch(permissions)
+        // Do an unchecked cast to avoid to introduce breaking changes in the public APIs of this class.
+        // This is safe to do since nothing can extend String anyway.
+        @Suppress("UNCHECKED_CAST")
+        resultLauncher.launch(permissions as Array<String>)
     }
 
     @VisibleForTesting

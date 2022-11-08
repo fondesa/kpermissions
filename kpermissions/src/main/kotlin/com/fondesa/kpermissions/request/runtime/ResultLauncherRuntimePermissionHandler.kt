@@ -82,7 +82,8 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
         // The Fragment is now processing some permissions.
         pendingPermissions = permissions
         Log.d(TAG, "requesting permissions: ${permissions.joinToString()}")
-        resultLauncher.launch(permissions)
+        val resultLauncherPermissions = Array(permissions.size, permissions::get)
+        resultLauncher.launch(resultLauncherPermissions)
     }
 
     @VisibleForTesting

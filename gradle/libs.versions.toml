@@ -17,8 +17,8 @@
 # Do NOT use the [versions] tag because it's not supported by ReleasesHub.
 
 [libraries]
-android-gp-api = "com.android.tools.build:gradle-api:7.0.4"
-android-gp-impl = "com.android.tools.build:gradle:7.0.4"
+android-gp-api = "com.android.tools.build:gradle-api:7.3.1"
+android-gp-impl = "com.android.tools.build:gradle:7.3.1"
 androidx-appCompat = "androidx.appcompat:appcompat:1.4.1"
 androidx-fragment-core = "androidx.fragment:fragment:1.4.1"
 androidx-fragment-testing = "androidx.fragment:fragment-testing:1.4.1"
@@ -34,7 +34,7 @@ kotlin-reflect = "org.jetbrains.kotlin:kotlin-reflect:1.7.20"
 kpermissions-buildTools = { module = "com.fondesa.kpermissions.buildtools:build-tools" }
 ktlint-gp = "org.jlleitschuh.gradle:ktlint-gradle:11.0.0"
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.9.1"
-releasesHub-gp = "com.dipien:releases-hub-gradle-plugin:3.1.0"
+releasesHub-gp = "com.dipien:releases-hub-gradle-plugin:4.0.0"
 robolectric = "org.robolectric:robolectric:4.9"
 rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.21"
 rxJava3 = "io.reactivex.rxjava3:rxjava:3.0.13"

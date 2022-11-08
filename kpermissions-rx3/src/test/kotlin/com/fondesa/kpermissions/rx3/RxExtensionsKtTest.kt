@@ -17,6 +17,7 @@
 package com.fondesa.kpermissions.rx3
 
 import android.Manifest
+import android.annotation.SuppressLint
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.testing.fakes.FakePermissionRequest
 import org.junit.Assert.assertEquals
@@ -71,6 +72,7 @@ class RxExtensionsKtTest {
         )
     }
 
+    @SuppressLint("CheckResult")
     @Test
     fun `When observer is subscribed, the request listener is added`() {
         val observable = request.observe()

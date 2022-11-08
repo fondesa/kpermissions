@@ -33,8 +33,8 @@ class ResultLauncherRuntimePermissionHandlerTest {
     private val listener = FakeRuntimePermissionHandlerListener()
     private lateinit var scenario: FragmentScenario<TestResultLauncherRuntimePermissionHandler>
     private val fragment get() = scenario.fragment
-    private val resultLauncher: FakeActivityResultLauncher<Array<out String>>
-        get() = fragment.resultLauncher as FakeActivityResultLauncher<Array<out String>>
+    private val resultLauncher: FakeActivityResultLauncher<Array<String>>
+        get() = fragment.resultLauncher as FakeActivityResultLauncher<Array<String>>
 
     @Before
     fun launchScenario() {
@@ -349,10 +349,10 @@ class ResultLauncherRuntimePermissionHandlerTest {
         }
 
         private class FakePermissionsLauncher(
-            private val originalLauncher: ActivityResultLauncher<Array<out String>>
-        ) : FakeActivityResultLauncher<Array<out String>>() {
+            private val originalLauncher: ActivityResultLauncher<Array<String>>
+        ) : FakeActivityResultLauncher<Array<String>>() {
             override fun unregister() = originalLauncher.unregister()
-            override fun getContract(): ActivityResultContract<Array<out String>, *> = originalLauncher.contract
+            override fun getContract(): ActivityResultContract<Array<String>, *> = originalLauncher.contract
         }
     }
 }

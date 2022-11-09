@@ -60,6 +60,7 @@ apply plugin: "com.github.breadmoirai.github-release"
 githubRelease {
     owner "fondesa"
     repo "kpermissions"
+    targetCommitish "master"
     tagName version
     releaseName "KPermissions $version"
     body "TBD"

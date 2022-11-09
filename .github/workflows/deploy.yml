@@ -113,4 +113,4 @@ jobs:
       - name: Deploy
         env:
           DEPLOY_TAG: ${{ steps.tag-extractor.outputs.TAG }}
-        run: ./gradlew publishLibrary --no-parallel -s -PVERSION_NAME=$DEPLOY_TAG -PmavenCentralRepositoryUsername=$MAVEN_CENTRAL_USERNAME -PmavenCentralRepositoryPassword=$MAVEN_CENTRAL_PASSWORD
+        run: ./gradlew publishLibrary -s -PVERSION_NAME=$DEPLOY_TAG

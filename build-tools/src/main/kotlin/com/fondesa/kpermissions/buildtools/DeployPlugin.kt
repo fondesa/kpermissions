@@ -16,10 +16,9 @@
 
 package com.fondesa.kpermissions.buildtools
 
-import com.android.build.api.artifact.SingleArtifact
-import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseExtension
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.plugins.signing.SigningExtension
@@ -41,6 +40,7 @@ class DeployPlugin : Plugin<Project> {
         changeAarFileName()
         configureGitHubReleaseExtension()
         registerPublishLibraryTask()
+        configureMavenPublish()
         configureSigning()
     }
 
@@ -76,6 +76,14 @@ class DeployPlugin : Plugin<Project> {
         }
         tasks.named("publish") { task ->
             task.mustRunAfter("clean")
+        }
+    }
+
+    @Suppress("UnstableApiUsage")
+    private fun Project.configureMavenPublish() {
+        extensions.configure(MavenPublishBaseExtension::class.java) { mavenPublish ->
+            mavenPublish.publishToMavenCentral()
+            mavenPublish.signAllPublications()
         }
     }
 

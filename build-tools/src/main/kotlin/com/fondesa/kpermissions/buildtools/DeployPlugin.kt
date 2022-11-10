@@ -21,6 +21,10 @@ import com.github.breadmoirai.githubreleaseplugin.GithubReleaseExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.jvm.tasks.Jar
 import org.gradle.plugins.signing.SigningExtension
 
 /**
@@ -37,42 +41,81 @@ import org.gradle.plugins.signing.SigningExtension
 class DeployPlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
         plugins.apply("com.vanniktech.maven.publish")
-        changeAarFileName()
+        changeOutputsFileNames()
         configureGitHubReleaseExtension()
         registerPublishLibraryTask()
         configureMavenPublish()
         configureSigning()
     }
 
-    private val Project.aarFileName: String get() = "$name-$versionName.aar"
-
     private val Project.versionName: String get() = version as String
 
-    private fun Project.changeAarFileName() {
+    private val Project.archiveName: String get() = "$name-$versionName"
+
+    private fun Project.changeOutputsFileNames() {
+        val copySourceReleaseJar = registerCopyJarTask(
+            sourceTaskName = "sourceReleaseJar",
+            into = "$buildDir/libs/$archiveName-sources.jar",
+            outputName = "$archiveName-sources.jar"
+        )
+        val copyJavaDocReleaseJar = registerCopyJarTask(
+            sourceTaskName = "javaDocReleaseJar",
+            into = "$buildDir/libs/$archiveName-javadoc.jar",
+            outputName = "$archiveName-javadoc.jar"
+        )
+        tasks.withType(Jar::class.java) { task ->
+            val copyTask = when (task.name) {
+                "sourceReleaseJar" -> copySourceReleaseJar
+                "javaDocReleaseJar" -> copyJavaDocReleaseJar
+                else -> null
+            }
+            copyTask?.from(task)
+        }
+
         withAndroidLibraryLegacyPlugin {
             libraryVariants.all { variant ->
                 variant.outputs.all { output ->
-                    (output as BaseVariantOutputImpl).outputFileName = aarFileName
+                    (output as BaseVariantOutputImpl).outputFileName = "$archiveName.aar"
                 }
             }
         }
     }
 
+    private fun Project.registerCopyJarTask(
+        sourceTaskName: String,
+        into: String,
+        outputName: String
+    ): TaskProvider<Copy> {
+        val copyTaskName = "copy${sourceTaskName.replaceFirstChar { it.uppercase() }}"
+        return tasks.register(copyTaskName, Copy::class.java) { copyTask ->
+            copyTask.into(into)
+            copyTask.rename { outputName }
+            copyTask.dependsOn(sourceTaskName)
+        }
+    }
+
+    private fun TaskProvider<Copy>.from(task: Task) {
+        configure { copyTask -> copyTask.from(task) }
+    }
+
     private fun Project.configureGitHubReleaseExtension() {
         rootProject.extensions.configure(GithubReleaseExtension::class.java) { gitHubRelease ->
             gitHubRelease.releaseAssets.from(
-                "$buildDir/outputs/aar/$aarFileName",
-                "$buildDir/libs/$name-$versionName-javadoc.jar",
-                "$buildDir/libs/$name-$versionName-sources.jar"
+                "$buildDir/outputs/aar/$archiveName.aar",
+                "$buildDir/libs/$archiveName-javadoc.jar",
+                "$buildDir/libs/$archiveName-sources.jar"
             )
         }
     }
 
     private fun Project.registerPublishLibraryTask() {
+        val githubReleaseTask = rootProject.tasks.named("githubRelease") { task ->
+            task.mustRunAfter(tasks.named("copySourceReleaseJar"), tasks.named("copyJavaDocReleaseJar"))
+        }
         tasks.register("publishLibrary").configure { task ->
             task.dependsOn("clean")
             task.dependsOn("publish")
-            task.finalizedBy(rootProject.tasks.named("githubRelease"))
+            task.finalizedBy("copySourceReleaseJar", "copyJavaDocReleaseJar", githubReleaseTask)
         }
         tasks.named("publish") { task ->
             task.mustRunAfter("clean")

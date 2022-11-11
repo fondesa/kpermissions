@@ -33,7 +33,7 @@ kotlin-gp = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.21"
 kotlin-reflect = "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
 kpermissions-buildTools = { module = "com.fondesa.kpermissions.buildtools:build-tools" }
 ktlint-gp = "org.jlleitschuh.gradle:ktlint-gradle:11.0.0"
-leakCanary = "com.squareup.leakcanary:leakcanary-android:2.9.1"
+leakCanary = "com.squareup.leakcanary:leakcanary-android:2.10"
 releasesHub-gp = "com.dipien:releases-hub-gradle-plugin:4.0.0"
 robolectric = "org.robolectric:robolectric:4.9"
 rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.21"

@@ -55,12 +55,10 @@ class DeployPlugin : Plugin<Project> {
     private fun Project.changeOutputsFileNames() {
         val copySourceReleaseJar = registerCopyJarTask(
             sourceTaskName = "sourceReleaseJar",
-            into = "$buildDir/libs/$archiveName-sources.jar",
             outputName = "$archiveName-sources.jar"
         )
         val copyJavaDocReleaseJar = registerCopyJarTask(
             sourceTaskName = "javaDocReleaseJar",
-            into = "$buildDir/libs/$archiveName-javadoc.jar",
             outputName = "$archiveName-javadoc.jar"
         )
         tasks.withType(Jar::class.java) { task ->
@@ -83,12 +81,11 @@ class DeployPlugin : Plugin<Project> {
 
     private fun Project.registerCopyJarTask(
         sourceTaskName: String,
-        into: String,
         outputName: String
     ): TaskProvider<Copy> {
         val copyTaskName = "copy${sourceTaskName.replaceFirstChar { it.uppercase() }}"
         return tasks.register(copyTaskName, Copy::class.java) { copyTask ->
-            copyTask.into(into)
+            copyTask.into("$buildDir/libs")
             copyTask.rename { outputName }
             copyTask.dependsOn(sourceTaskName)
         }

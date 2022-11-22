@@ -319,6 +319,33 @@ class ResultLauncherRuntimePermissionHandlerTest {
         assertEquals(listOf(permissions.map(PermissionStatus::Granted)), listener.receivedPermissionsStatus)
     }
 
+    @Test
+    fun `When multiple different listeners are attached and result is received, all the listeners are notified`() {
+        val firstListener = FakeRuntimePermissionHandlerListener()
+        val secondListener = FakeRuntimePermissionHandlerListener()
+        fragment.attachListener(permissions, firstListener)
+        fragment.attachListener(permissions, secondListener)
+        fragment.handleRuntimePermissions(permissions)
+
+        fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
+
+        val expectedResult = permissions.map(PermissionStatus::Granted)
+        assertEquals(listOf(expectedResult), firstListener.receivedPermissionsStatus)
+        assertEquals(listOf(expectedResult), secondListener.receivedPermissionsStatus)
+    }
+
+    @Test
+    fun `When same listener is attached multiple times and result is received, listener is notified once`() {
+        fragment.attachListener(permissions, listener)
+        fragment.attachListener(permissions, listener)
+        fragment.handleRuntimePermissions(permissions)
+
+        fragment.onPermissionsResult(firstPermission to true, secondPermission to true)
+
+        val expectedResult = permissions.map(PermissionStatus::Granted)
+        assertEquals(listOf(expectedResult), listener.receivedPermissionsStatus)
+    }
+
     internal class TestResultLauncherRuntimePermissionHandler : ResultLauncherRuntimePermissionHandler() {
         private val shouldShowRequestPermissionRationaleResults = mutableMapOf<String, Boolean>()
 

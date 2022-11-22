@@ -63,8 +63,7 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
     private fun handleRuntimePermissionsWhenAdded(permissions: Array<out String>) {
         // Get the listener for this set of permissions.
         // If it's null, the permissions can't be notified.
-        val listeners = listeners[permissions.toSet()]
-        if (listeners.isNullOrEmpty()) return
+        val listeners = listeners[permissions.toSet()] ?: return
         val activity = requireActivity()
         val currentStatus = activity.checkRuntimePermissionsStatus(permissions.toList())
         val areAllGranted = currentStatus.allGranted()
@@ -97,8 +96,7 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
         this.pendingPermissions = null
         // Get the listener for this set of permissions.
         // If it's null, the permissions can't be notified.
-        val listeners = listeners[pendingPermissions.toSet()]
-        if (listeners.isNullOrEmpty()) return
+        val listeners = listeners[pendingPermissions.toSet()] ?: return
         val context = requireContext()
         val result = pendingPermissions.map { permission ->
             val isGranted = permissionsResult.getOrElse(permission) { context.isPermissionGranted(permission) }

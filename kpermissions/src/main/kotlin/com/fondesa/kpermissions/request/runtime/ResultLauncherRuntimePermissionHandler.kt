@@ -22,7 +22,7 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
         ActivityResultContracts.RequestMultiplePermissions(),
         ::onPermissionsResult
     )
-    private val listeners = mutableMapOf<Set<String>, RuntimePermissionHandler.Listener>()
+    private val listeners = mutableMapOf<Set<String>, MutableSet<RuntimePermissionHandler.Listener>>()
     private var pendingHandleRuntimePermissions: (() -> Unit)? = null
     private var pendingPermissions: Array<out String>? = null
 
@@ -48,7 +48,8 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
         permissions: Array<out String>,
         listener: RuntimePermissionHandler.Listener
     ) {
-        listeners[permissions.toSet()] = listener
+        val permissionsSet = listeners.getOrPut(permissions.toSet()) { mutableSetOf() }
+        permissionsSet += listener
     }
 
     override fun handleRuntimePermissions(permissions: Array<out String>) {
@@ -62,7 +63,7 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
     private fun handleRuntimePermissionsWhenAdded(permissions: Array<out String>) {
         // Get the listener for this set of permissions.
         // If it's null, the permissions can't be notified.
-        val listener = listeners[permissions.toSet()] ?: return
+        val listeners = listeners[permissions.toSet()] ?: return
         val activity = requireActivity()
         val currentStatus = activity.checkRuntimePermissionsStatus(permissions.toList())
         val areAllGranted = currentStatus.allGranted()
@@ -74,7 +75,7 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
             // Request the permissions.
             requestRuntimePermissions(permissions)
         } else {
-            listener.onPermissionsResult(currentStatus)
+            listeners.onPermissionsResult(currentStatus)
         }
     }
 
@@ -95,7 +96,7 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
         this.pendingPermissions = null
         // Get the listener for this set of permissions.
         // If it's null, the permissions can't be notified.
-        val listener = listeners[pendingPermissions.toSet()] ?: return
+        val listeners = listeners[pendingPermissions.toSet()] ?: return
         val context = requireContext()
         val result = pendingPermissions.map { permission ->
             val isGranted = permissionsResult.getOrElse(permission) { context.isPermissionGranted(permission) }
@@ -105,7 +106,11 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
                 else -> PermissionStatus.Denied.Permanently(permission)
             }
         }
-        listener.onPermissionsResult(result)
+        listeners.onPermissionsResult(result)
+    }
+
+    private fun Set<RuntimePermissionHandler.Listener>.onPermissionsResult(result: List<PermissionStatus>) {
+        forEach { listener -> listener.onPermissionsResult(result) }
     }
 
     companion object {

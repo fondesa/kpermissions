@@ -18,7 +18,7 @@
 
 [libraries]
 android-gp-api = "com.android.tools.build:gradle-api:7.4.0"
-android-gp-impl = "com.android.tools.build:gradle:7.3.1"
+android-gp-impl = "com.android.tools.build:gradle:7.4.0"
 androidx-appCompat = "androidx.appcompat:appcompat:1.5.1"
 androidx-fragment-core = "androidx.fragment:fragment:1.5.5"
 androidx-fragment-testing = "androidx.fragment:fragment-testing:1.5.5"

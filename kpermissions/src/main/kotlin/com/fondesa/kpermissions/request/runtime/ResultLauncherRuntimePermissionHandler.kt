@@ -110,7 +110,7 @@ internal open /* open for testing */ class ResultLauncherRuntimePermissionHandle
     }
 
     private fun Set<RuntimePermissionHandler.Listener>.onPermissionsResult(result: List<PermissionStatus>) {
-        forEach { listener -> listener.onPermissionsResult(result) }
+        iterator().forEach { listener -> listener.onPermissionsResult(result) }
     }
 
     companion object {

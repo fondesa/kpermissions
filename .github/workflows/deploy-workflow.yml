@@ -36,10 +36,7 @@ jobs:
           java-version: 11
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Extract tag
-        id: tag-extractor
-        run: echo ::set-output name=TAG::${GITHUB_REF#refs/*/}
       - name: Deploy
         env:
           DEPLOY_TAG: ${{ steps.tag-extractor.outputs.TAG }}
-        run: ./gradlew publishLibrary -s -PVERSION_NAME=$DEPLOY_TAG
+        run: echo ${{github.ref_name}} ./gradlew publishLibrary -s -PVERSION_NAME=${{github.ref_name}} --dry-run

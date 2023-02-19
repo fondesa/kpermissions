@@ -1,0 +1,17 @@
+name: GH push
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-jobs.yml
+    secrets: inherit
+  test:
+    uses: ./.github/workflows/test-jobs.yml
+    secrets: inherit

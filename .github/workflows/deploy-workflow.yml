@@ -39,4 +39,4 @@ jobs:
       - name: Deploy
         env:
           DEPLOY_TAG: ${{ steps.tag-extractor.outputs.TAG }}
-        run: echo ${{github.ref_name}} ./gradlew publishLibrary -s -PVERSION_NAME=${{github.ref_name}} --dry-run
+        run: ./gradlew publishLibrary -s -PVERSION_NAME=${{github.ref_name}}

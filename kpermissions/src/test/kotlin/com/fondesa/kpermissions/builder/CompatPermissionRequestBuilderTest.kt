@@ -21,9 +21,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.manifest.ManifestPermissionRequest
 import com.fondesa.kpermissions.request.runtime.RuntimePermissionRequest
-import com.fondesa.kpermissions.testing.fakes.FakeRuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
 import com.fondesa.kpermissions.testing.activity
+import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
+import com.fondesa.kpermissions.testing.fakes.FakeRuntimePermissionHandlerProvider
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertNotNull

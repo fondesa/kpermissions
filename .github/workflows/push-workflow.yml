@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    uses: ./.github/workflows/jobs/build.yml
+    uses: ./.github/workflows/build-jobs.yml
     secrets: inherit
   test1:
     name: test 1/3

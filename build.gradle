@@ -25,7 +25,6 @@ buildscript {
         classpath libs.kotlin.gp
         classpath libs.kpermissions.buildTools
         classpath libs.ktlint.gp
-        classpath libs.releasesHub.gp
     }
 }
 
@@ -34,24 +33,6 @@ allprojects {
     apply from: rootProject.file("build-tools/kotlin.gradle")
     // Adds the version of this library to all the projects, including the root project.
     apply plugin: "kpermissions-version"
-}
-
-apply plugin: "com.dipien.releaseshub.gradle.plugin"
-
-releasesHub {
-    autoDetectDependenciesPaths = false
-    dependenciesPaths = [
-            "gradle/libs.versions.toml",
-            "gradle/wrapper/gradle-wrapper.properties"
-    ]
-    pullRequestLabels = ["dependencies"]
-    headBranchPrefix = "update-dependency/"
-    gitHubRepositoryOwner = "fondesa"
-    gitHubRepositoryName = "kpermissions"
-    excludes = [
-            // Excluded because since the version 3.1.0 the minimum supported Android version is 21.
-            "io.reactivex.rxjava3:rxjava"
-    ]
 }
 
 apply plugin: "com.github.breadmoirai.github-release"
@@ -69,7 +50,6 @@ githubRelease {
 def gitHubToken = project.properties["github.token"] ?: System.getenv("GITHUB_TOKEN")
 if (gitHubToken != null) {
     githubRelease.token = gitHubToken
-    releasesHub.gitHubWriteToken = gitHubToken
 }
 
 task clean(type: Delete) {

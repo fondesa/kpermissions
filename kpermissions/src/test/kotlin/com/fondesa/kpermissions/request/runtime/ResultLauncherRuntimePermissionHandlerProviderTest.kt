@@ -20,8 +20,8 @@ import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
 import com.fondesa.kpermissions.testing.activity
+import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals

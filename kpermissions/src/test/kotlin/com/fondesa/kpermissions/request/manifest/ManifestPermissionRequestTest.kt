@@ -20,8 +20,8 @@ import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.testing.context
-import com.fondesa.kpermissions.testing.fakes.FakePermissionRequestListener
 import com.fondesa.kpermissions.testing.denyPermissions
+import com.fondesa.kpermissions.testing.fakes.FakePermissionRequestListener
 import com.fondesa.kpermissions.testing.grantPermissions
 import org.junit.Assert.assertEquals
 import org.junit.Test

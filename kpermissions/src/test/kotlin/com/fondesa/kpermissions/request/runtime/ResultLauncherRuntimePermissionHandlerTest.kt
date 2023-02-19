@@ -9,10 +9,10 @@ import androidx.fragment.app.testing.launchFragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.testing.context
+import com.fondesa.kpermissions.testing.denyPermissions
 import com.fondesa.kpermissions.testing.fakes.FakeActivityResultLauncher
 import com.fondesa.kpermissions.testing.fakes.FakeRuntimePermissionHandlerListener
 import com.fondesa.kpermissions.testing.fragment
-import com.fondesa.kpermissions.testing.denyPermissions
 import com.fondesa.kpermissions.testing.grantPermissions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -207,7 +207,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
         fragment.handleRuntimePermissions(permissions)
         fragment.overrideShouldShowRequestPermissionRationale(
             firstPermission to true,
-            secondPermission to true,
+            secondPermission to true
         )
 
         fragment.onPermissionsResult(firstPermission to false, secondPermission to false)
@@ -217,7 +217,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
         fragment.handleRuntimePermissions(permissions)
         fragment.overrideShouldShowRequestPermissionRationale(
             firstPermission to false,
-            secondPermission to true,
+            secondPermission to true
         )
 
         fragment.onPermissionsResult(firstPermission to false, secondPermission to false)
@@ -236,7 +236,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
         fragment.handleRuntimePermissions(permissions)
         fragment.overrideShouldShowRequestPermissionRationale(
             firstPermission to false,
-            secondPermission to false,
+            secondPermission to false
         )
 
         fragment.onPermissionsResult(firstPermission to false, secondPermission to false)
@@ -248,7 +248,7 @@ class ResultLauncherRuntimePermissionHandlerTest {
                     PermissionStatus.Denied.Permanently(firstPermission),
                     PermissionStatus.Denied.ShouldShowRationale(secondPermission)
                 ),
-                permissions.map(PermissionStatus.Denied::Permanently),
+                permissions.map(PermissionStatus.Denied::Permanently)
             ),
             listener.receivedPermissionsStatus
         )

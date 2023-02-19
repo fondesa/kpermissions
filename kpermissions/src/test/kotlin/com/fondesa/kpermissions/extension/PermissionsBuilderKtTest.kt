@@ -25,8 +25,8 @@ import com.fondesa.kpermissions.builder.BasePermissionRequestBuilder
 import com.fondesa.kpermissions.builder.PermissionRequestBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.fondesa.kpermissions.request.runtime.ResultLauncherRuntimePermissionHandlerProvider
-import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
 import com.fondesa.kpermissions.testing.activity
+import com.fondesa.kpermissions.testing.fakes.FakeFragmentActivity
 import com.fondesa.kpermissions.testing.fragment
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat

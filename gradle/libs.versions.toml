@@ -17,8 +17,8 @@
 # Do NOT use the [versions] tag because it's not supported by ReleasesHub.
 
 [libraries]
-android-gp-api = "com.android.tools.build:gradle-api:7.4.0"
-android-gp-impl = "com.android.tools.build:gradle:7.4.0"
+android-gp-api = "com.android.tools.build:gradle-api:7.4.1"
+android-gp-impl = "com.android.tools.build:gradle:7.4.1"
 androidx-appCompat = "androidx.appcompat:appcompat:1.6.1"
 androidx-fragment-core = "androidx.fragment:fragment:1.5.5"
 androidx-fragment-testing = "androidx.fragment:fragment-testing:1.5.5"

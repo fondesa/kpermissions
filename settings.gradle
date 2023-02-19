@@ -16,8 +16,6 @@
 
 rootProject.name = "kpermissions-root"
 
-enableFeaturePreview("VERSION_CATALOGS")
-
 includeBuild "build-tools"
 
 include ":kpermissions"

@@ -31,7 +31,7 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 @Suppress("UnstableApiUsage")
 class AndroidCoveragePlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
-        plugins.apply("jacoco")
+        pluginManager.apply("jacoco")
 
         extensions.configure(JacocoPluginExtension::class.java) {
             it.toolVersion = JACOCO_VERSION

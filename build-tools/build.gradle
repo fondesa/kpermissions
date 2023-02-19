@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 group = "com.fondesa.kpermissions.buildtools"
 
 buildscript {
@@ -25,9 +27,15 @@ buildscript {
     }
 }
 
-apply plugin: "kotlin"
 apply from: "repositories.gradle"
-apply from: "kotlin.gradle"
+apply plugin: "kotlin"
+apply plugin: "org.jlleitschuh.gradle.ktlint"
+
+kotlin.jvmToolchain(11)
+def warningsAsErrors = getProperty("kpermissions.warningsAsErrors")
+tasks.withType(KotlinCompile) {
+    compilerOptions.allWarningsAsErrors = Boolean.valueOf(warningsAsErrors)
+}
 
 dependencies {
     implementation gradleApi()
@@ -35,6 +43,7 @@ dependencies {
     implementation libs.android.gp.impl
     implementation libs.gitHubRelease.gp
     implementation libs.gradleMavenPublish.gp
+    implementation libs.kotlin.gp
     // Fixes the warning thrown until the Gradle Wrapper doesn't update its Kotlin version internally.
     implementation libs.kotlin.reflect
 }

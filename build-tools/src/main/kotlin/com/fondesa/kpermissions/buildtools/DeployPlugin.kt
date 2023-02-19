@@ -40,7 +40,7 @@ import org.gradle.plugins.signing.SigningExtension
  */
 class DeployPlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
-        plugins.apply("com.vanniktech.maven.publish")
+        pluginManager.apply("com.vanniktech.maven.publish")
         changeOutputsFileNames()
         configureGitHubReleaseExtension()
         registerPublishLibraryTask()

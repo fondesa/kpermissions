@@ -17,6 +17,8 @@
 apply plugin: "com.android.library"
 apply plugin: "kpermissions-android"
 
+android.namespace "com.fondesa.kpermissions.testing"
+
 dependencies {
     api project(":kpermissions")
     api libs.androidx.fragment.testing

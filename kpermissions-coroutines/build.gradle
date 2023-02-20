@@ -19,6 +19,8 @@ apply plugin: "kpermissions-android"
 apply plugin: "kpermissions-android-coverage"
 apply plugin: "kpermissions-deploy"
 
+android.namespace "com.fondesa.kpermissions.coroutines"
+
 dependencies {
     api project(":kpermissions")
     api libs.coroutines.core

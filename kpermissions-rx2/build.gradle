@@ -19,6 +19,8 @@ apply plugin: "kpermissions-android"
 apply plugin: "kpermissions-android-coverage"
 apply plugin: "kpermissions-deploy"
 
+android.namespace "com.fondesa.kpermissions.rx2"
+
 dependencies {
     api project(":kpermissions")
     api libs.rxJava2

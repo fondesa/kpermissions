@@ -85,7 +85,7 @@ class DeployPlugin : Plugin<Project> {
     ): TaskProvider<Copy> {
         val copyTaskName = "copy${sourceTaskName.replaceFirstChar { it.uppercase() }}"
         return tasks.register(copyTaskName, Copy::class.java) { copyTask ->
-            copyTask.into("$buildDir/libs")
+            copyTask.into(layout.buildDirectory.dir("libs"))
             copyTask.rename { outputName }
             copyTask.dependsOn(sourceTaskName)
         }
@@ -98,9 +98,9 @@ class DeployPlugin : Plugin<Project> {
     private fun Project.configureGitHubReleaseExtension() {
         rootProject.extensions.configure(GithubReleaseExtension::class.java) { gitHubRelease ->
             gitHubRelease.releaseAssets.from(
-                "$buildDir/outputs/aar/$archiveName.aar",
-                "$buildDir/libs/$archiveName-javadoc.jar",
-                "$buildDir/libs/$archiveName-sources.jar"
+                layout.buildDirectory.file("outputs/aar/$archiveName.aar"),
+                layout.buildDirectory.file("libs/$archiveName-javadoc.jar"),
+                layout.buildDirectory.file("libs/$archiveName-sources.jar")
             )
         }
     }
@@ -119,7 +119,6 @@ class DeployPlugin : Plugin<Project> {
         }
     }
 
-    @Suppress("UnstableApiUsage")
     private fun Project.configureMavenPublish() {
         extensions.configure(MavenPublishBaseExtension::class.java) { mavenPublish ->
             mavenPublish.publishToMavenCentral()
@@ -135,7 +134,6 @@ class DeployPlugin : Plugin<Project> {
             val signingKey = findProperty("signingKey") ?: return@configure
             // Populated from the environment variable ORG_GRADLE_PROJECT_signingPassword.
             val signingPassword = findProperty("signingPassword") ?: return@configure
-            @Suppress("UnstableApiUsage")
             signing.useInMemoryPgpKeys(signingKeyId.toString(), signingKey.toString(), signingPassword.toString())
         }
     }

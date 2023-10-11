@@ -33,7 +33,7 @@ apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 kotlin.jvmToolchain(11)
 def warningsAsErrors = getProperty("kpermissions.warningsAsErrors")
-tasks.withType(KotlinCompile) {
+tasks.withType(KotlinCompile).configureEach {
     compilerOptions.allWarningsAsErrors = Boolean.valueOf(warningsAsErrors)
 }
 

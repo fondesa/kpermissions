@@ -24,7 +24,6 @@ import java.io.File
  * Gets the source sets from the given variant.
  * The source sets are returned as files.
  */
-@Suppress("UnstableApiUsage")
 internal fun ComponentIdentity.sourceSets(project: Project): Collection<File> {
     val buildType = requireNotNull(buildType) { "The build type is required." }
     val sourceSets = mutableSetOf("main", buildType)

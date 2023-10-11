@@ -20,7 +20,9 @@ import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.ComponentIdentity
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.file.FileTree
+import org.gradle.api.provider.Provider
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
@@ -28,14 +30,13 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 /**
  * Enables the unit tests coverage in an Android project.
  */
-@Suppress("UnstableApiUsage")
 class AndroidCoveragePlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
         pluginManager.apply("jacoco")
 
         extensions.configure(JacocoPluginExtension::class.java) {
             it.toolVersion = JACOCO_VERSION
-            it.reportsDirectory.set(file("$buildDir/coverageReport"))
+            it.reportsDirectory.set(layout.buildDirectory.dir("coverageReport"))
         }
         withAndroidPlugin {
             fixRobolectricCoverage()
@@ -54,10 +55,10 @@ class AndroidCoveragePlugin : Plugin<Project> {
                 xml.required.set(true)
                 csv.required.set(false)
             }
-            val javaClassDirectories = fileTreeOf("$buildDir/intermediates/javac/${variant.name}/classes")
-            val kotlinClassDirectories = fileTreeOf("$buildDir/tmp/kotlin-classes/${variant.name}")
+            val javaClassDirectories = fileTreeOf(layout.buildDirectory.dir("intermediates/javac/${variant.name}/classes"))
+            val kotlinClassDirectories = fileTreeOf(layout.buildDirectory.dir("tmp/kotlin-classes/${variant.name}"))
             coverageTask.classDirectories.from(javaClassDirectories, kotlinClassDirectories)
-            coverageTask.executionData.from("$buildDir/jacoco/$testTaskName.exec")
+            coverageTask.executionData.from(layout.buildDirectory.file("jacoco/$testTaskName.exec"))
             variant.sourceSets(this).forEach { sourceSet ->
                 coverageTask.sourceDirectories.from(sourceSet)
             }
@@ -67,6 +68,7 @@ class AndroidCoveragePlugin : Plugin<Project> {
         }
     }
 
+    @Suppress("UnstableApiUsage")
     private fun AndroidCommonExtension.fixRobolectricCoverage() {
         testOptions.unitTests.all { test ->
             test.extensions.configure(JacocoTaskExtension::class.java) {
@@ -78,7 +80,7 @@ class AndroidCoveragePlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.fileTreeOf(dir: String): FileTree = fileTree(mapOf("dir" to dir, "excludes" to COVERAGE_EXCLUSIONS))
+    private fun Project.fileTreeOf(dir: Provider<Directory>): FileTree = fileTree(mapOf("dir" to dir, "excludes" to COVERAGE_EXCLUSIONS))
 
     companion object {
         private const val JACOCO_VERSION = "0.8.7"

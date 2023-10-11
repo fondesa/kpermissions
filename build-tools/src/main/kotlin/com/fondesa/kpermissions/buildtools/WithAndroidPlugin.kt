@@ -22,19 +22,15 @@ import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project
 import com.android.build.gradle.LibraryExtension as LegacyLibraryExtension
 
-@Suppress("UnstableApiUsage")
 internal typealias AndroidCommonExtension = CommonExtension<*, *, *, *>
 
-@Suppress("UnstableApiUsage")
 internal typealias AndroidApplicationExtension = ApplicationExtension
 
-@Suppress("UnstableApiUsage")
 internal typealias AndroidLibraryExtension = LibraryExtension
 
 /**
  * Executes the given action when an Android plugin is applied using the new API.
  */
-@Suppress("UnstableApiUsage")
 internal inline fun Project.withAndroidPlugin(crossinline config: AndroidCommonExtension.() -> Unit) {
     withAndroidApplicationPlugin(config)
     withAndroidLibraryPlugin(config)
@@ -43,7 +39,6 @@ internal inline fun Project.withAndroidPlugin(crossinline config: AndroidCommonE
 /**
  * Executes the given action when an Android application plugin is applied using the new API.
  */
-@Suppress("UnstableApiUsage")
 internal inline fun Project.withAndroidApplicationPlugin(crossinline config: AndroidApplicationExtension.() -> Unit) {
     pluginManager.withPlugin("com.android.application") { androidPluginExtension<AndroidApplicationExtension>().config() }
 }
@@ -51,7 +46,6 @@ internal inline fun Project.withAndroidApplicationPlugin(crossinline config: And
 /**
  * Executes the given action when an Android library plugin is applied using the new API.
  */
-@Suppress("UnstableApiUsage")
 internal inline fun Project.withAndroidLibraryPlugin(crossinline config: AndroidLibraryExtension.() -> Unit) {
     pluginManager.withPlugin("com.android.library") { androidPluginExtension<AndroidLibraryExtension>().config() }
 }
@@ -63,5 +57,4 @@ internal inline fun Project.withAndroidLibraryLegacyPlugin(crossinline config: L
     pluginManager.withPlugin("com.android.library") { extensions.getByType(LegacyLibraryExtension::class.java).config() }
 }
 
-@Suppress("UnstableApiUsage")
 private inline fun <reified T : AndroidCommonExtension> Project.androidPluginExtension() = extensions.getByType(T::class.java)

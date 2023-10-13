@@ -49,6 +49,9 @@ class AndroidModulePlugin : Plugin<Project> {
                 all { test ->
                     test.testLogging.events("passed", "skipped", "failed")
                     test.systemProperty("robolectric.logging.enabled", true)
+                    findProperty("robolectric.enabledSdks")?.let { enabledRobolectricSdks ->
+                        test.systemProperty("robolectric.enabledSdks", enabledRobolectricSdks)
+                    }
                 }
             }
         }

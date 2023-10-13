@@ -41,11 +41,23 @@ public fun Activity.checkPermissionsStatus(
     val permissions = mutableListOf<String>()
     permissions += firstPermission
     permissions += otherPermissions
-    return if (Build.VERSION.SDK_INT >= 23) {
-        checkRuntimePermissionsStatus(permissions)
-    } else {
-        checkManifestPermissionsStatus(permissions)
-    }
+    return checkPermissionsStatus(permissions)
+}
+
+/**
+ * Checks the status of the permissions without sending a request.
+ * Below API 23, the permission status can be [PermissionStatus.Granted] or [PermissionStatus.Denied.Permanently]
+ * depending on the presence of the permission in the manifest.
+ * Above API 23, when runtime permissions are necessary, the client doesn't know if a permission is
+ * permanently denied or it was never asked to the user. In this case the returned status is [PermissionStatus.RequestRequired].
+ *
+ * @param permissions the permissions which should be requested.
+ * @return the status of each permission.
+ */
+public fun Activity.checkPermissionsStatus(permissions: List<String>): List<PermissionStatus> = if (Build.VERSION.SDK_INT >= 23) {
+    checkRuntimePermissionsStatus(permissions)
+} else {
+    checkManifestPermissionsStatus(permissions)
 }
 
 /**

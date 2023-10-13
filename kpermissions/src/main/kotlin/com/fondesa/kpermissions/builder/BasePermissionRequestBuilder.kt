@@ -46,6 +46,10 @@ public abstract class BasePermissionRequestBuilder : PermissionRequestBuilder {
         }
     }
 
+    override fun permissions(permissions: List<String>): PermissionRequestBuilder = apply {
+        this.permissions = permissions.toTypedArray()
+    }
+
     override fun runtimeHandlerProvider(runtimeHandlerProvider: RuntimePermissionHandlerProvider): PermissionRequestBuilder =
         apply {
             this.runtimeHandlerProvider = runtimeHandlerProvider

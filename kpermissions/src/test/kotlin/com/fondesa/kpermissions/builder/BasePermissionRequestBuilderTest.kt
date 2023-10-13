@@ -47,7 +47,7 @@ class BasePermissionRequestBuilderTest {
     }
 
     @Test
-    fun verifyMinimumBuildInstance() {
+    fun verifyBuildInstanceWithVararg() {
         // Build the request.
         val request = builder.permissions("example")
             .runtimeHandlerProvider(provider)
@@ -57,9 +57,9 @@ class BasePermissionRequestBuilderTest {
     }
 
     @Test
-    fun verifyFullBuildInstance() {
+    fun verifyBuildInstanceWithList() {
         // Build the request.
-        val request = builder.permissions("example")
+        val request = builder.permissions(listOf("example"))
             .runtimeHandlerProvider(provider)
             .build()
         assertNotNull(request)

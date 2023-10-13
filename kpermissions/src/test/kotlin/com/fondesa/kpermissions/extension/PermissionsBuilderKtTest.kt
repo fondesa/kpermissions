@@ -44,7 +44,7 @@ class PermissionsBuilderKtTest {
     internal val scenarioRule = ActivityScenarioRule(FakeFragmentActivity::class.java)
 
     @Test
-    fun `When permissionsBuilder() is invoked with an Activity instance, the PermissionRequest is built successfully`() {
+    fun `When permissionsBuilder(vararg) is invoked with an Activity instance, the PermissionRequest is built successfully`() {
         val builder = scenarioRule.activity.permissionsBuilder(
             Manifest.permission.SEND_SMS,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -61,11 +61,50 @@ class PermissionsBuilderKtTest {
     }
 
     @Test
-    fun `When permissionsBuilder() is invoked with a Fragment instance, the PermissionRequest is built successfully`() {
+    fun `When permissionsBuilder(list) is invoked with an Activity instance, the PermissionRequest is built successfully`() {
+        val builder = scenarioRule.activity.permissionsBuilder(
+            listOf(
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        )
+
+        assertNotNull(builder)
+        assertThat(builder, instanceOf(BasePermissionRequestBuilder::class.java))
+        builder as BasePermissionRequestBuilder
+        assertThat(builder.runtimeHandlerProvider, instanceOf(ResultLauncherRuntimePermissionHandlerProvider::class.java))
+
+        val request = builder.build()
+        assertNotNull(request)
+        assertThat(request, instanceOf(PermissionRequest::class.java))
+    }
+
+    @Test
+    fun `When permissionsBuilder(vararg) is invoked with a Fragment instance, the PermissionRequest is built successfully`() {
         val scenario = launchFragment<Fragment>()
         val builder = scenario.fragment.permissionsBuilder(
             Manifest.permission.SEND_SMS,
             Manifest.permission.ACCESS_FINE_LOCATION
+        )
+
+        assertNotNull(builder)
+        assertThat(builder, instanceOf(PermissionRequestBuilder::class.java))
+        builder as BasePermissionRequestBuilder
+        assertThat(builder.runtimeHandlerProvider, instanceOf(ResultLauncherRuntimePermissionHandlerProvider::class.java))
+
+        val request = builder.build()
+        assertNotNull(request)
+        assertThat(request, instanceOf(PermissionRequest::class.java))
+    }
+
+    @Test
+    fun `When permissionsBuilder(list) is invoked with a Fragment instance, the PermissionRequest is built successfully`() {
+        val scenario = launchFragment<Fragment>()
+        val builder = scenario.fragment.permissionsBuilder(
+            listOf(
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
         )
 
         assertNotNull(builder)

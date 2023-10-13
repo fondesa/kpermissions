@@ -75,6 +75,17 @@ class ManifestPermissionRequestTest {
     }
 
     @Test
+    fun `When request is sent with empty array, listeners are with empty result`() {
+        val listener = FakePermissionRequestListener()
+        val request = requestOf()
+        request.addListener(listener)
+
+        request.send()
+
+        assertEquals(listOf(emptyList<PermissionStatus>()), listener.receivedPermissionsResults)
+    }
+
+    @Test
     fun `When one listener is detached and request is sent, the detached listener is not notified anymore`() {
         val firstListener = FakePermissionRequestListener()
         val secondListener = FakePermissionRequestListener()

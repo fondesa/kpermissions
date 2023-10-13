@@ -18,11 +18,8 @@ jobs:
           java-version: 11
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Run tests on API 16, 17, 18, 19
-        env:
-          ROBOLECTRIC_MIN_API: 16
-          ROBOLECTRIC_MAX_API: 19
-        run: ./ci/run-tests.sh
+      - name: Run tests on API 16, 19, 21
+        run: ./ci/run-tests.sh -Probolectric.enabledSdks=16,19,21
   test2:
     name: test 2/3
     runs-on: ubuntu-latest
@@ -38,11 +35,8 @@ jobs:
           java-version: 11
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Run tests on API 21, 22, 23, 24
-        env:
-          ROBOLECTRIC_MIN_API: 21
-          ROBOLECTRIC_MAX_API: 24
-        run: ./ci/run-tests.sh
+      - name: Run tests on API 23, 24, 26, 28
+        run: ./ci/run-tests.sh -Probolectric.enabledSdks=23,24,26,28
   test3:
     name: test 3/3
     runs-on: ubuntu-latest
@@ -58,8 +52,5 @@ jobs:
           java-version: 11
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Run tests on API 25, 26, 27, 28
-        env:
-          ROBOLECTRIC_MIN_API: 25
-          ROBOLECTRIC_MAX_API: 28
-        run: ./ci/run-tests.sh
+      - name: Run tests on API 29, 30, 31, 33
+        run: ./ci/run-tests.sh -Probolectric.enabledSdks=29,30,31,33

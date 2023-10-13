@@ -41,7 +41,7 @@ class CheckPermissionsStatusKtTest {
 
     @Config(maxSdk = 22)
     @Test
-    fun `With SDK minor than 23, the status returned with checkPermissionsStatus() is on the manifest status`() {
+    fun `With SDK minor than 23, the status returned with checkPermissionsStatus(vararg) is on the manifest status`() {
         activity.grantPermissions(Manifest.permission.SEND_SMS)
         activity.denyPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -56,9 +56,28 @@ class CheckPermissionsStatusKtTest {
         assertEquals(expected, result)
     }
 
+    @Config(maxSdk = 22)
+    @Test
+    fun `With SDK minor than 23, the status returned with checkPermissionsStatus(list) is on the manifest status`() {
+        activity.grantPermissions(Manifest.permission.SEND_SMS)
+        activity.denyPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
+
+        val result = activity.checkPermissionsStatus(
+            listOf(
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        )
+        val expected = listOf(
+            PermissionStatus.Granted(Manifest.permission.SEND_SMS),
+            PermissionStatus.Denied.Permanently(Manifest.permission.ACCESS_FINE_LOCATION)
+        )
+        assertEquals(expected, result)
+    }
+
     @Config(minSdk = 23)
     @Test
-    fun `With SDK since 23, the status returned with checkPermissionsStatus() is on the runtime status`() {
+    fun `With SDK since 23, the status returned with checkPermissionsStatus(vararg) is on the runtime status`() {
         activity.grantPermissions(Manifest.permission.SEND_SMS)
         activity.denyPermissions(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -73,6 +92,34 @@ class CheckPermissionsStatusKtTest {
             Manifest.permission.SEND_SMS,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CALL_PHONE
+        )
+        val expected = listOf(
+            PermissionStatus.Granted(Manifest.permission.SEND_SMS),
+            PermissionStatus.Denied.ShouldShowRationale(Manifest.permission.ACCESS_FINE_LOCATION),
+            PermissionStatus.RequestRequired(Manifest.permission.CALL_PHONE)
+        )
+        assertEquals(expected, result)
+    }
+
+    @Config(minSdk = 23)
+    @Test
+    fun `With SDK since 23, the status returned with checkPermissionsStatus(list) is on the runtime status`() {
+        activity.grantPermissions(Manifest.permission.SEND_SMS)
+        activity.denyPermissions(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.CALL_PHONE
+        )
+        activity.overrideShouldShowRequestPermissionRationale(
+            Manifest.permission.ACCESS_FINE_LOCATION to true,
+            Manifest.permission.CALL_PHONE to false
+        )
+
+        val result = activity.checkPermissionsStatus(
+            listOf(
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CALL_PHONE
+            )
         )
         val expected = listOf(
             PermissionStatus.Granted(Manifest.permission.SEND_SMS),

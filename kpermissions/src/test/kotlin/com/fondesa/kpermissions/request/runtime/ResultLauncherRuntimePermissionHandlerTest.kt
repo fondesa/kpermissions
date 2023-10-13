@@ -58,6 +58,16 @@ class ResultLauncherRuntimePermissionHandlerTest {
     }
 
     @Test
+    fun `When permissions are an empty array, they are not requested and listener is notified`() {
+        fragment.attachListener(emptyArray(), listener)
+
+        fragment.handleRuntimePermissions(emptyArray())
+
+        assertEquals(listOf(emptyList<PermissionStatus>()), listener.receivedPermissionsStatus)
+        assertTrue(resultLauncher.launchedInputs.isEmpty())
+    }
+
+    @Test
     fun `When permissions are already granted and listener is not attached, nothing happens`() {
         context.grantPermissions(*permissions)
 

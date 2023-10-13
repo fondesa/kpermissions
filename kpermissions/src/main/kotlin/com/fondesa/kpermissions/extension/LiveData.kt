@@ -35,11 +35,7 @@ private class PermissionsLiveData(private val request: PermissionRequest) : Live
 
     override fun onActive() {
         super.onActive()
-        listener = object : PermissionRequest.Listener {
-            override fun onPermissionsResult(result: List<PermissionStatus>) {
-                value = result
-            }
-        }.also(request::addListener)
+        listener = PermissionRequest.Listener { result -> value = result }.also(request::addListener)
     }
 
     override fun onInactive() {

@@ -26,7 +26,7 @@ import com.fondesa.kpermissions.request.runtime.ResultLauncherRuntimePermissionH
 /**
  * Creates the default [PermissionRequestBuilder] using the context of the [Activity].
  * The builder will use the default configurations and will be provided with
- * the set of [otherPermissions] attached to it.
+ * the set of [firstPermission] + [otherPermissions] attached to it.
  *
  * @param firstPermission the first permission which should be requested.
  * @param otherPermissions the other permissions that must be requested, if the request
@@ -45,10 +45,26 @@ public fun FragmentActivity.permissionsBuilder(
 }
 
 /**
+ * Creates the default [PermissionRequestBuilder] using the context of the [Activity].
+ * The builder will use the default configurations and will be provided with
+ * the set of [permissions] attached to it.
+ *
+ * @param permissions the permissions which should be requested.
+ * @return new instance of the default [PermissionRequestBuilder].
+ */
+public fun FragmentActivity.permissionsBuilder(permissions: List<String>): PermissionRequestBuilder {
+    val handler = ResultLauncherRuntimePermissionHandlerProvider(supportFragmentManager)
+    // Creates the builder.
+    return CompatPermissionRequestBuilder(this)
+        .permissions(permissions)
+        .runtimeHandlerProvider(handler)
+}
+
+/**
  * Creates the default [PermissionRequestBuilder] using the context of the [Activity] at which
  * this [Fragment] is attached.
  * The builder will use the default configurations and will be provided with
- * the set of [firstPermission] plus [otherPermissions] attached to it.
+ * the set of [firstPermission] + [otherPermissions] attached to it.
  *
  * @param firstPermission the first permission which should be requested.
  * @param otherPermissions the other permissions that must be requested, if the request
@@ -60,3 +76,17 @@ public fun Fragment.permissionsBuilder(
     firstPermission: String,
     vararg otherPermissions: String
 ): PermissionRequestBuilder = requireActivity().permissionsBuilder(firstPermission, *otherPermissions)
+
+/**
+ * Creates the default [PermissionRequestBuilder] using the context of the [Activity] at which
+ * this [Fragment] is attached.
+ * The builder will use the default configurations and will be provided with
+ * the set of [permissions] attached to it.
+ *
+ * @param permissions the permissions which should be requested.
+ * @return new instance of the default [PermissionRequestBuilder].
+ * @throws NullPointerException if the [Fragment] is not attached to an [Activity].
+ */
+public fun Fragment.permissionsBuilder(
+    permissions: List<String>,
+): PermissionRequestBuilder = requireActivity().permissionsBuilder(permissions)

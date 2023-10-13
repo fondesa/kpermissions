@@ -45,6 +45,14 @@ public interface PermissionRequestBuilder {
     ): PermissionRequestBuilder
 
     /**
+     * Sets the permissions that must be requested.
+     *
+     * @param permissions the permissions that must be requested.
+     * @return the builder itself.
+     */
+    public fun permissions(permissions: List<String>): PermissionRequestBuilder
+
+    /**
      * Sets the [RuntimePermissionHandlerProvider] used to provide a [RuntimePermissionHandler].
      *
      * @param runtimeHandlerProvider instance of [RuntimePermissionHandlerProvider] that must be added.

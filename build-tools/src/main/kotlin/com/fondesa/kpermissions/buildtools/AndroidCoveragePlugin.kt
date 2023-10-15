@@ -83,7 +83,7 @@ class AndroidCoveragePlugin : Plugin<Project> {
     private fun Project.fileTreeOf(dir: Provider<Directory>): FileTree = fileTree(mapOf("dir" to dir, "excludes" to COVERAGE_EXCLUSIONS))
 
     companion object {
-        private const val JACOCO_VERSION = "0.8.7"
+        private const val JACOCO_VERSION = "0.8.10"
         private const val COVERAGE_TASKS_GROUP = "Coverage"
     }
 }

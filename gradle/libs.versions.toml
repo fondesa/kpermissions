@@ -18,7 +18,7 @@
 android-gp-api = "com.android.tools.build:gradle-api:8.1.2"
 android-gp-impl = "com.android.tools.build:gradle:8.2.2"
 androidx-appCompat = "androidx.appcompat:appcompat:1.6.1"
-androidx-fragment-core = "androidx.fragment:fragment:1.6.1"
+androidx-fragment-core = "androidx.fragment:fragment:1.6.2"
 androidx-fragment-testing = "androidx.fragment:fragment-testing:1.6.1"
 androidx-junit = "androidx.test.ext:junit:1.1.5"
 coroutines-core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"

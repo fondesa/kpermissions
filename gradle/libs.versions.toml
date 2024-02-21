@@ -15,7 +15,7 @@
 #
 
 [libraries]
-android-gp-api = "com.android.tools.build:gradle-api:8.1.2"
+android-gp-api = "com.android.tools.build:gradle-api:8.2.2"
 android-gp-impl = "com.android.tools.build:gradle:8.2.2"
 androidx-appCompat = "androidx.appcompat:appcompat:1.6.1"
 androidx-fragment-core = "androidx.fragment:fragment:1.6.2"

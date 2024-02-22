@@ -17,7 +17,7 @@ jobs:
           distribution: corretto
           java-version: 17
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
       - name: Run tests on API 16, 19, 21
         run: ./ci/run-tests.sh -Probolectric.enabledSdks=16,19,21
   test2:
@@ -34,7 +34,7 @@ jobs:
           distribution: corretto
           java-version: 17
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
       - name: Run tests on API 23, 24, 26, 28
         run: ./ci/run-tests.sh -Probolectric.enabledSdks=23,24,26,28
   test3:
@@ -51,6 +51,6 @@ jobs:
           distribution: corretto
           java-version: 17
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
       - name: Run tests on API 29, 30, 31, 33
         run: ./ci/run-tests.sh -Probolectric.enabledSdks=29,30,31,33

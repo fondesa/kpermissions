@@ -16,7 +16,7 @@ jobs:
           distribution: corretto
           java-version: 17
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
       - name: Build
         run: ./gradlew assembleRelease ktlintCheck lintRelease testReleaseUnitTest -s
       - name: Upload coverage reports

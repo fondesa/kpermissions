@@ -22,7 +22,7 @@ import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project
 import com.android.build.gradle.LibraryExtension as LegacyLibraryExtension
 
-internal typealias AndroidCommonExtension = CommonExtension<*, *, *, *, *>
+internal typealias AndroidCommonExtension = CommonExtension<*, *, *, *, *, *>
 
 internal typealias AndroidApplicationExtension = ApplicationExtension
 

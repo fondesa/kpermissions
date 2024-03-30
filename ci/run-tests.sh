@@ -3,7 +3,7 @@
 scriptDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 projectDir=${scriptDir}/..
 
-ROBOLECTRIC_MIN_API=16
+ROBOLECTRIC_MIN_API=19
 ROBOLECTRIC_MAX_API=33
 
 robolectricConfigFile=$projectDir/kpermissions/src/test/resources/robolectric.properties

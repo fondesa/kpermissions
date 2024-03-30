@@ -18,8 +18,8 @@ jobs:
           java-version: 17
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
-      - name: Run tests on API 16, 19, 21
-        run: ./ci/run-tests.sh -Probolectric.enabledSdks=16,19,21
+      - name: Run tests on API 19, 21, 23
+        run: ./ci/run-tests.sh -Probolectric.enabledSdks=19,21,23
   test2:
     name: test 2/3
     runs-on: ubuntu-latest
@@ -35,8 +35,8 @@ jobs:
           java-version: 17
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
-      - name: Run tests on API 23, 24, 26, 28
-        run: ./ci/run-tests.sh -Probolectric.enabledSdks=23,24,26,28
+      - name: Run tests on API 24, 26, 28
+        run: ./ci/run-tests.sh -Probolectric.enabledSdks=24,26,28
   test3:
     name: test 3/3
     runs-on: ubuntu-latest
